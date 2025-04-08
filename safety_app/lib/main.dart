@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return OrientationBuilder(
         builder: (context, orientation) {
-          // SizeConfig().init(constraints, orientation);
-          SizeConfig().init(context);
+          SizeConfig().init(constraints, orientation);
+       //   SizeConfig().init(context);
 
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
