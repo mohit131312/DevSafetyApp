@@ -13,6 +13,7 @@ import 'package:flutter_app/features/induction_training/induction_training_scree
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +24,8 @@ class ContractorPreview extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   ContractorPreview({
@@ -30,8 +33,11 @@ class ContractorPreview extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
+
   final AddContractorController addContractorController = Get.find();
   final ContractorDetailsController contractorDetailsController = Get.find();
 
@@ -86,8 +92,11 @@ class ContractorPreview extends StatelessWidget {
                     if (contractorPreviewController.validationmsg ==
                         'Induction training data saved') {
                       Get.to(() => ContractorSubmit(
+                            categoryId: categoryId,
                             userId: userId,
                             userName: userName,
+                            userImg: userImg,
+                            userDesg: userDesg,
                             projectId: projectId,
                           ));
                     }
@@ -1255,12 +1264,9 @@ class ContractorPreview extends StatelessWidget {
                       Container(
                         width: SizeConfig.imageSizeMultiplier * 15,
                         height: SizeConfig.imageSizeMultiplier * 15,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/icons/person_labour.png'),
-                            fit: BoxFit.cover,
-                          ),
+                        child: Image.network(
+                          "$baseUrl${userImg}",
+                          fit: BoxFit.contain,
                         ),
                       ),
                       SizedBox(
@@ -1275,7 +1281,7 @@ class ContractorPreview extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: AppColors.primaryText),
                           AppTextWidget(
-                              text: 'SAFETY OFFICER',
+                              text: userDesg,
                               fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w400,
                               color: AppColors.searchfeild),
@@ -1336,10 +1342,13 @@ class ContractorPreview extends StatelessWidget {
                         Get.offUntil(
                           GetPageRoute(
                               page: () => AddContractor(
-                                  categoryId: categoryId,
-                                  userId: userId,
-                                  userName: userName,
-                                  projectId: projectId)),
+                                    categoryId: categoryId,
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                  )),
                           (route) {
                             if (route is GetPageRoute) {
                               return route.page!().runtimeType ==

@@ -10,14 +10,21 @@ import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
 class ContractorSubmit extends StatelessWidget {
+  final int categoryId;
+
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   ContractorSubmit({
     super.key,
+    required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
   @override
@@ -81,6 +88,8 @@ class ContractorSubmit extends StatelessWidget {
                                 Get.put(InductionTrainingScreen(
                               userId: userId,
                               userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
                               projectId: projectId,
                             ));
                             inductionTrainingScreen.isFabExpanded.value = true;
@@ -89,6 +98,8 @@ class ContractorSubmit extends StatelessWidget {
                                   page: () => InductionTrainingScreen(
                                         userId: userId,
                                         userName: userName,
+                                        userImg: userImg,
+                                        userDesg: userDesg,
                                         projectId: projectId,
                                       )),
                               (route) {

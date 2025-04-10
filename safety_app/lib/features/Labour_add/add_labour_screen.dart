@@ -27,6 +27,8 @@ class AddLabourScreen extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   AddLabourScreen({
@@ -34,6 +36,8 @@ class AddLabourScreen extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
 
@@ -503,7 +507,7 @@ class AddLabourScreen extends StatelessWidget {
                                   CustomLoadingPopup());
 
                           await addLabourController.getSafetyLabourDetails(
-                              value, context, true, false);
+                              value, context, true, false, projectId);
 
                           Navigator.pop(context);
                         } else {
@@ -514,7 +518,8 @@ class AddLabourScreen extends StatelessWidget {
                               builder: (BuildContext context) =>
                                   CustomLoadingPopup());
                           await addLabourController
-                              .getSafetyLabourMatchedDetails(value, context);
+                              .getSafetyLabourMatchedDetails(
+                                  value, context, projectId);
                           Navigator.pop(context);
 
                           if (addLabourController.searchResults.isNotEmpty &&
@@ -528,7 +533,7 @@ class AddLabourScreen extends StatelessWidget {
                                 onItemSelected: (context, id) async {
                                   await addLabourController
                                       .getSafetyLabourDetails(
-                                          id, context, false, true);
+                                          id, context, false, true, projectId);
                                 },
                               ),
                             );
@@ -541,7 +546,7 @@ class AddLabourScreen extends StatelessWidget {
                                     CustomLoadingPopup());
 
                             await addLabourController.getSafetyLabourDetails(
-                                value, context, false, false);
+                                value, context, false, false, projectId);
                             Navigator.pop(context);
                           }
                         }
@@ -1917,6 +1922,8 @@ class AddLabourScreen extends StatelessWidget {
                           categoryId: categoryId,
                           userId: userId,
                           userName: userName,
+                          userImg: userImg,
+                          userDesg: userDesg,
                           projectId: projectId,
                         ));
                         print("Navigating to Labourproffessinal with:");

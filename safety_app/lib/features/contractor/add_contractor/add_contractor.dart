@@ -19,16 +19,23 @@ import 'package:google_fonts/google_fonts.dart';
 // ignore: must_be_immutable
 class AddContractor extends StatelessWidget {
   final int categoryId;
+
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
+
   AddContractor({
     super.key,
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
+
   final AddContractorController addContractorController = Get.find();
   final InductionTrainingController inductionTrainingController = Get.find();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -449,6 +456,8 @@ class AddContractor extends StatelessWidget {
                                 categoryId: categoryId,
                                 userId: userId,
                                 userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
                                 projectId: projectId,
                               ));
                             }

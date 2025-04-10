@@ -19,6 +19,8 @@ class LabourPrecaustionScreen extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   LabourPrecaustionScreen({
@@ -26,9 +28,10 @@ class LabourPrecaustionScreen extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
-
   final AddLabourController addLabourController = Get.find();
   final LabourPrecautionController controller = Get.find();
 
@@ -503,6 +506,8 @@ class LabourPrecaustionScreen extends StatelessWidget {
                           categoryId: categoryId,
                           userId: userId,
                           userName: userName,
+                          userImg: userImg,
+                          userDesg: userDesg,
                           projectId: projectId,
                         ));
                         print("Navigating to Labour undertaking with:");

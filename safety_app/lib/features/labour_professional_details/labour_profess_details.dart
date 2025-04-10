@@ -20,6 +20,8 @@ class LabourProfessDetails extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   LabourProfessDetails({
@@ -27,6 +29,8 @@ class LabourProfessDetails extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
   final InductionTrainingController inductionTrainingController = Get.find();
@@ -428,6 +432,8 @@ class LabourProfessDetails extends StatelessWidget {
                             categoryId: categoryId,
                             userId: userId,
                             userName: userName,
+                            userImg: userImg,
+                            userDesg: userDesg,
                             projectId: projectId,
                           ));
                           print("Navigating to Documentaion with:");

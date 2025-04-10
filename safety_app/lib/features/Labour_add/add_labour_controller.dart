@@ -216,15 +216,15 @@ class AddLabourController extends GetxController {
   var selectedReasonId = 0.obs; // Store the ID separately
   Map<String, dynamic> map = {};
   Future getSafetyLabourDetails(String id, BuildContext context,
-      bool validationStatus, bool searchId) async {
+      bool validationStatus, bool searchId, projectId) async {
     clearUserFields();
     try {
       if (searchId) {
-        map = {"labour_id": id, "labour_name": ""};
+        map = {"labour_id": id, "labour_name": "", "project_id": projectId};
       } else {
         map = searchType.value == 'ID'
-            ? {"labour_id": id, "labour_name": ""}
-            : {"labour_id": '', "labour_name": id};
+            ? {"labour_id": id, "labour_name": "", "project_id": projectId}
+            : {"labour_id": '', "labour_name": id, "project_id": projectId};
         print("Request body: $map");
       }
 
@@ -232,6 +232,7 @@ class AddLabourController extends GetxController {
       //log('API Response: ${responseData}');
 
       var data = await responseData['data'];
+      log('API Response: ${data}');
 
       if (validationStatus == true) {
         if (responseData != null &&
@@ -361,6 +362,30 @@ class AddLabourController extends GetxController {
         return AssignLabourProject.fromJson(proj, tradeName, contractorName);
       }).toList();
 
+      // List<dynamic> assignedProjects = [];
+
+      // if (labour['assign_labour_projects'] != null &&
+      //     labour['assign_labour_projects'] is List) {
+      //   assignedProjects = labour['assign_labour_projects'];
+      // }
+
+      // assignedLabourProjects = assignedProjects.map((proj) {
+      //   int tradeId = proj['trade_id'] ?? 0;
+      //   int contractorId = proj['contractor_id'] ?? 0;
+
+      //   String tradeName = inductionTrainingController.tradeList
+      //           .firstWhereOrNull((trade) => trade.id == tradeId)
+      //           ?.inductionDetails ??
+      //       "";
+
+      //   String contractorName = inductionTrainingController.contractorLists
+      //           .firstWhereOrNull((contract) => contract.id == contractorId)
+      //           ?.contractorCompanyName ??
+      //       "";
+
+      //   return AssignLabourProject.fromJson(proj, tradeName, contractorName);
+      // }).toList();
+
 // Debugging Output
       print("Assigned Projects: ${assignedLabourProjects.length}");
       for (var project in assignedLabourProjects) {
@@ -394,9 +419,14 @@ class AddLabourController extends GetxController {
   String validationmsg = '';
   var searchResults = <Map<String, dynamic>>[].obs;
 
-  Future getSafetyLabourMatchedDetails(String id, BuildContext context) async {
+  Future getSafetyLabourMatchedDetails(
+      String id, BuildContext context, projectId) async {
     try {
-      Map<String, dynamic> map = {"labour_id": '', "labour_name": id};
+      Map<String, dynamic> map = {
+        "labour_id": '',
+        "labour_name": id,
+        "project_id": projectId
+      };
       print("Request body: $map");
 
       var responseData = await globApiCall('get_safety_labour_name_list', map);

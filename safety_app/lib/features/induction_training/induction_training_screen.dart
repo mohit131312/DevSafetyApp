@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -5,9 +7,12 @@ import 'package:flutter_app/features/Labour_add/add_labour_controller.dart';
 import 'package:flutter_app/features/Labour_add/add_labour_screen.dart';
 import 'package:flutter_app/features/contractor/add_contractor/add_contractor.dart';
 import 'package:flutter_app/features/contractor/add_contractor/add_contractor_controller.dart';
+import 'package:flutter_app/features/induction_listing/contractor_listing/contractor_listing_controller.dart';
+import 'package:flutter_app/features/induction_listing/staff_listing/staff_listing_controller.dart';
+import 'package:flutter_app/features/induction_listing/staff_listing/staff_listing_screen.dart';
 import 'package:flutter_app/features/induction_training/induction_training_controller.dart';
-import 'package:flutter_app/features/labourStaffConAll.dart/labour_staff_cont.dart';
-import 'package:flutter_app/features/labourStaffConAll.dart/labour_staff_cont_controller.dart';
+import 'package:flutter_app/features/induction_listing/labour_listing/labour_listing_screen.dart';
+import 'package:flutter_app/features/induction_listing/labour_listing/labour_listing_controller.dart';
 import 'package:flutter_app/features/staff/staff_add/add_staff_controller.dart';
 import 'package:flutter_app/features/staff/staff_add/add_staff_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
@@ -23,18 +28,25 @@ import 'package:intl/intl.dart';
 class InductionTrainingScreen extends StatelessWidget {
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   InductionTrainingScreen({
     super.key,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
-
   final InductionTrainingController inductionTrainingController = Get.find();
-  final LabourStaffContController labourStaffContController =
-      Get.put(LabourStaffContController());
+  final LabourListingController labourListingController =
+      Get.put(LabourListingController());
+  final StaffListingController staffListingController =
+      Get.put(StaffListingController());
+  final ContractorListingController contractorListingController =
+      Get.put(ContractorListingController());
   String getUserTypeLabel(dynamic userType) {
     int? userTypeInt;
 
@@ -164,6 +176,8 @@ class InductionTrainingScreen extends StatelessWidget {
                                             .selectCatogery[index].id,
                                         userId: userId,
                                         userName: userName,
+                                        userImg: userImg,
+                                        userDesg: userDesg,
                                         projectId: projectId,
                                       ));
 
@@ -202,6 +216,8 @@ class InductionTrainingScreen extends StatelessWidget {
                                             .selectCatogery[index].id,
                                         userId: userId,
                                         userName: userName,
+                                        userImg: userImg,
+                                        userDesg: userDesg,
                                         projectId: projectId,
                                       ));
 
@@ -242,6 +258,8 @@ class InductionTrainingScreen extends StatelessWidget {
                                             .selectCatogery[index].id,
                                         userId: userId,
                                         userName: userName,
+                                        userImg: userImg,
+                                        userDesg: userDesg,
                                         projectId: projectId,
                                       ));
 
@@ -456,6 +474,7 @@ class InductionTrainingScreen extends StatelessWidget {
                             itemCount: filteredList.length,
                             itemBuilder: (context, index) {
                               final ind = filteredList[index];
+                              log("Image in beforw $index ${ind.inducteeName} $baseUrl${ind.userPhoto}");
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -463,29 +482,84 @@ class InductionTrainingScreen extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              CustomLoadingPopup());
-                                      // await labourDetailsController
-                                      //     .getLabourDetailsAll(
-                                      //         labour.labourId, projectId);
+                                      log('${ind.userType}');
+                                      if (ind.userType == '1') {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                CustomLoadingPopup());
+                                        await labourListingController
+                                            .getInductionListing(
+                                                ind.userId,
+                                                ind.userType,
+                                                ind.reasonOfVisit,
+                                                ind.inductedById,
+                                                ind.id,
+                                                ind.projectId,
+                                                ind.tradeId,
+                                                ind.contractorCompanyId);
 
-                                      await labourStaffContController
-                                          .getInductionListing(
-                                              ind.userId,
-                                              ind.userType,
-                                              ind.reasonOfVisit,
-                                              ind.inductedById,
-                                              ind.id,
-                                              ind.projectId,
-                                              ind.tradeId,
-                                              ind.contractorCompanyId);
+                                        Navigator.pop(context);
+                                        if (labourListingController.statusApi) {
+                                          Get.to(LabourListingScreen(
+                                            userId: userId,
+                                            userName: userName,
+                                            userImg: userImg,
+                                            userDesg: userDesg,
+                                            projectId: projectId,
+                                          ));
+                                        }
+                                      } else if (ind.userType == "2") {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                CustomLoadingPopup());
+                                        await contractorListingController
+                                            .getContractorInductionListing(
+                                          ind.userId,
+                                          ind.userType,
+                                          ind.reasonOfVisit,
+                                          ind.inductedById,
+                                          ind.id,
+                                          ind.projectId,
+                                        );
+                                        Navigator.pop(context);
+                                        if (contractorListingController
+                                            .statusApi) {
+                                          Get.to(StaffListingScreen(
+                                            userId: userId,
+                                            userName: userName,
+                                            userImg: userImg,
+                                            userDesg: userDesg,
+                                            projectId: projectId,
+                                          ));
+                                        }
+                                      } else if (ind.userType == "3") {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                CustomLoadingPopup());
+                                        await staffListingController
+                                            .getStaffInductionListing(
+                                          ind.userId,
+                                          ind.userType,
+                                          ind.reasonOfVisit,
+                                          ind.inductedById,
+                                          ind.id,
+                                          ind.projectId,
+                                        );
 
-                                      Navigator.pop(context);
-                                      if (labourStaffContController
-                                          .statusApi) {}
-                                      Get.to(LabourStaffCont());
+                                        Navigator.pop(context);
+                                        if (staffListingController.statusApi) {
+                                          Get.to(StaffListingScreen(
+                                            userId: userId,
+                                            userName: userName,
+                                            userImg: userImg,
+                                            userDesg: userDesg,
+                                            projectId: projectId,
+                                          ));
+                                        }
+                                      }
                                     },
                                     child: ListTile(
                                       leading: Stack(

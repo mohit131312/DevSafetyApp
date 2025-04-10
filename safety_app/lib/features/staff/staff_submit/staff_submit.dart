@@ -10,14 +10,21 @@ import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
 class StaffSubmit extends StatelessWidget {
+  final int categoryId;
+
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
-  const StaffSubmit({
+  StaffSubmit({
     super.key,
+    required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
 
@@ -92,6 +99,8 @@ class StaffSubmit extends StatelessWidget {
                                   Get.put(InductionTrainingScreen(
                                 userId: userId,
                                 userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
                                 projectId: projectId,
                               ));
                               inductionTrainingScreen.isFabExpanded.value =
@@ -101,6 +110,8 @@ class StaffSubmit extends StatelessWidget {
                                     page: () => InductionTrainingScreen(
                                           userId: userId,
                                           userName: userName,
+                                          userImg: userImg,
+                                          userDesg: userDesg,
                                           projectId: projectId,
                                         )),
                                 (route) {

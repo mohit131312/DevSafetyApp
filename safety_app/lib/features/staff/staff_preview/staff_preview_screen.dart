@@ -14,6 +14,7 @@ import 'package:flutter_app/features/staff/staff_undertaking/staff_undertaking_c
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +23,8 @@ class StaffPreviewScreen extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   StaffPreviewScreen({
@@ -29,6 +32,8 @@ class StaffPreviewScreen extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
 
@@ -90,8 +95,11 @@ class StaffPreviewScreen extends StatelessWidget {
                     if (staffPreviewController.validationmsg ==
                         'Induction training data saved') {
                       Get.to(() => StaffSubmit(
+                            categoryId: categoryId,
                             userId: userId,
                             userName: userName,
+                            userImg: userImg,
+                            userDesg: userDesg,
                             projectId: projectId,
                           ));
                     }
@@ -1382,12 +1390,9 @@ class StaffPreviewScreen extends StatelessWidget {
                       Container(
                         width: SizeConfig.imageSizeMultiplier * 15,
                         height: SizeConfig.imageSizeMultiplier * 15,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/icons/person_labour.png'),
-                            fit: BoxFit.cover,
-                          ),
+                        child: Image.network(
+                          "$baseUrl${userImg}",
+                          fit: BoxFit.contain,
                         ),
                       ),
                       SizedBox(
@@ -1402,7 +1407,7 @@ class StaffPreviewScreen extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: AppColors.primaryText),
                           AppTextWidget(
-                              text: 'SAFETY OFFICER',
+                              text: userDesg,
                               fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w400,
                               color: AppColors.searchfeild),
@@ -1463,10 +1468,13 @@ class StaffPreviewScreen extends StatelessWidget {
                         Get.offUntil(
                           GetPageRoute(
                               page: () => AddStaffScreen(
-                                  categoryId: categoryId,
-                                  userId: userId,
-                                  userName: userName,
-                                  projectId: projectId)),
+                                    categoryId: categoryId,
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                  )),
                           (route) {
                             if (route is GetPageRoute) {
                               return route.page!().runtimeType ==

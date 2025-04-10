@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:flutter_app/features/labourStaffConAll.dart/labour_model.dart';
+import 'package:flutter_app/features/induction_listing/labour_listing/labour_listing_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
-class LabourStaffContController extends GetxController {
+class LabourListingController extends GetxController {
   var isPersonalDetailsExpanded = true.obs;
 
   void toggleExpansion() {
@@ -62,6 +62,7 @@ class LabourStaffContController extends GetxController {
       var responseData =
           await globApiCall('get_selected_induction_training_details', map);
       var data = await responseData['data'];
+      log('Response data: $data');
       statusApi = await responseData['status'];
 
       labourDetailsList = (data['user_details'] as List<dynamic>?)

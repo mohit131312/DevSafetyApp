@@ -115,6 +115,8 @@ class QuickActionsGrid extends StatelessWidget {
                   Get.to(() => InductionTrainingScreen(
                         userId: userId,
                         userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
                         projectId: projectId,
                       ));
                   print("Navigating to InductionTrainingScreen with:");

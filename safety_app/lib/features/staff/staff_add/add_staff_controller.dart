@@ -209,16 +209,16 @@ class AddStaffController extends GetxController {
   var selectedReasonId = 0.obs; // Store the ID separately
   Map<String, dynamic> map = {};
   Future getSafetyStaffDetails(String id, BuildContext context,
-      bool validationStatus, bool searchId) async {
+      bool validationStatus, bool searchId, projectId) async {
     clearStaffUserFields();
     try {
       if (searchId) {
-        map = {"staff_id": id, "staff_name": '', "project_id": 1};
+        map = {"staff_id": id, "staff_name": '', "project_id": projectId};
         print("Request body: $map");
       } else {
         map = searchType.value == 'ID'
-            ? {"staff_id": id, "staff_name": "", "project_id": 1}
-            : {"staff_id": '', "staff_name": id, "project_id": 1};
+            ? {"staff_id": id, "staff_name": "", "project_id": projectId}
+            : {"staff_id": '', "staff_name": id, "project_id": projectId};
         print("Request body: $map");
       }
 
@@ -357,9 +357,14 @@ class AddStaffController extends GetxController {
   String validationmsg = '';
   var searchResults = <Map<String, dynamic>>[].obs;
 
-  Future getSafetyStaffMatchedDetails(String id, BuildContext context) async {
+  Future getSafetyStaffMatchedDetails(
+      String id, BuildContext context, projectId) async {
     try {
-      Map<String, dynamic> map = {"staff_id": '', "staff_name": id};
+      Map<String, dynamic> map = {
+        "staff_id": '',
+        "staff_name": id,
+        "project_id": projectId
+      };
       print("Request body: $map");
 
       var responseData = await globApiCall('get_safety_staff_name_list', map);

@@ -18,16 +18,23 @@ import 'package:get/get.dart';
 // ignore: must_be_immutable
 class ServiceDetailsScreen extends StatelessWidget {
   final int categoryId;
+
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
+
   ServiceDetailsScreen({
     super.key,
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
+
   final ServiceDetailsController serviceDetailsController =
       Get.put(ServiceDetailsController());
   final InductionTrainingController inductionTrainingController = Get.find();
@@ -817,10 +824,12 @@ class ServiceDetailsScreen extends StatelessWidget {
                                 serviceDetailsController
                                     .selectSubActivityIdList.isNotEmpty) {
                               Get.to(ServiceUndertaking(
-                                categoryId: categoryId,
-                                userId: userId,
-                                userName: userName,
-                                projectId: projectId,
+                            categoryId: categoryId,
+                            userId: userId,
+                            userName: userName,
+                            userImg: userImg,
+                            userDesg: userDesg,
+                            projectId: projectId,
                               ));
                             }
                             print("Navigating to ServiceUndertaking with:");

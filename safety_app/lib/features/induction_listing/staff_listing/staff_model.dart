@@ -1,28 +1,28 @@
 // To parse this JSON data, do
 //
-//     final labourListing = labourListingFromJson(jsonString);
+//     final staffListing = staffListingFromJson(jsonString);
 
 import 'dart:convert';
 
-LabourListing labourListingFromJson(String str) =>
-    LabourListing.fromJson(json.decode(str));
+StaffListing staffListingFromJson(String str) =>
+    StaffListing.fromJson(json.decode(str));
 
-String labourListingToJson(LabourListing data) => json.encode(data.toJson());
+String staffListingToJson(StaffListing data) => json.encode(data.toJson());
 
-class LabourListing {
+class StaffListing {
   Data data;
   String message;
   bool status;
   bool token;
 
-  LabourListing({
+  StaffListing({
     required this.data,
     required this.message,
     required this.status,
     required this.token,
   });
 
-  factory LabourListing.fromJson(Map<String, dynamic> json) => LabourListing(
+  factory StaffListing.fromJson(Map<String, dynamic> json) => StaffListing(
         data: Data.fromJson(json["data"]),
         message: json["message"],
         status: json["status"],
@@ -38,10 +38,7 @@ class LabourListing {
 }
 
 class Data {
-  List<LabourDetail> userDetails;
-  List<TradeName> tradeName;
-  List<ContractorCompanyDetail> contractorCompanyDetails;
-  List<SkillLevel> skillLevel;
+  List<UserDetail> userDetails;
   List<InductionTraining> inductionTrainings;
   List<DocumentDetail> documentDetails;
   List<EquipmentDetail> equipmentDetails;
@@ -50,9 +47,6 @@ class Data {
 
   Data({
     required this.userDetails,
-    required this.tradeName,
-    required this.contractorCompanyDetails,
-    required this.skillLevel,
     required this.inductionTrainings,
     required this.documentDetails,
     required this.equipmentDetails,
@@ -61,15 +55,8 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        userDetails: List<LabourDetail>.from(
-            json["user_details"].map((x) => LabourDetail.fromJson(x))),
-        tradeName: List<TradeName>.from(
-            json["trade_name"].map((x) => TradeName.fromJson(x))),
-        contractorCompanyDetails: List<ContractorCompanyDetail>.from(
-            json["contractor_company_details"]
-                .map((x) => ContractorCompanyDetail.fromJson(x))),
-        skillLevel: List<SkillLevel>.from(
-            json["skill_level"].map((x) => SkillLevel.fromJson(x))),
+        userDetails: List<UserDetail>.from(
+            json["user_details"].map((x) => UserDetail.fromJson(x))),
         inductionTrainings: List<InductionTraining>.from(
             json["induction_trainings"]
                 .map((x) => InductionTraining.fromJson(x))),
@@ -86,7 +73,6 @@ class Data {
 
   Map<String, dynamic> toJson() => {
         "user_details": List<dynamic>.from(userDetails.map((x) => x.toJson())),
-        "trade_name": List<dynamic>.from(tradeName.map((x) => x.toJson())),
         "induction_trainings":
             List<dynamic>.from(inductionTrainings.map((x) => x.toJson())),
         "document_details":
@@ -100,102 +86,46 @@ class Data {
       };
 }
 
-class ContractorCompanyDetail {
-  int id;
-  String? contractorCompanyName;
-  // int? createdBy;
-  // dynamic? deletedAt;
-  // DateTime? createdAt;
-  // DateTime? updatedAt;
-  // String? gstnNumber;
-
-  ContractorCompanyDetail({
-    required this.id,
-    this.contractorCompanyName,
-    // required this.createdBy,
-    // required this.deletedAt,
-    // required this.createdAt,
-    // required this.updatedAt,
-    // required this.gstnNumber,
-  });
-
-  factory ContractorCompanyDetail.fromJson(Map<String, dynamic> json) =>
-      ContractorCompanyDetail(
-        id: json["id"],
-        contractorCompanyName: json["contractor_company_name"] ?? "",
-        // createdBy: json["created_by"],
-        // deletedAt: json["deleted_at"],
-        // createdAt: DateTime.parse(json["created_at"]),
-        // updatedAt: DateTime.parse(json["updated_at"]),
-        // gstnNumber: json["gstn_number"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "contractor_company_name": contractorCompanyName,
-        // "created_by": createdBy,
-        // "deleted_at": deletedAt,
-        // "created_at": createdAt.toIso8601String(),
-        // "updated_at": updatedAt.toIso8601String(),
-        // "gstn_number": gstnNumber,
-      };
-}
-
-class SkillLevel {
-  String? skillLevel;
-
-  SkillLevel({
-    this.skillLevel,
-  });
-
-  factory SkillLevel.fromJson(Map<String, dynamic> json) => SkillLevel(
-        skillLevel: json["skill_level"] ?? "",
-      );
-
-  Map<String, dynamic> toJson() => {
-        "skill_level": skillLevel,
-      };
-}
-
 class DocumentDetail {
-  String docmentType;
-  String idNumber;
-  DateTime validity;
-  String documentPath;
+  String? docmentType;
+  String? idNumber;
+  DateTime? validity;
+  String? documentPath;
 
   DocumentDetail({
-    required this.docmentType,
-    required this.idNumber,
-    required this.validity,
-    required this.documentPath,
+    this.docmentType,
+    this.idNumber,
+    this.validity,
+    this.documentPath,
   });
 
   factory DocumentDetail.fromJson(Map<String, dynamic> json) => DocumentDetail(
-        docmentType: json["docment_type"],
-        idNumber: json["id_number"],
-        validity: DateTime.parse(json["validity"]),
-        documentPath: json["document_path"],
+        docmentType: json["docment_type"] ?? "",
+        idNumber: json["id_number"] ?? "",
+        validity:
+            json["validity"] != null ? DateTime.parse(json["validity"]) : null,
+        documentPath: json["document_path"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
         "docment_type": docmentType,
         "id_number": idNumber,
         "validity":
-            "${validity.year.toString().padLeft(4, '0')}-${validity.month.toString().padLeft(2, '0')}-${validity.day.toString().padLeft(2, '0')}",
+            "${validity!.year.toString().padLeft(4, '0')}-${validity!.month.toString().padLeft(2, '0')}-${validity!.day.toString().padLeft(2, '0')}",
         "document_path": documentPath,
       };
 }
 
 class EquipmentDetail {
-  String equipmentName;
+  String? equipmentName;
 
   EquipmentDetail({
-    required this.equipmentName,
+    this.equipmentName,
   });
 
   factory EquipmentDetail.fromJson(Map<String, dynamic> json) =>
       EquipmentDetail(
-        equipmentName: json["equipment_name"],
+        equipmentName: json["equipment_name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -205,14 +135,14 @@ class EquipmentDetail {
 
 class InductionTraining {
   int id;
-  // String inductionId;
+  String? inductionId;
   // int userId;
   // String userType;
   // String inducteeName;
-  // int contractorCompanyId;
-  // int tradeId;
-  // String userPhoto;
-  // int experienceInYears;
+  // dynamic contractorCompanyId;
+  // dynamic tradeId;
+  String? userPhoto;
+  // dynamic experienceInYears;
   // int signatureFlag;
   // int signatureBehalfOf;
   // String signaturePhoto;
@@ -230,13 +160,13 @@ class InductionTraining {
 
   InductionTraining({
     required this.id,
-    // required this.inductionId,
+    this.inductionId,
     // required this.userId,
     // required this.userType,
     // required this.inducteeName,
     // required this.contractorCompanyId,
     // required this.tradeId,
-    // required this.userPhoto,
+    this.userPhoto,
     // required this.experienceInYears,
     // required this.signatureFlag,
     // required this.signatureBehalfOf,
@@ -257,13 +187,13 @@ class InductionTraining {
   factory InductionTraining.fromJson(Map<String, dynamic> json) =>
       InductionTraining(
         id: json["id"],
-        // inductionId: json["induction_id"],
+        inductionId: json["induction_id"] ?? "",
         // userId: json["user_id"],
         // userType: json["user_type"],
         // inducteeName: json["inductee_name"],
         // contractorCompanyId: json["contractor_company_id"],
         // tradeId: json["trade_id"],
-        // userPhoto: json["user_photo"],
+        userPhoto: json["user_photo"] ?? "",
         // experienceInYears: json["experience_in_years"],
         // signatureFlag: json["signature_flag"],
         // signatureBehalfOf: json["signature_behalf_of"],
@@ -282,8 +212,8 @@ class InductionTraining {
       );
 
   Map<String, dynamic> toJson() => {
-        // "id": id,
-        // "induction_id": inductionId,
+        "id": id,
+        "induction_id": inductionId,
         // "user_id": userId,
         // "user_type": userType,
         // "inductee_name": inducteeName,
@@ -341,29 +271,11 @@ class ReasonOfVisit {
       };
 }
 
-class TradeName {
-  String? inductionDetails;
-
-  TradeName({
-    this.inductionDetails,
-  });
-
-  factory TradeName.fromJson(Map<String, dynamic> json) => TradeName(
-        inductionDetails: json["induction_details"] ?? "",
-      );
-
-  Map<String, dynamic> toJson() => {
-        "induction_details": inductionDetails,
-      };
-}
-
-class LabourDetail {
+class UserDetail {
   int id;
-  String inducteeId;
-  String labourName;
+  String staffId;
+  String staffName;
   String? gender;
-  String? literacy;
-  String? maritalStatus;
   String? bloodGroup;
   DateTime? birthDate;
   int? age;
@@ -375,43 +287,38 @@ class LabourDetail {
   int? currentDistrict;
   int? currentState;
   String? currentPincode;
-  // String permanentStreetName;
-  // String permanentCity;
-  // String permanentTaluka;
-  // int permanentDistrict;
-  // int permanentState;
-  // String permanentPincode;
-  int? experienceInYears;
-  // String uanNumber;
-  // String bocwNumber;
-  // String bankName;
-  // String ifscNumber;
-  // String accountNumber;
-  // String branchAddress;
-  // String groupInsuranceLimit;
-  // String insuranceNumber;
-  // String insuranceType;
-  // String insuranceValidity;
-  String emergencyContactName;
-  String emergencyContactNumber;
-  String emergencyContactRelation;
+  String? permanentStreetName;
+  String? permanentCity;
+  String? permanentTaluka;
+  int? permanentDistrict;
+  int? permanentState;
+  String? permanentPincode;
+  String? adhaarNo;
+  // dynamic bankName;
+  // dynamic ifscNumber;
+  // dynamic accountNumber;
+  // dynamic branchAddress;
+  // dynamic groupInsuranceLimit;
+  // dynamic insuranceNumber;
+  // dynamic insuranceType;
+  // dynamic insuranceValidity;
+  String? emergencyContactName;
+  String? emergencyContactNumber;
+  String? emergencyContactRelation;
   // String isActive;
   // dynamic deletedAt;
-  DateTime? createdAt;
+  // DateTime createdAt;
   // DateTime updatedAt;
-  String? adhaarCardNo;
   // dynamic qrCode;
   // dynamic idCardExpiryDate;
   String? stateName;
   String? districtName;
 
-  LabourDetail({
+  UserDetail({
     required this.id,
-    required this.inducteeId,
-    required this.labourName,
+    required this.staffId,
+    required this.staffName,
     this.gender,
-    this.literacy,
-    this.maritalStatus,
     this.bloodGroup,
     this.birthDate,
     this.age,
@@ -423,15 +330,13 @@ class LabourDetail {
     this.currentDistrict,
     this.currentState,
     this.currentPincode,
-    // required this.permanentStreetName,
-    // required this.permanentCity,
-    // required this.permanentTaluka,
-    // required this.permanentDistrict,
-    // required this.permanentState,
-    // required this.permanentPincode,
-    this.experienceInYears,
-    // required this.uanNumber,
-    // required this.bocwNumber,
+    this.permanentStreetName,
+    this.permanentCity,
+    this.permanentTaluka,
+    this.permanentDistrict,
+    this.permanentState,
+    this.permanentPincode,
+    this.adhaarNo,
     // required this.bankName,
     // required this.ifscNumber,
     // required this.accountNumber,
@@ -440,32 +345,29 @@ class LabourDetail {
     // required this.insuranceNumber,
     // required this.insuranceType,
     // required this.insuranceValidity,
-    required this.emergencyContactName,
-    required this.emergencyContactNumber,
-    required this.emergencyContactRelation,
+    this.emergencyContactName,
+    this.emergencyContactNumber,
+    this.emergencyContactRelation,
     // required this.isActive,
     // required this.deletedAt,
-    this.createdAt,
+    // required this.createdAt,
     // required this.updatedAt,
-    this.adhaarCardNo,
     // required this.qrCode,
     // required this.idCardExpiryDate,
-    required this.stateName,
-    required this.districtName,
+    this.stateName,
+    this.districtName,
   });
 
-  factory LabourDetail.fromJson(Map<String, dynamic> json) => LabourDetail(
+  factory UserDetail.fromJson(Map<String, dynamic> json) => UserDetail(
         id: json["id"],
-        inducteeId: json["inductee_id"],
-        labourName: json["labour_name"],
+        staffId: json["staff_id"],
+        staffName: json["staff_name"],
         gender: json["gender"] ?? "",
-        literacy: json["literacy"] ?? "",
-        maritalStatus: json["marital_status"] ?? "",
         bloodGroup: json["blood_group"] ?? "",
         birthDate: json["birth_date"] != null
             ? DateTime.parse(json["birth_date"])
             : null,
-        age: json["age"] ?? "",
+        age: json["age"],
         contactNumber: json["contact_number"] ?? "",
         userPhoto: json["user_photo"] ?? "",
         currentStreetName: json["current_street_name"] ?? "",
@@ -474,15 +376,13 @@ class LabourDetail {
         currentDistrict: json["current_district"] ?? "",
         currentState: json["current_state"] ?? "",
         currentPincode: json["current_pincode"] ?? "",
-        // permanentStreetName: json["permanent_street_name"],
-        // permanentCity: json["permanent_city"],
-        // permanentTaluka: json["permanent_taluka"],
-        // permanentDistrict: json["permanent_district"],
-        // permanentState: json["permanent_state"],
-        // permanentPincode: json["permanent_pincode"],
-        experienceInYears: json["experience_in_years"] ?? "",
-        // uanNumber: json["uan_number"],
-        // bocwNumber: json["bocw_number"],
+        permanentStreetName: json["permanent_street_name"] ?? "",
+        permanentCity: json["permanent_city"] ?? "",
+        permanentTaluka: json["permanent_taluka"] ?? "",
+        permanentDistrict: json["permanent_district"] ?? "",
+        permanentState: json["permanent_state"] ?? "",
+        permanentPincode: json["permanent_pincode"] ?? "",
+        adhaarNo: json["adhaar_no"] ?? "",
         // bankName: json["bank_name"],
         // ifscNumber: json["ifsc_number"],
         // accountNumber: json["account_number"],
@@ -491,30 +391,24 @@ class LabourDetail {
         // insuranceNumber: json["insurance_number"],
         // insuranceType: json["insurance_type"],
         // insuranceValidity: json["insurance_validity"],
-        emergencyContactName: json["emergency_contact_name"],
-        emergencyContactNumber: json["emergency_contact_number"],
-        emergencyContactRelation: json["emergency_contact_relation"],
+        emergencyContactName: json["emergency_contact_name"] ?? "",
+        emergencyContactNumber: json["emergency_contact_number"] ?? "",
+        emergencyContactRelation: json["emergency_contact_relation"] ?? "",
         // isActive: json["is_active"],
         // deletedAt: json["deleted_at"],
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
-            : null,
+        // createdAt: DateTime.parse(json["created_at"]),
         // updatedAt: DateTime.parse(json["updated_at"]),
-        adhaarCardNo: json["adhaar_card_no"] ?? "",
         // qrCode: json["qr_code"],
         // idCardExpiryDate: json["id_card_expiry_date"],
-
-        districtName: json["district_name"] ?? "",
         stateName: json["state_name"] ?? "",
+        districtName: json["district_name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "inductee_id": inducteeId,
-        "labour_name": labourName,
+        "staff_id": staffId,
+        "staff_name": staffName,
         "gender": gender,
-        "literacy": literacy,
-        "marital_status": maritalStatus,
         "blood_group": bloodGroup,
         "birth_date":
             "${birthDate!.year.toString().padLeft(4, '0')}-${birthDate!.month.toString().padLeft(2, '0')}-${birthDate!.day.toString().padLeft(2, '0')}",
@@ -527,15 +421,13 @@ class LabourDetail {
         "current_district": currentDistrict,
         "current_state": currentState,
         "current_pincode": currentPincode,
-        // "permanent_street_name": permanentStreetName,
-        // "permanent_city": permanentCity,
-        // "permanent_taluka": permanentTaluka,
-        // "permanent_district": permanentDistrict,
-        // "permanent_state": permanentState,
-        // "permanent_pincode": permanentPincode,
-        "experience_in_years": experienceInYears,
-        // "uan_number": uanNumber,
-        // "bocw_number": bocwNumber,
+        "permanent_street_name": permanentStreetName,
+        "permanent_city": permanentCity,
+        "permanent_taluka": permanentTaluka,
+        "permanent_district": permanentDistrict,
+        "permanent_state": permanentState,
+        "permanent_pincode": permanentPincode,
+        "adhaar_no": adhaarNo,
         // "bank_name": bankName,
         // "ifsc_number": ifscNumber,
         // "account_number": accountNumber,
@@ -544,15 +436,16 @@ class LabourDetail {
         // "insurance_number": insuranceNumber,
         // "insurance_type": insuranceType,
         // "insurance_validity": insuranceValidity,
-        // "emergency_contact_name": emergencyContactName,
-        // "emergency_contact_number": emergencyContactNumber,
-        // "emergency_contact_relation": emergencyContactRelation,
+        "emergency_contact_name": emergencyContactName,
+        "emergency_contact_number": emergencyContactNumber,
+        "emergency_contact_relation": emergencyContactRelation,
         // "is_active": isActive,
         // "deleted_at": deletedAt,
-        "created_at": createdAt!.toIso8601String(),
-        //"updated_at": updatedAt.toIso8601String(),
-        "adhaar_card_no": adhaarCardNo,
+        // "created_at": createdAt.toIso8601String(),
+        // "updated_at": updatedAt.toIso8601String(),
         // "qr_code": qrCode,
         // "id_card_expiry_date": idCardExpiryDate,
+        "state_name": stateName,
+        "district_name": districtName,
       };
 }

@@ -19,14 +19,20 @@ import 'package:image_picker/image_picker.dart';
 // ignore: must_be_immutable
 class ContractorDetailsScreen extends StatelessWidget {
   final int categoryId;
+
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
+
   ContractorDetailsScreen({
     super.key,
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
   final ContractorDetailsController contractorDetailsController = Get.find();
@@ -740,6 +746,8 @@ class ContractorDetailsScreen extends StatelessWidget {
                             categoryId: categoryId,
                             userId: userId,
                             userName: userName,
+                            userImg: userImg,
+                            userDesg: userDesg,
                             projectId: projectId,
                           ));
                         }

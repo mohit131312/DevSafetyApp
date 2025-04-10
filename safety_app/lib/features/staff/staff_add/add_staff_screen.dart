@@ -26,6 +26,8 @@ class AddStaffScreen extends StatelessWidget {
 
   final int userId;
   final String userName;
+  final String userImg;
+  final String userDesg;
   final int projectId;
 
   AddStaffScreen({
@@ -33,6 +35,8 @@ class AddStaffScreen extends StatelessWidget {
     required this.categoryId,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
 
@@ -502,7 +506,7 @@ class AddStaffScreen extends StatelessWidget {
                                   CustomLoadingPopup());
 
                           await addStaffController.getSafetyStaffDetails(
-                              value, context, true, false);
+                              value, context, true, false, projectId);
                           Navigator.pop(context);
                         } else {
                           print(
@@ -512,7 +516,7 @@ class AddStaffScreen extends StatelessWidget {
                               builder: (BuildContext context) =>
                                   CustomLoadingPopup());
                           await addStaffController.getSafetyStaffMatchedDetails(
-                              value, context);
+                              value, context, projectId);
                           Navigator.pop(context);
 
                           if (addStaffController.searchResults.isNotEmpty &&
@@ -526,7 +530,7 @@ class AddStaffScreen extends StatelessWidget {
                                 onItemSelected: (context, id) async {
                                   await addStaffController
                                       .getSafetyStaffDetails(
-                                          id, context, false, true);
+                                          id, context, false, true, projectId);
                                 },
                               ),
                             );
@@ -540,7 +544,7 @@ class AddStaffScreen extends StatelessWidget {
                             print('---------${value}');
 
                             await addStaffController.getSafetyStaffDetails(
-                                value, context, false, false);
+                                value, context, false, false, projectId);
                             print('---------${value}');
                             Navigator.pop(context);
                           }
@@ -1912,6 +1916,8 @@ class AddStaffScreen extends StatelessWidget {
                           categoryId: categoryId,
                           userId: userId,
                           userName: userName,
+                          userImg: userImg,
+                          userDesg: userDesg,
                           projectId: projectId,
                         ));
                         print("Navigating to Labourproffessinal with:");

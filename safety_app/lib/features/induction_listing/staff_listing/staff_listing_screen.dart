@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/app_medium_button.dart';
+import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
-import 'package:flutter_app/features/labourStaffConAll.dart/labour_staff_cont_controller.dart';
+import 'package:flutter_app/features/induction_listing/staff_listing/staff_listing_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
@@ -10,25 +10,30 @@ import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class LabourStaffCont extends StatelessWidget {
-  // final int categoryId;
+class StaffListingScreen extends StatelessWidget {
+  final int userId;
+  final String userName;
+  final int projectId;
+  final String userImg;
+  final String userDesg;
 
-  // final int userId;
-  // final String userName;
-  // final int projectId;
-
-  LabourStaffCont({
+  StaffListingScreen({
     super.key,
-    // required this.categoryId,
-    // required this.userId,
-    // required this.userName,
-    // required this.projectId,
+    required this.userId,
+    required this.userName,
+    required this.projectId,
+    required this.userImg,
+    required this.userDesg,
   });
 
-  final LabourStaffContController labourStaffContController =
-      Get.put(LabourStaffContController());
+  final StaffListingController staffListingController =
+      Get.put(StaffListingController());
   @override
   Widget build(BuildContext context) {
+    // String imageUrl =
+    //     "$baseUrl${labourListingController.labourDetailsList[0].userPhoto}";
+    // log("Image in list below URL: $imageUrl");
+
     return Scaffold(
       backgroundColor: Colors.white,
       //  resizeToAvoidBottomInset: false,
@@ -105,7 +110,7 @@ class LabourStaffCont extends StatelessWidget {
               ),
             ),
             Obx(
-              () => labourStaffContController.isPersonalDetailsExpanded.value
+              () => staffListingController.isPersonalDetailsExpanded.value
                   ? Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.widthMultiplier * 4,
@@ -147,8 +152,7 @@ class LabourStaffCont extends StatelessWidget {
                                 Spacer(),
                                 GestureDetector(
                                     onTap: () {
-                                      labourStaffContController
-                                          .toggleExpansion();
+                                      staffListingController.toggleExpansion();
                                     },
                                     child: Icon(Icons.keyboard_arrow_up)),
                               ],
@@ -196,7 +200,7 @@ class LabourStaffCont extends StatelessWidget {
                                             ),
                                             child: ClipOval(
                                               child: Image.network(
-                                                "$baseUrl${labourStaffContController.labourDetailsList[0].userPhoto}",
+                                                "$baseUrl${staffListingController.staffInductionTrainingsList[0].userPhoto}",
                                                 fit: BoxFit.cover,
                                                 loadingBuilder: (context, child,
                                                     loadingProgress) {
@@ -242,12 +246,12 @@ class LabourStaffCont extends StatelessWidget {
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.searchfeild),
                                           AppTextWidget(
-                                              text: labourStaffContController
-                                                      .labourDetailsList
+                                              text: staffListingController
+                                                      .staffDetailsList
                                                       .isNotEmpty
-                                                  ? labourStaffContController
-                                                      .labourDetailsList[0]
-                                                      .labourName
+                                                  ? staffListingController
+                                                      .staffDetailsList[0]
+                                                      .staffName
                                                   : "",
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
@@ -293,29 +297,29 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: (labourStaffContController
-                                                            .labourDetailsList
+                                                text: (staffListingController
+                                                            .staffDetailsList
                                                             .isNotEmpty &&
-                                                        labourStaffContController
-                                                                .labourDetailsList[
+                                                        staffListingController
+                                                                .staffDetailsList[
                                                                     0]
                                                                 .birthDate !=
                                                             null)
                                                     ? DateFormat('dd MMMM yyyy')
                                                         .format(
-                                                        labourStaffContController
-                                                                    .labourDetailsList[
+                                                        staffListingController
+                                                                    .staffDetailsList[
                                                                         0]
                                                                     .birthDate
                                                                 is String
                                                             ? DateTime.parse(
-                                                                labourStaffContController
-                                                                        .labourDetailsList[
+                                                                staffListingController
+                                                                        .staffDetailsList[
                                                                             0]
                                                                         .birthDate
                                                                     as String)
-                                                            : labourStaffContController
-                                                                    .labourDetailsList[
+                                                            : staffListingController
+                                                                    .staffDetailsList[
                                                                         0]
                                                                     .birthDate
                                                                 as DateTime,
@@ -342,12 +346,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                              text: labourStaffContController
-                                                      .labourDetailsList[0]
+                                              text: staffListingController
+                                                      .staffDetailsList[0]
                                                       .gender!
                                                       .isNotEmpty
-                                                  ? labourStaffContController
-                                                      .labourDetailsList[0]
+                                                  ? staffListingController
+                                                      .staffDetailsList[0]
                                                       .gender
                                                       .toString()
                                                   : "",
@@ -373,12 +377,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
                                                         .contactNumber!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
                                                         .contactNumber
                                                         .toString()
                                                     : "",
@@ -403,13 +407,13 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .adhaarCardNo!
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
+                                                        .adhaarNo!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .adhaarCardNo
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
+                                                        .adhaarNo
                                                         .toString()
                                                     : "",
                                                 fontSize:
@@ -433,27 +437,27 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                              text: labourStaffContController
-                                                          .labourDetailsList[0]
+                                              text: staffListingController
+                                                          .staffDetailsList[0]
                                                           .currentStreetName![0]
                                                           .isNotEmpty &&
-                                                      labourStaffContController
-                                                          .labourDetailsList[0]
+                                                      staffListingController
+                                                          .staffDetailsList[0]
                                                           .currentCity![0]
                                                           .isNotEmpty &&
-                                                      labourStaffContController
-                                                          .labourDetailsList[0]
+                                                      staffListingController
+                                                          .staffDetailsList[0]
                                                           .currentTaluka![0]
                                                           .isNotEmpty &&
-                                                      labourStaffContController
-                                                          .labourDetailsList[0]
+                                                      staffListingController
+                                                          .staffDetailsList[0]
                                                           .districtName![0]
                                                           .isNotEmpty &&
-                                                      labourStaffContController
-                                                          .labourDetailsList[0]
+                                                      staffListingController
+                                                          .staffDetailsList[0]
                                                           .stateName![0]
                                                           .isNotEmpty
-                                                  ? "${labourStaffContController.labourDetailsList[0].currentStreetName ?? ''}, ${labourStaffContController.labourDetailsList[0].currentCity ?? ''}, ${labourStaffContController.labourDetailsList[0].currentTaluka ?? ''}, ${labourStaffContController.labourDetailsList[0].districtName ?? ''}, ${labourStaffContController.labourDetailsList[0].stateName ?? ''}"
+                                                  ? "${staffListingController.staffDetailsList[0].currentStreetName ?? ''}, ${staffListingController.staffDetailsList[0].currentCity ?? ''}, ${staffListingController.staffDetailsList[0].currentTaluka ?? ''}, ${staffListingController.staffDetailsList[0].districtName ?? ''}, ${staffListingController.staffDetailsList[0].stateName ?? ''}"
                                                       .trim()
                                                       .replaceAll(
                                                           RegExp(
@@ -491,12 +495,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
                                                         .bloodGroup!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
                                                         .bloodGroup
                                                         .toString()
                                                     : "",
@@ -509,67 +513,67 @@ class LabourStaffCont extends StatelessWidget {
                                                   SizeConfig.heightMultiplier *
                                                       2.5,
                                             ),
-                                            AppTextWidget(
-                                                text: 'Literacy',
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .literacy!
-                                                        .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .literacy
-                                                        .toString()
-                                                    : "",
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
-                                            AppTextWidget(
-                                                text: 'Marital Status',
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                                text: labourStaffContController
-                                                            .labourDetailsList[
-                                                                0]
-                                                            .maritalStatus !=
-                                                        null
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .maritalStatus
-                                                        .toString()
-                                                    : "",
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
+                                            // AppTextWidget(
+                                            //     text: 'Literacy',
+                                            //     fontSize:
+                                            //         AppTextSize.textSizeSmall,
+                                            //     fontWeight: FontWeight.w400,
+                                            //     color: AppColors.searchfeild),
+                                            // SizedBox(
+                                            //   height:
+                                            //       SizeConfig.heightMultiplier *
+                                            //           1,
+                                            // ),
+                                            // AppTextWidget(
+                                            //     text: staffListingController
+                                            //             .staffDetailsList[0]
+                                            //             .literacy!
+                                            //             .isNotEmpty
+                                            //         ? labourListingController
+                                            //             .labourDetailsList[0]
+                                            //             .literacy
+                                            //             .toString()
+                                            //         : "",
+                                            //     fontSize:
+                                            //         AppTextSize.textSizeSmall,
+                                            //     fontWeight: FontWeight.w400,
+                                            //     color: AppColors.primaryText),
+                                            // SizedBox(
+                                            //   height:
+                                            //       SizeConfig.heightMultiplier *
+                                            //           2.5,
+                                            // ),
+                                            // AppTextWidget(
+                                            //     text: 'Marital Status',
+                                            //     fontSize:
+                                            //         AppTextSize.textSizeSmall,
+                                            //     fontWeight: FontWeight.w400,
+                                            //     color: AppColors.searchfeild),
+                                            // SizedBox(
+                                            //   height:
+                                            //       SizeConfig.heightMultiplier *
+                                            //           1,
+                                            // ),
+                                            // AppTextWidget(
+                                            //     text: labourListingController
+                                            //                 .labourDetailsList[
+                                            //                     0]
+                                            //                 .maritalStatus !=
+                                            //             null
+                                            //         ? labourListingController
+                                            //             .labourDetailsList[0]
+                                            //             .maritalStatus
+                                            //             .toString()
+                                            //         : "",
+                                            //     fontSize:
+                                            //         AppTextSize.textSizeSmall,
+                                            //     fontWeight: FontWeight.w400,
+                                            //     color: AppColors.primaryText),
+                                            // SizedBox(
+                                            //   height:
+                                            //       SizeConfig.heightMultiplier *
+                                            //           2.5,
+                                            // ),
                                             AppTextWidget(
                                                 text: AppTexts.reasonforvisit,
                                                 fontSize:
@@ -582,12 +586,14 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .reasonOfVisitList[0]
+                                                text: staffListingController
+                                                        .staffReasonOfVisitList[
+                                                            0]
                                                         .reasonOfVisit!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .reasonOfVisitList[0]
+                                                    ? staffListingController
+                                                        .staffReasonOfVisitList[
+                                                            0]
                                                         .reasonOfVisit
                                                         .toString()
                                                     : "",
@@ -653,12 +659,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .emergencyContactName
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
+                                                        .emergencyContactName!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
                                                         .emergencyContactName
                                                         .toString()
                                                     : "",
@@ -684,12 +690,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .emergencyContactRelation
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
+                                                        .emergencyContactRelation!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
                                                         .emergencyContactRelation
                                                         .toString()
                                                     : "",
@@ -728,12 +734,12 @@ class LabourStaffCont extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .emergencyContactNumber
+                                                text: staffListingController
+                                                        .staffDetailsList[0]
+                                                        .emergencyContactNumber!
                                                         .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
+                                                    ? staffListingController
+                                                        .staffDetailsList[0]
                                                         .emergencyContactNumber
                                                         .toString()
                                                     : "",
@@ -797,7 +803,7 @@ class LabourStaffCont extends StatelessWidget {
                               Spacer(),
                               GestureDetector(
                                   onTap: () {
-                                    labourStaffContController.toggleExpansion();
+                                    staffListingController.toggleExpansion();
                                   },
                                   child: Icon(Icons.keyboard_arrow_up)),
                             ],
@@ -812,284 +818,283 @@ class LabourStaffCont extends StatelessWidget {
 
             //---------------------------------------------------------------------
 
-            Obx(
-              () => labourStaffContController
-                      .isProfessionalDetailsExpanded.value
-                  ? Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.widthMultiplier * 4,
-                        vertical: SizeConfig.heightMultiplier * 2,
-                      ),
-                      width: SizeConfig.widthMultiplier * 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Color(0xFFFEFEFE),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 20,
-                            spreadRadius: 0,
-                            offset: Offset(0, -4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: Image.asset(
-                                        'assets/icons/briefcase.png')),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                AppTextWidget(
-                                  text: AppTexts.professionaldetails,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.buttoncolor,
-                                ),
-                                Spacer(),
-                                GestureDetector(
-                                  onTap: () {
-                                    labourStaffContController
-                                        .toggleExpansionProfessional();
-                                  },
-                                  child: Icon(Icons.keyboard_arrow_up),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: SizeConfig.heightMultiplier * 3,
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.widthMultiplier * 4,
-                                vertical: SizeConfig.heightMultiplier * 3,
-                              ),
-                              width: SizeConfig.widthMultiplier * 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: AppColors.appgreycolor,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: SizeConfig.widthMultiplier * 40,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            AppTextWidget(
-                                                text: AppTexts.trade,
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                                text: labourStaffContController
-                                                        .tradeNameList
-                                                        .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .tradeNameList[0]
-                                                        .inductionDetails
-                                                        .toString()
-                                                    : "",
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
-                                            AppTextWidget(
-                                                text: AppTexts.skill,
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                              text: labourStaffContController
-                                                      .skillLevelList.isNotEmpty
-                                                  ? labourStaffContController
-                                                      .skillLevelList[0]
-                                                      .skillLevel
-                                                      .toString()
-                                                  : "",
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText,
-                                            ),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: SizeConfig.widthMultiplier * 2,
-                                      ),
-                                      SizedBox(
-                                        width: SizeConfig.widthMultiplier * 40,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            AppTextWidget(
-                                                text: AppTexts.yoexperience,
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                                text: labourStaffContController
-                                                        .labourDetailsList
-                                                        .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .labourDetailsList[0]
-                                                        .experienceInYears
-                                                        .toString()
-                                                    : "",
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
-                                            AppTextWidget(
-                                                text: 'Contractor Firm Name',
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      1,
-                                            ),
-                                            AppTextWidget(
-                                                text: labourStaffContController
-                                                        .contractorCompanyDetailsList
-                                                        .isNotEmpty
-                                                    ? labourStaffContController
-                                                        .contractorCompanyDetailsList[
-                                                            0]
-                                                        .contractorCompanyName
-                                                        .toString()
-                                                    : "",
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText),
-                                            SizedBox(
-                                              height:
-                                                  SizeConfig.heightMultiplier *
-                                                      2.5,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]),
-                    )
-                  : Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.widthMultiplier * 4,
-                        vertical: SizeConfig.heightMultiplier * 2,
-                      ),
-                      width: SizeConfig.widthMultiplier * 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Color(0xFFFEFEFE),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 20,
-                            spreadRadius: 0,
-                            offset: Offset(0, -4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: Image.asset(
-                                      'assets/icons/briefcase.png')),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              AppTextWidget(
-                                text: AppTexts.professionaldetails,
-                                fontSize: AppTextSize.textSizeSmall,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.buttoncolor,
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                  onTap: () {
-                                    labourStaffContController
-                                        .toggleExpansionProfessional();
-                                  },
-                                  child: Icon(Icons.keyboard_arrow_up)),
-                            ],
-                          ),
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 3,
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
+            // Obx(
+            //   () => staffListingController.isProfessionalDetailsExpanded.value
+            //       ? Container(
+            //           padding: EdgeInsets.symmetric(
+            //             horizontal: SizeConfig.widthMultiplier * 4,
+            //             vertical: SizeConfig.heightMultiplier * 2,
+            //           ),
+            //           width: SizeConfig.widthMultiplier * 100,
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(12),
+            //             color: Color(0xFFFEFEFE),
+            //             boxShadow: [
+            //               BoxShadow(
+            //                 color: Color(0x10000000),
+            //                 blurRadius: 20,
+            //                 spreadRadius: 0,
+            //                 offset: Offset(0, -4),
+            //               ),
+            //             ],
+            //           ),
+            //           child: Column(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               children: [
+            //                 Row(
+            //                   mainAxisAlignment: MainAxisAlignment.start,
+            //                   children: [
+            //                     SizedBox(
+            //                         height: 24,
+            //                         width: 24,
+            //                         child: Image.asset(
+            //                             'assets/icons/briefcase.png')),
+            //                     SizedBox(
+            //                       width: 5,
+            //                     ),
+            //                     AppTextWidget(
+            //                       text: AppTexts.professionaldetails,
+            //                       fontSize: AppTextSize.textSizeSmall,
+            //                       fontWeight: FontWeight.w500,
+            //                       color: AppColors.buttoncolor,
+            //                     ),
+            //                     Spacer(),
+            //                     GestureDetector(
+            //                       onTap: () {
+            //                         staffListingController
+            //                             .toggleExpansionProfessional();
+            //                       },
+            //                       child: Icon(Icons.keyboard_arrow_up),
+            //                     ),
+            //                   ],
+            //                 ),
+            //                 SizedBox(
+            //                   height: SizeConfig.heightMultiplier * 3,
+            //                 ),
+            //                 Container(
+            //                   padding: EdgeInsets.symmetric(
+            //                     horizontal: SizeConfig.widthMultiplier * 4,
+            //                     vertical: SizeConfig.heightMultiplier * 3,
+            //                   ),
+            //                   width: SizeConfig.widthMultiplier * 100,
+            //                   decoration: BoxDecoration(
+            //                     borderRadius: BorderRadius.circular(12),
+            //                     color: AppColors.appgreycolor,
+            //                   ),
+            //                   child: Column(
+            //                     crossAxisAlignment: CrossAxisAlignment.start,
+            //                     children: [
+            //                       Row(
+            //                         mainAxisAlignment: MainAxisAlignment.start,
+            //                         crossAxisAlignment:
+            //                             CrossAxisAlignment.start,
+            //                         children: [
+            //                           SizedBox(
+            //                             width: SizeConfig.widthMultiplier * 40,
+            //                             child: Column(
+            //                               crossAxisAlignment:
+            //                                   CrossAxisAlignment.start,
+            //                               mainAxisAlignment:
+            //                                   MainAxisAlignment.start,
+            //                               children: [
+            //                                 AppTextWidget(
+            //                                     text: AppTexts.trade,
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.searchfeild),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           1,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                     text: labourListingController
+            //                                             .tradeNameList
+            //                                             .isNotEmpty
+            //                                         ? labourListingController
+            //                                             .tradeNameList[0]
+            //                                             .inductionDetails
+            //                                             .toString()
+            //                                         : "",
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.primaryText),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           2.5,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                     text: AppTexts.skill,
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.searchfeild),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           1,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                   text: labourListingController
+            //                                           .skillLevelList.isNotEmpty
+            //                                       ? labourListingController
+            //                                           .skillLevelList[0]
+            //                                           .skillLevel
+            //                                           .toString()
+            //                                       : "",
+            //                                   fontSize:
+            //                                       AppTextSize.textSizeSmall,
+            //                                   fontWeight: FontWeight.w400,
+            //                                   color: AppColors.primaryText,
+            //                                 ),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           2.5,
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                           SizedBox(
+            //                             width: SizeConfig.widthMultiplier * 2,
+            //                           ),
+            //                           SizedBox(
+            //                             width: SizeConfig.widthMultiplier * 40,
+            //                             child: Column(
+            //                               crossAxisAlignment:
+            //                                   CrossAxisAlignment.start,
+            //                               mainAxisAlignment:
+            //                                   MainAxisAlignment.start,
+            //                               children: [
+            //                                 AppTextWidget(
+            //                                     text: AppTexts.yoexperience,
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.searchfeild),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           1,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                     text: labourListingController
+            //                                             .labourDetailsList
+            //                                             .isNotEmpty
+            //                                         ? labourListingController
+            //                                             .labourDetailsList[0]
+            //                                             .experienceInYears
+            //                                             .toString()
+            //                                         : "",
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.primaryText),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           2.5,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                     text: 'Contractor Firm Name',
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.searchfeild),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           1,
+            //                                 ),
+            //                                 AppTextWidget(
+            //                                     text: labourListingController
+            //                                             .contractorCompanyDetailsList
+            //                                             .isNotEmpty
+            //                                         ? labourListingController
+            //                                             .contractorCompanyDetailsList[
+            //                                                 0]
+            //                                             .contractorCompanyName
+            //                                             .toString()
+            //                                         : "",
+            //                                     fontSize:
+            //                                         AppTextSize.textSizeSmall,
+            //                                     fontWeight: FontWeight.w400,
+            //                                     color: AppColors.primaryText),
+            //                                 SizedBox(
+            //                                   height:
+            //                                       SizeConfig.heightMultiplier *
+            //                                           2.5,
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ),
+            //               ]),
+            //         )
+            //       : Container(
+            //           padding: EdgeInsets.symmetric(
+            //             horizontal: SizeConfig.widthMultiplier * 4,
+            //             vertical: SizeConfig.heightMultiplier * 2,
+            //           ),
+            //           width: SizeConfig.widthMultiplier * 100,
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(12),
+            //             color: Color(0xFFFEFEFE),
+            //             boxShadow: [
+            //               BoxShadow(
+            //                 color: Color(0x10000000),
+            //                 blurRadius: 20,
+            //                 spreadRadius: 0,
+            //                 offset: Offset(0, -4),
+            //               ),
+            //             ],
+            //           ),
+            //           child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Row(
+            //                 mainAxisAlignment: MainAxisAlignment.start,
+            //                 children: [
+            //                   SizedBox(
+            //                       height: 24,
+            //                       width: 24,
+            //                       child: Image.asset(
+            //                           'assets/icons/briefcase.png')),
+            //                   SizedBox(
+            //                     width: 5,
+            //                   ),
+            //                   AppTextWidget(
+            //                     text: AppTexts.professionaldetails,
+            //                     fontSize: AppTextSize.textSizeSmall,
+            //                     fontWeight: FontWeight.w500,
+            //                     color: AppColors.buttoncolor,
+            //                   ),
+            //                   Spacer(),
+            //                   GestureDetector(
+            //                       onTap: () {
+            //                         labourListingController
+            //                             .toggleExpansionProfessional();
+            //                       },
+            //                       child: Icon(Icons.keyboard_arrow_up)),
+            //                 ],
+            //               ),
+            //               SizedBox(
+            //                 height: SizeConfig.heightMultiplier * 3,
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            // ),
 
             //-----------------------------------------------------------------
-            Obx(() => labourStaffContController.isidproofDetailsExpanded.value
+            Obx(() => staffListingController.isidproofDetailsExpanded.value
                 ? Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: SizeConfig.widthMultiplier * 4,
@@ -1130,7 +1135,7 @@ class LabourStaffCont extends StatelessWidget {
                               Spacer(),
                               GestureDetector(
                                   onTap: () {
-                                    labourStaffContController
+                                    staffListingController
                                         .toggleExpansionidProof();
                                   },
                                   child: Icon(Icons.keyboard_arrow_up)),
@@ -1155,19 +1160,20 @@ class LabourStaffCont extends StatelessWidget {
                                 SizedBox(
                                   height: SizeConfig.heightMultiplier * 1.5,
                                 ),
-                                labourStaffContController
-                                        .documentDetailsList.isEmpty
+                                staffListingController
+                                        .staffDocumentDetailsList.isEmpty
                                     ? SizedBox()
                                     : ListView.separated(
                                         physics: NeverScrollableScrollPhysics(),
-                                        itemCount: labourStaffContController
-                                            .documentDetailsList.length,
+                                        itemCount: staffListingController
+                                            .staffDocumentDetailsList.length,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
                                           if (index >=
-                                              labourStaffContController
-                                                  .documentDetailsList[index]
-                                                  .idNumber
+                                              staffListingController
+                                                  .staffDocumentDetailsList[
+                                                      index]
+                                                  .idNumber!
                                                   .length) {
                                             return SizedBox
                                                 .shrink(); // Prevents the error
@@ -1208,19 +1214,19 @@ class LabourStaffCont extends StatelessWidget {
                                                             ),
                                                             GestureDetector(
                                                               onTap: () {
-                                                                if (labourStaffContController
-                                                                        .documentDetailsList
+                                                                if (staffListingController
+                                                                        .staffDocumentDetailsList
                                                                         .isNotEmpty &&
-                                                                    labourStaffContController
-                                                                            .documentDetailsList[
+                                                                    staffListingController
+                                                                            .staffDocumentDetailsList[
                                                                                 index]
                                                                             // ignore: unnecessary_null_comparison
                                                                             .documentPath !=
                                                                         null &&
-                                                                    labourStaffContController
-                                                                        .documentDetailsList[
+                                                                    staffListingController
+                                                                        .staffDocumentDetailsList[
                                                                             index]
-                                                                        .documentPath
+                                                                        .documentPath!
                                                                         .isNotEmpty) {
                                                                   showDialog(
                                                                     context:
@@ -1244,7 +1250,7 @@ class LabourStaffCont extends StatelessWidget {
                                                                                 BorderRadius.circular(10),
                                                                             child:
                                                                                 Image.network(
-                                                                              "$baseUrl${labourStaffContController.documentDetailsList[index].documentPath}",
+                                                                              "$baseUrl${staffListingController.staffDocumentDetailsList[index].documentPath}",
                                                                               fit: BoxFit.contain,
                                                                             ),
                                                                           ),
@@ -1267,20 +1273,20 @@ class LabourStaffCont extends StatelessWidget {
                                                                       BorderRadius
                                                                           .circular(
                                                                               10),
-                                                                  child: (labourStaffContController
-                                                                              .documentDetailsList
+                                                                  child: (staffListingController
+                                                                              .staffDocumentDetailsList
                                                                               .isNotEmpty &&
                                                                           // ignore: unnecessary_null_comparison
-                                                                          labourStaffContController.documentDetailsList[index].documentPath !=
+                                                                          staffListingController.staffDocumentDetailsList[index].documentPath !=
                                                                               null &&
-                                                                          labourStaffContController
-                                                                              .documentDetailsList[
+                                                                          staffListingController
+                                                                              .staffDocumentDetailsList[
                                                                                   index]
-                                                                              .documentPath
+                                                                              .documentPath!
                                                                               .isNotEmpty)
                                                                       ? Image
                                                                           .network(
-                                                                          "$baseUrl${labourStaffContController.documentDetailsList[index].documentPath}",
+                                                                          "$baseUrl${staffListingController.staffDocumentDetailsList[index].documentPath}",
                                                                           fit: BoxFit
                                                                               .cover,
                                                                         )
@@ -1312,15 +1318,16 @@ class LabourStaffCont extends StatelessWidget {
                                                                   1,
                                                             ),
                                                             AppTextWidget(
-                                                                text: labourStaffContController
-                                                                        .documentDetailsList[
+                                                                text: staffListingController
+                                                                        .staffDocumentDetailsList[
                                                                             index]
-                                                                        .docmentType
+                                                                        .docmentType!
                                                                         .isNotEmpty
-                                                                    ? labourStaffContController
-                                                                        .documentDetailsList[
+                                                                    ? staffListingController
+                                                                        .staffDocumentDetailsList[
                                                                             index]
                                                                         .docmentType
+                                                                        .toString()
                                                                     : "",
                                                                 fontSize:
                                                                     AppTextSize
@@ -1374,15 +1381,16 @@ class LabourStaffCont extends StatelessWidget {
                                                                   1,
                                                             ),
                                                             AppTextWidget(
-                                                                text: labourStaffContController
-                                                                        .documentDetailsList[
+                                                                text: staffListingController
+                                                                        .staffDocumentDetailsList[
                                                                             index]
-                                                                        .idNumber
+                                                                        .idNumber!
                                                                         .isNotEmpty
-                                                                    ? labourStaffContController
-                                                                        .documentDetailsList[
+                                                                    ? staffListingController
+                                                                        .staffDocumentDetailsList[
                                                                             index]
                                                                         .idNumber
+                                                                        .toString()
                                                                     : "",
                                                                 fontSize:
                                                                     AppTextSize
@@ -1414,21 +1422,21 @@ class LabourStaffCont extends StatelessWidget {
                                                                   1,
                                                             ),
                                                             AppTextWidget(
-                                                                text: (labourStaffContController
-                                                                            .documentDetailsList
+                                                                text: (staffListingController
+                                                                            .staffDocumentDetailsList
                                                                             .isNotEmpty &&
                                                                         // ignore: unnecessary_null_comparison
-                                                                        labourStaffContController.documentDetailsList[index].validity !=
+                                                                        staffListingController.staffDocumentDetailsList[index].validity !=
                                                                             null)
                                                                     ? DateFormat(
                                                                             'dd MMMM yyyy')
                                                                         .format(
-                                                                        labourStaffContController.documentDetailsList[index].validity
+                                                                        staffListingController.staffDocumentDetailsList[index].validity
                                                                                 is String
-                                                                            ? DateTime.parse(labourStaffContController.documentDetailsList[index].validity
+                                                                            ? DateTime.parse(staffListingController.staffDocumentDetailsList[index].validity
                                                                                 as String)
                                                                             // ignore: unnecessary_cast
-                                                                            : labourStaffContController.documentDetailsList[index].validity
+                                                                            : staffListingController.staffDocumentDetailsList[index].validity
                                                                                 as DateTime,
                                                                       )
                                                                     : "",
@@ -1512,7 +1520,7 @@ class LabourStaffCont extends StatelessWidget {
                             Spacer(),
                             GestureDetector(
                                 onTap: () {
-                                  labourStaffContController
+                                  staffListingController
                                       .toggleExpansionidProof();
                                 },
                                 child: Icon(Icons.keyboard_arrow_up)),
@@ -1526,7 +1534,7 @@ class LabourStaffCont extends StatelessWidget {
                   )),
             //------------------------------------------------------------------
             Obx(
-              () => labourStaffContController.isprecautionDetailsExpanded.value
+              () => staffListingController.isprecautionDetailsExpanded.value
                   ? Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.widthMultiplier * 4,
@@ -1568,7 +1576,7 @@ class LabourStaffCont extends StatelessWidget {
                                 Spacer(),
                                 GestureDetector(
                                     onTap: () {
-                                      labourStaffContController
+                                      staffListingController
                                           .toggleExpansionPrecaution();
                                     },
                                     child: Icon(Icons.keyboard_arrow_up)),
@@ -1611,19 +1619,18 @@ class LabourStaffCont extends StatelessWidget {
                                   SizedBox(
                                     height: SizeConfig.heightMultiplier * 3,
                                   ),
-                                  labourStaffContController
-                                          .equipmentDetailsList.isNotEmpty
+                                  staffListingController
+                                          .staffEquipmentDetailsList.isNotEmpty
                                       ? Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: List.generate(
-                                              labourStaffContController
-                                                  .equipmentDetailsList
+                                              staffListingController
+                                                  .staffEquipmentDetailsList
                                                   .length, (index) {
-                                            var equipment =
-                                                labourStaffContController
-                                                        .equipmentDetailsList[
-                                                    index];
+                                            var equipment = staffListingController
+                                                    .staffEquipmentDetailsList[
+                                                index];
 
                                             return Padding(
                                               padding: EdgeInsets.only(
@@ -1692,19 +1699,19 @@ class LabourStaffCont extends StatelessWidget {
                                           height:
                                               SizeConfig.heightMultiplier * 3,
                                         ),
-                                        labourStaffContController
-                                                .instructionDetailsList
+                                        staffListingController
+                                                .staffInstructionDetailsList
                                                 .isNotEmpty
                                             ? Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: List.generate(
-                                                    labourStaffContController
-                                                        .instructionDetailsList
+                                                    staffListingController
+                                                        .staffInstructionDetailsList
                                                         .length, (index) {
                                                   var equipment =
-                                                      labourStaffContController
-                                                              .instructionDetailsList[
+                                                      staffListingController
+                                                              .staffInstructionDetailsList[
                                                           index];
 
                                                   return Padding(
@@ -1784,7 +1791,7 @@ class LabourStaffCont extends StatelessWidget {
                               Spacer(),
                               GestureDetector(
                                   onTap: () {
-                                    labourStaffContController
+                                    staffListingController
                                         .toggleExpansionPrecaution();
                                   },
                                   child: Icon(Icons.keyboard_arrow_up)),
@@ -1824,12 +1831,9 @@ class LabourStaffCont extends StatelessWidget {
                       Container(
                         width: SizeConfig.imageSizeMultiplier * 15,
                         height: SizeConfig.imageSizeMultiplier * 15,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/icons/person_labour.png'),
-                            fit: BoxFit.cover,
-                          ),
+                        child: Image.network(
+                          "$baseUrl${userImg}",
+                          fit: BoxFit.contain,
                         ),
                       ),
                       SizedBox(
@@ -1838,13 +1842,13 @@ class LabourStaffCont extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // AppTextWidget(
-                          //     text: userName,
-                          //     fontSize: AppTextSize.textSizeSmallm,
-                          //     fontWeight: FontWeight.w600,
-                          //     color: AppColors.primaryText),
                           AppTextWidget(
-                              text: 'SAFETY OFFICER',
+                              text: userName,
+                              fontSize: AppTextSize.textSizeSmallm,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryText),
+                          AppTextWidget(
+                              text: userDesg,
                               fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w400,
                               color: AppColors.searchfeild),
@@ -1897,60 +1901,12 @@ class LabourStaffCont extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Get.offUntil(
-                        //   GetPageRoute(
-                        //       page: () => AddLabourScreen(
-                        //           categoryId: categoryId,
-                        //           userId: userId,
-                        //           userName: userName,
-                        //           projectId: projectId)),
-                        //   (route) {
-                        //     if (route is GetPageRoute) {
-                        //       return route.page!().runtimeType ==
-                        //           InductionTrainingScreen;
-                        //     }
-                        //     return false;
-                        //   },
-                        // );
-
-                        // AddLabourScreen(
-                        //     categoryId: categoryId,
-                        //     userId: userId,
-                        //     userName: userName,
-                        //     projectId: projectId);
-                      },
-                      child: AppMediumButton(
-                        label: "Edit",
-                        borderColor: AppColors.buttoncolor,
-                        iconColor: AppColors.buttoncolor,
-                        backgroundColor: Colors.white,
-                        textColor: AppColors.buttoncolor,
-                        imagePath: 'assets/icons/edit.png',
-                      ),
-                    ),
-                    SizedBox(width: SizeConfig.widthMultiplier * 5),
-                    GestureDetector(
-                      onTap: () {
-                        // showConfirmationDialog(
-                        //     context, categoryId, userName, userId, projectId);
-                      },
-                      child: AppMediumButton(
-                        label: "Submit",
-                        borderColor: AppColors.backbuttoncolor,
-                        iconColor: Colors.white,
-                        textColor: Colors.white,
-                        backgroundColor: AppColors.buttoncolor,
-                        imagePath2: null,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  alignment: Alignment.bottomCenter,
+                  child: AppElevatedButton(
+                      text: 'Closed',
+                      onPressed: () {
+                        Get.back();
+                      })),
             ),
             SizedBox(
               height: SizeConfig.heightMultiplier * 6,
