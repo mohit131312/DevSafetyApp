@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/features/home/home_screen.dart';
+import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_screen.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_undertaking/work_permit_under_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +28,8 @@ class WorkSubmitScreen extends StatelessWidget {
   });
   final WorkPermitUnderController workPermitUnderController =
       Get.put(WorkPermitUnderController());
+  final WorkPermitController workPermitController =
+      Get.put(WorkPermitController());
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -77,11 +81,25 @@ class WorkSubmitScreen extends StatelessWidget {
                         alignment: Alignment.bottomCenter,
                         child: AppElevatedButton(
                             text: 'Done',
-                            onPressed: () {
+                            onPressed: () async {
                               workPermitUnderController
                                   .filteredDetailsUndertaking
                                   .clear();
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              await workPermitController
+                                  .getWorkPermitAllListing(
+                                      projectId, userId, 1);
+                              await workPermitController
+                                  .getWorkPermitMakerListing(
+                                      projectId, userId, 2);
+                              await workPermitController
+                                  .getWorkPermitCheckerListing(
+                                      projectId, userId, 3);
 
+                              Navigator.pop(context);
                               Get.offUntil(
                                 GetPageRoute(
                                     page: () => WorkPermitScreen(

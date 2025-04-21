@@ -41,6 +41,8 @@ class Data {
   List<CategoryList> categoryList;
   List<SubActivityList> subActivityLists;
   List<BuildingList> buildingList;
+  List<SafetyToolboxTraining> safetyToolboxTraining;
+
   List<CheckerUserList> checkerUserList;
   List<ProjectWiseFloor> projectwiseFloorList;
 
@@ -48,6 +50,8 @@ class Data {
     required this.categoryList,
     required this.subActivityLists,
     required this.buildingList,
+    required this.safetyToolboxTraining,
+    // required this.safetyToolboxTraining,
     required this.checkerUserList,
     required this.projectwiseFloorList,
   });
@@ -59,6 +63,9 @@ class Data {
             json["sub_activity_lists"].map((x) => SubActivityList.fromJson(x))),
         buildingList: List<BuildingList>.from(
             json["building_list"].map((x) => BuildingList.fromJson(x))),
+        safetyToolboxTraining: List<SafetyToolboxTraining>.from(
+            json["safety_toolbox_training"]
+                .map((x) => SafetyToolboxTraining.fromJson(x))),
         checkerUserList: List<CheckerUserList>.from(
             json["checker_user_list"].map((x) => CheckerUserList.fromJson(x))),
         projectwiseFloorList: List<ProjectWiseFloor>.from(
@@ -77,6 +84,95 @@ class Data {
             List<dynamic>.from(checkerUserList.map((x) => x.toJson())),
         "project_wise_floor_list":
             List<dynamic>.from(projectwiseFloorList.map((x) => x.toJson())),
+      };
+}
+
+class SafetyToolboxTraining {
+  int id;
+  int projectId;
+  String? details;
+  String? nameOfTbTraining;
+  int? toolboxCategoryId;
+  int? makerId;
+  int? reviwerId;
+  // dynamic makerComment;
+  // dynamic reviwerComment;
+  // String location;
+  // String makerSignaturePhoto;
+  // dynamic makerPhotoSignatureAfter;
+  // dynamic reviwerPhotoSignatureAfter;
+  // int status;
+  // dynamic reviewerUpdatedAt;
+  // DateTime createdAt;
+  // DateTime updatedAt;
+  // dynamic deletedAt;
+  // int workPermitId;
+
+  SafetyToolboxTraining({
+    required this.id,
+    required this.projectId,
+    this.details,
+    this.nameOfTbTraining,
+    this.toolboxCategoryId,
+    this.makerId,
+    this.reviwerId,
+    // required this.makerComment,
+    // required this.reviwerComment,
+    // required this.location,
+    // required this.makerSignaturePhoto,
+    // required this.makerPhotoSignatureAfter,
+    // required this.reviwerPhotoSignatureAfter,
+    // required this.status,
+    // required this.reviewerUpdatedAt,
+    // required this.createdAt,
+    // required this.updatedAt,
+    // required this.deletedAt,
+    // required this.workPermitId,
+  });
+
+  factory SafetyToolboxTraining.fromJson(Map<String, dynamic> json) =>
+      SafetyToolboxTraining(
+        id: json["id"],
+        projectId: json["project_id"],
+        details: json["details"] ?? "",
+        nameOfTbTraining: json["name_of_tb_training"] ?? "",
+        toolboxCategoryId: json["toolbox_category_id"] ?? 0,
+        makerId: json["maker_id"] ?? 0,
+        reviwerId: json["reviwer_id"] ?? 0,
+        // makerComment: json["maker_comment"],
+        // reviwerComment: json["reviwer_comment"],
+        // location: json["location"],
+        // makerSignaturePhoto: json["maker_signature_photo"],
+        // makerPhotoSignatureAfter: json["maker_photo_signature_after"],
+        // reviwerPhotoSignatureAfter: json["reviwer_photo_signature_after"],
+        // status: json["status"],
+        // reviewerUpdatedAt: json["reviewer_updated_at"],
+        // createdAt: DateTime.parse(json["created_at"]),
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // deletedAt: json["deleted_at"],
+        // workPermitId: json["work_permit_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "project_id": projectId,
+        "details": details,
+        "name_of_tb_training": nameOfTbTraining,
+        "toolbox_category_id": toolboxCategoryId,
+        "maker_id": makerId,
+        "reviwer_id": reviwerId,
+        // "maker_comment": makerComment,
+        // "reviwer_comment": reviwerComment,
+        // "location": location,
+        // "maker_signature_photo": makerSignaturePhoto,
+        // "maker_photo_signature_after": makerPhotoSignatureAfter,
+        // "reviwer_photo_signature_after": reviwerPhotoSignatureAfter,
+        // "status": status,
+        // "reviewer_updated_at": reviewerUpdatedAt,
+        // "created_at": createdAt.toIso8601String(),
+        // "updated_at": updatedAt.toIso8601String(),
+        // "deleted_at": deletedAt,
+        // "work_permit_id": workPermitId,
       };
 }
 

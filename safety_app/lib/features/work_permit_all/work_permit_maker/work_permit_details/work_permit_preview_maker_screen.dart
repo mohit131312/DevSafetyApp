@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
-import 'package:flutter_app/components/app_medium_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
-import 'package:flutter_app/features/work_permit_all/work_permit_checker/work_permit_checker_details/work_permit_checker_details_controller.dart';
-import 'package:flutter_app/features/work_permit_all/work_permit_checker/work_permit_checker_details/workpermit_checker_approve_screen.dart';
-import 'package:flutter_app/features/work_permit_all/work_permit_checker/work_permit_checker_details/workpermit_checker_reject_screen.dart';
+import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_details/work_permit_preview_maker_controller.dart';
+import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_submit_closed/work_submit_closed_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
@@ -15,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 
-class WorkPermitCheckersDetails extends StatelessWidget {
+class WorkPermitPreviewMakerScreen extends StatelessWidget {
   final int userId;
   final String userName;
   final int projectId;
@@ -23,7 +21,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
   final String userDesg;
   final int wpId;
 
-  WorkPermitCheckersDetails({
+  WorkPermitPreviewMakerScreen({
     super.key,
     required this.userId,
     required this.userName,
@@ -32,9 +30,9 @@ class WorkPermitCheckersDetails extends StatelessWidget {
     required this.userDesg,
     required this.wpId,
   });
-  final WorkPermitCheckerDetailsController workPermitCheckerDetailsController =
-      Get.put(WorkPermitCheckerDetailsController());
-  void showConfirmationDialogClosed(BuildContext context, status) {
+  final WorkPermitPreviewMakerController workPermitPreviewMakerController =
+      Get.put(WorkPermitPreviewMakerController());
+  void showConfirmationDialogClosed(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -76,22 +74,16 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    await workPermitCheckerDetailsController
-                        .safetySaveWorkPermitCommentChecker(
-                            context, wpId, status);
-                    if (workPermitCheckerDetailsController.apiStatus == true) {
-                      if (status == 1) {
-                        Get.to(WorkpermitCheckerApproveScreen(
-                          userId: userId,
-                          projectId: projectId,
-                        ));
-                      } else if (status == 2) {
-                        Get.to(WorkpermitCheckerRejectScreen(
-                          userId: userId,
-                          projectId: projectId,
-                        ));
-                      }
+                    await workPermitPreviewMakerController
+                        .safetySaveWorkPermitComment(context, wpId);
+                    if (workPermitPreviewMakerController.apiStatus == true) {
+                      Get.to(() => WorkSubmitClosedScreen(
+                            userId: userId,
+                            projectId: projectId,
+                          ));
                     }
+
+                    //      Get.to(WorkSubmitClosedScreen());
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -197,8 +189,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                 ),
               ),
               Obx(
-                () => workPermitCheckerDetailsController
-                        .workpermitExpanded.value
+                () => workPermitPreviewMakerController.workpermitExpanded.value
                     ? Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: SizeConfig.widthMultiplier * 4,
@@ -240,7 +231,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                   Spacer(),
                                   GestureDetector(
                                       onTap: () {
-                                        workPermitCheckerDetailsController
+                                        workPermitPreviewMakerController
                                             .toggleExpansionWorkpermit();
                                       },
                                       child: Icon(Icons.keyboard_arrow_up)),
@@ -281,13 +272,13 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                              text: workPermitCheckerDetailsController
-                                                      .workPermitsCheckerDetails[
+                                              text: workPermitPreviewMakerController
+                                                      .workPermitsMakerDetails[
                                                           0]
                                                       .nameOfWorkpermit
                                                       .isNotEmpty
-                                                  ? workPermitCheckerDetailsController
-                                                      .workPermitsCheckerDetails[
+                                                  ? workPermitPreviewMakerController
+                                                      .workPermitsMakerDetails[
                                                           0]
                                                       .nameOfWorkpermit
                                                   : '-',
@@ -312,13 +303,13 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                            text: workPermitCheckerDetailsController
-                                                    .subActivityWPCheckerDetails[
+                                            text: workPermitPreviewMakerController
+                                                    .subActivityWPMakerDetails[
                                                         0]
                                                     .subActivityName
                                                     .isNotEmpty
-                                                ? workPermitCheckerDetailsController
-                                                    .subActivityWPCheckerDetails[
+                                                ? workPermitPreviewMakerController
+                                                    .subActivityWPMakerDetails[
                                                         0]
                                                     .subActivityName
                                                 : "",
@@ -342,13 +333,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                            text: workPermitCheckerDetailsController
-                                                        .workPermitsCheckerDetails[
-                                                            0]
-                                                        .toolboxTrainingId !=
-                                                    null
-                                                ? '${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].id.toString()} /${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
-                                                : "",
+                                            text:
+                                                '${workPermitPreviewMakerController.selectedToolboxTrainingMaker[0].id.toString()} /${workPermitPreviewMakerController.selectedToolboxTrainingMaker[0].nameOfTbTraining}',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.primaryText,
@@ -369,26 +355,26 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                              text: workPermitCheckerDetailsController
-                                                          .workPermitsCheckerDetails[
+                                              text: workPermitPreviewMakerController
+                                                          .workPermitsMakerDetails[
                                                               0]
                                                           .fromDateTime !=
                                                       null
                                                   ? DateFormat('dd MMMM yyyy')
                                                       .format(
-                                                      workPermitCheckerDetailsController
-                                                                  .workPermitsCheckerDetails[
+                                                      workPermitPreviewMakerController
+                                                                  .workPermitsMakerDetails[
                                                                       0]
                                                                   .fromDateTime
                                                               is String
                                                           ? DateTime.parse(
-                                                              workPermitCheckerDetailsController
-                                                                      .workPermitsCheckerDetails[
+                                                              workPermitPreviewMakerController
+                                                                      .workPermitsMakerDetails[
                                                                           0]
                                                                       .fromDateTime
                                                                   as String)
-                                                          : workPermitCheckerDetailsController
-                                                                  .workPermitsCheckerDetails[
+                                                          : workPermitPreviewMakerController
+                                                                  .workPermitsMakerDetails[
                                                                       0]
                                                                   .fromDateTime ??
                                                               DateTime.now(),
@@ -414,26 +400,26 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                              text: workPermitCheckerDetailsController
-                                                          .workPermitsCheckerDetails[
+                                              text: workPermitPreviewMakerController
+                                                          .workPermitsMakerDetails[
                                                               0]
                                                           .toDateTime !=
                                                       null
                                                   ? DateFormat('dd MMMM yyyy')
                                                       .format(
-                                                      workPermitCheckerDetailsController
-                                                                  .workPermitsCheckerDetails[
+                                                      workPermitPreviewMakerController
+                                                                  .workPermitsMakerDetails[
                                                                       0]
                                                                   .toDateTime
                                                               is String
                                                           ? DateTime.parse(
-                                                              workPermitCheckerDetailsController
-                                                                      .workPermitsCheckerDetails[
+                                                              workPermitPreviewMakerController
+                                                                      .workPermitsMakerDetails[
                                                                           0]
                                                                       .toDateTime
                                                                   as String)
-                                                          : workPermitCheckerDetailsController
-                                                                  .workPermitsCheckerDetails[
+                                                          : workPermitPreviewMakerController
+                                                                  .workPermitsMakerDetails[
                                                                       0]
                                                                   .toDateTime ??
                                                               DateTime.now(),
@@ -462,8 +448,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children:
-                                                workPermitCheckerDetailsController
-                                                    .buildingListWPCheckerList
+                                                workPermitPreviewMakerController
+                                                    .buildingListWPMakerList
                                                     .entries
                                                     .map<Widget>((entry) {
                                               final buildingName = entry.key;
@@ -598,7 +584,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                 Spacer(),
                                 GestureDetector(
                                     onTap: () {
-                                      workPermitCheckerDetailsController
+                                      workPermitPreviewMakerController
                                           .toggleExpansionWorkpermit();
                                     },
                                     child: Icon(Icons.keyboard_arrow_up)),
@@ -613,7 +599,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
               ),
 
               Obx(
-                () => workPermitCheckerDetailsController
+                () => workPermitPreviewMakerController
                         .isprecautionworkpermitExpanded.value
                     ? Container(
                         padding: EdgeInsets.symmetric(
@@ -656,7 +642,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                   Spacer(),
                                   GestureDetector(
                                       onTap: () {
-                                        workPermitCheckerDetailsController
+                                        workPermitPreviewMakerController
                                             .toggleExpansionPrecaution();
                                       },
                                       child: Icon(Icons.keyboard_arrow_up)),
@@ -678,7 +664,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // buildCategoryWidgetContainer(),
+                                    buildCategoryWidgetContainer(),
                                   ],
                                 ),
                               ),
@@ -725,7 +711,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                 Spacer(),
                                 GestureDetector(
                                     onTap: () {
-                                      workPermitCheckerDetailsController
+                                      workPermitPreviewMakerController
                                           .toggleExpansionPrecaution();
                                     },
                                     child: Icon(Icons.keyboard_arrow_up)),
@@ -759,7 +745,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           width: SizeConfig.imageSizeMultiplier * 15,
                           height: SizeConfig.imageSizeMultiplier * 15,
                           child: Image.network(
-                            "$baseUrl${workPermitCheckerDetailsController.checkerInformation[0].photo}",
+                            "$baseUrl${workPermitPreviewMakerController.checkerInformation[0].photo}",
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -771,13 +757,13 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           children: [
                             AppTextWidget(
                                 text:
-                                    "${workPermitCheckerDetailsController.checkerInformation[0].firstName ?? ''} "
-                                    "${workPermitCheckerDetailsController.checkerInformation[0].lastName ?? ''}",
+                                    "${workPermitPreviewMakerController.checkerInformation[0].firstName ?? ''} "
+                                    "${workPermitPreviewMakerController.checkerInformation[0].lastName ?? ''}",
                                 fontSize: AppTextSize.textSizeSmallm,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primaryText),
                             AppTextWidget(
-                                text: workPermitCheckerDetailsController
+                                text: workPermitPreviewMakerController
                                         .checkerInformation[0].designation ??
                                     "",
                                 fontSize: AppTextSize.textSizeSmall,
@@ -793,41 +779,41 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
-                    // Row(
-                    //   children: [
-                    //     AppTextWidget(
-                    //       text: 'Comments',
-                    //       fontSize: AppTextSize.textSizeSmall,
-                    //       fontWeight: FontWeight.w500,
-                    //       color: AppColors.primaryText,
-                    //     ),
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 1,
-                    // ),
-                    // AppTextFormfeild(
-                    //   enabled: false,
-                    //   controller: workPermitCheckerDetailsController
-                    //       .workPermitRemarksControllerenable,
-                    //   hintText: 'Comments',
-                    //   // focusNode: newWorkPermitController.dow,
-                    //   // onFieldSubmitted: (_) {
-                    //   //   newWorkPermitController.dow.unfocus();
-                    //   // },
-                    //   keyboardType: TextInputType.name,
-                    //   textInputAction: TextInputAction.next,
-                    //   // validator: (value) {
-                    //   //   if (value == null || value.isEmpty) {
-                    //   //     return 'Please enter a comment';
-                    //   //   }
-                    //   //   return null;
-                    //   // },
-                    //   onChanged: (value) {},
-                    // ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 2,
-                    // ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: 'Checker Comments',
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryText,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 1,
+                    ),
+                    AppTextFormfeild(
+                      enabled: false,
+                      controller: workPermitPreviewMakerController
+                          .workPermitRemarksControllerenable,
+                      hintText: 'Comments',
+                      // focusNode: newWorkPermitController.dow,
+                      // onFieldSubmitted: (_) {
+                      //   newWorkPermitController.dow.unfocus();
+                      // },
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      // validator: (value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return 'Please enter a comment';
+                      //   }
+                      //   return null;
+                      // },
+                      onChanged: (value) {},
+                    ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 2,
+                    ),
                   ],
                 ),
               ),
@@ -849,7 +835,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: 'Checker Comments',
+                          text: 'Maker Comments',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,
@@ -861,8 +847,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                     ),
                     AppTextFormfeild(
                       enabled:
-                          !workPermitCheckerDetailsController.userFound.value,
-                      controller: workPermitCheckerDetailsController
+                          !workPermitPreviewMakerController.userFound.value,
+                      controller: workPermitPreviewMakerController
                           .workPermitRemarksController,
                       hintText: 'Comments',
                       // focusNode: newWorkPermitController.dow,
@@ -885,7 +871,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: "Checker Signature",
+                          text: "Maker Signature",
                           fontSize: AppTextSize.textSizeMedium,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,
@@ -914,12 +900,11 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                             ),
                             child: Column(
                               children: [
-                                workPermitCheckerDetailsController
-                                        .userFound.value
+                                workPermitPreviewMakerController.userFound.value
                                     ? SizedBox()
                                     : GestureDetector(
                                         onTap: () {
-                                          workPermitCheckerDetailsController
+                                          workPermitPreviewMakerController
                                               .clearSafetyattestationSignature();
                                         },
                                         child: Row(
@@ -950,10 +935,10 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                   height: SizeConfig.heightMultiplier * 4,
                                 ),
                                 Obx(() {
-                                  if (workPermitCheckerDetailsController
+                                  if (workPermitPreviewMakerController
                                       .userFound.value) {
                                     // Show saved signature image
-                                    return workPermitCheckerDetailsController
+                                    return workPermitPreviewMakerController
                                             .savedSignatureUrlfetch
                                             .value
                                             .isNotEmpty
@@ -964,7 +949,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                             width:
                                                 SizeConfig.widthMultiplier * 80,
                                             child: Image.network(
-                                              "$baseUrl${workPermitCheckerDetailsController.savedSignatureUrlfetch.value}",
+                                              "$baseUrl${workPermitPreviewMakerController.savedSignatureUrlfetch.value}",
                                               fit: BoxFit.contain,
                                             ),
                                           )
@@ -976,8 +961,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                       child: Signature(
                                         height: 206,
                                         controller:
-                                            workPermitCheckerDetailsController
-                                                .signatureCheckerController,
+                                            workPermitPreviewMakerController
+                                                .signatureattestationController,
                                         backgroundColor: Colors.white,
                                       ),
                                     );
@@ -989,14 +974,14 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Obx(() => workPermitCheckerDetailsController
+                    Obx(() => workPermitPreviewMakerController
                             .signatureattestationError.value.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(top: 4, left: 12),
                             child: Row(
                               children: [
                                 Text(
-                                  workPermitCheckerDetailsController
+                                  workPermitPreviewMakerController
                                       .signatureattestationError.value,
                                   style: TextStyle(
                                       color: const Color.fromARGB(
@@ -1028,7 +1013,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           width: SizeConfig.imageSizeMultiplier * 15,
                           height: SizeConfig.imageSizeMultiplier * 15,
                           child: Image.network(
-                            "$baseUrl${workPermitCheckerDetailsController.makerInformation[0].photo}",
+                            "$baseUrl${workPermitPreviewMakerController.makerInformation[0].photo}",
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -1039,17 +1024,17 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppTextWidget(
-                                text: workPermitCheckerDetailsController
+                                text: workPermitPreviewMakerController
                                         .makerInformation.isNotEmpty
-                                    ? '${workPermitCheckerDetailsController.makerInformation[0].firstName} ${workPermitCheckerDetailsController.makerInformation[0].lastName}'
+                                    ? '${workPermitPreviewMakerController.makerInformation[0].firstName} ${workPermitPreviewMakerController.makerInformation[0].lastName}'
                                     : 'No Name',
                                 fontSize: AppTextSize.textSizeSmallm,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primaryText),
                             AppTextWidget(
-                                text: workPermitCheckerDetailsController
+                                text: workPermitPreviewMakerController
                                         .makerInformation.isNotEmpty
-                                    ? '${workPermitCheckerDetailsController.makerInformation[0].designation}'
+                                    ? '${workPermitPreviewMakerController.makerInformation[0].designation}'
                                     : 'No Name',
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w400,
@@ -1100,132 +1085,43 @@ class WorkPermitCheckersDetails extends StatelessWidget {
               SizedBox(
                 height: SizeConfig.heightMultiplier * 3,
               ),
-              workPermitCheckerDetailsController.userFound.value
-                  ? Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: AppElevatedButton(
-                          text: 'Close',
-                          onPressed: () async {
-                            Get.back();
-                          }),
-                    )
-                  : Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                if (formKey.currentState!.validate()) {
-                                  await workPermitCheckerDetailsController
-                                      .saveSafetyCheckerSignature();
+              Obx(
+                () => Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: AppElevatedButton(
+                      text: workPermitPreviewMakerController.userFound.value
+                          ? 'Close'
+                          : 'Submit',
+                      onPressed: () async {
+                        if (workPermitPreviewMakerController.userFound.value) {
+                          Get.back();
+                        } else {
+                          if (formKey.currentState!.validate()) {
+                            await workPermitPreviewMakerController
+                                .saveSafetyattestationSignature();
 
-                                  if (workPermitCheckerDetailsController
-                                      .signatureCheckerController.isEmpty) {
-                                    workPermitCheckerDetailsController
-                                            .signatureattestationError.value =
-                                        "Please fill in the signature.";
-                                    return;
-                                  }
-                                  if (workPermitCheckerDetailsController
-                                          .signatureCheckerController
-                                          .isNotEmpty &&
-                                      workPermitCheckerDetailsController
-                                          .workPermitRemarksController
-                                          .text
-                                          .isNotEmpty) {}
-                                  // ignore: use_build_context_synchronously
-                                  showConfirmationDialogClosed(context, 2);
-                                  //   Get.to(WorkPermitPrecautionScreen());
-                                }
-                              },
-                              child: AppMediumButton(
-                                label: "Reject",
-                                borderColor: AppColors.buttoncolor,
-                                iconColor: AppColors.buttoncolor,
-                                backgroundColor: Colors.white,
-                                textColor: AppColors.buttoncolor,
-                                imagePath: 'assets/icons/arrow-narrow-left.png',
-                              ),
-                            ),
-                            SizedBox(width: SizeConfig.widthMultiplier * 5),
-                            GestureDetector(
-                              onTap: () async {
-                                if (formKey.currentState!.validate()) {
-                                  await workPermitCheckerDetailsController
-                                      .saveSafetyCheckerSignature();
-
-                                  if (workPermitCheckerDetailsController
-                                      .signatureCheckerController.isEmpty) {
-                                    workPermitCheckerDetailsController
-                                            .signatureattestationError.value =
-                                        "Please fill in the signature.";
-                                    return;
-                                  }
-                                  if (workPermitCheckerDetailsController
-                                          .signatureCheckerController
-                                          .isNotEmpty &&
-                                      workPermitCheckerDetailsController
-                                          .workPermitRemarksController
-                                          .text
-                                          .isNotEmpty) {}
-                                  showConfirmationDialogClosed(context, 1);
-                                  //   Get.to(WorkPermitPrecautionScreen());
-                                }
-                              },
-                              child: AppMediumButton(
-                                label: "Approve",
-                                borderColor: AppColors.backbuttoncolor,
-                                iconColor: Colors.white,
-                                textColor: Colors.white,
-                                backgroundColor: AppColors.buttoncolor,
-                                imagePath2:
-                                    'assets/icons/arrow-narrow-right.png',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-              // Obx(
-              //   () => Padding(
-              //     padding: const EdgeInsets.all(12.0),
-              //     child: AppElevatedButton(
-              //         text: workPermitCheckerDetailsController.userFound.value
-              //             ? 'Close'
-              //             : 'Submit',
-              //         onPressed: () async {
-              //           if (workPermitCheckerDetailsController
-              //               .userFound.value) {
-              //             Get.back();
-              //           } else {
-              //             if (formKey.currentState!.validate()) {
-              //               await workPermitCheckerDetailsController
-              //                   .saveSafetyattestationSignature();
-
-              //               if (workPermitCheckerDetailsController
-              //                   .signatureattestationController.isEmpty) {
-              //                 workPermitCheckerDetailsController
-              //                     .signatureattestationError
-              //                     .value = "Please fill in the signature.";
-              //                 return;
-              //               }
-              //               if (workPermitCheckerDetailsController
-              //                       .signatureattestationController
-              //                       .isNotEmpty &&
-              //                   workPermitCheckerDetailsController
-              //                       .workPermitRemarksController
-              //                       .text
-              //                       .isNotEmpty) {}
-              //               // ignore: use_build_context_synchronously
-              //               showConfirmationDialogClosed(context);
-              //               //   Get.to(WorkPermitPrecautionScreen());
-              //             }
-              //           }
-              //         }),
-              //   ),
-              // ),
+                            if (workPermitPreviewMakerController
+                                .signatureattestationController.isEmpty) {
+                              workPermitPreviewMakerController
+                                  .signatureattestationError
+                                  .value = "Please fill in the signature.";
+                              return;
+                            }
+                            if (workPermitPreviewMakerController
+                                    .signatureattestationController
+                                    .isNotEmpty &&
+                                workPermitPreviewMakerController
+                                    .workPermitRemarksController
+                                    .text
+                                    .isNotEmpty) {}
+                            // ignore: use_build_context_synchronously
+                            showConfirmationDialogClosed(context);
+                            //   Get.to(WorkPermitPrecautionScreen());
+                          }
+                        }
+                      }),
+                ),
+              ),
               SizedBox(
                 height: SizeConfig.heightMultiplier * 6,
               ),
@@ -1238,7 +1134,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
 
   Widget buildCategoryWidgetContainer() {
     final categoryMap =
-        workPermitCheckerDetailsController.categoryListWPCheckerList;
+        workPermitPreviewMakerController.categoryListWPMakerList;
 
     if (categoryMap.isEmpty) return SizedBox(); // Or a placeholder
 
@@ -1289,8 +1185,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                               "Unknown";
 
                       return Padding(
-                        padding: EdgeInsets.only(
-                            top: SizeConfig.heightMultiplier * 3),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: AppTextWidget(
                           text: "${index + 1}. $permitText",
                           fontSize: AppTextSize.textSizeSmall,

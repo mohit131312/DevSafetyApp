@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/components/app_textformfeild.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_add_trainee/toolbox_add_trainee_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_attestation/toolbox_attestation_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_preview/toolbox_preview_controller.dart';
-import 'package:flutter_app/features/toolbox_training_all/toolbox_preview_again/toolbox_preview_again_screen.dart';
-import 'package:flutter_app/features/toolbox_training_all/toolbox_reviewer_all/toolbox_reviewer_details/toolbox_reviewer_screen.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_t_details/toolbox_t_details_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_t_details/toolbox_t_details_screen.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_controller.dart';
@@ -16,6 +15,7 @@ import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class ToolboxTrainingScreen extends StatelessWidget {
@@ -49,57 +49,6 @@ class ToolboxTrainingScreen extends StatelessWidget {
       Get.put(ToolboxPreviewController());
 
   final TextEditingController searchController = TextEditingController();
-
-  final List trainingList = [
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Open",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Closed",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Open",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Closed",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Open",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Closed",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Open",
-    },
-    {
-      "Training ID": "Training ID",
-      "Training detail": "Training detail",
-      "Creation Date": "Creation Date",
-      "Status": "Closed",
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -171,35 +120,56 @@ class ToolboxTrainingScreen extends StatelessWidget {
                 ),
                 child: SizedBox(
                   height: SizeConfig.heightMultiplier * 6.5,
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search here..',
-                      hintStyle: TextStyle(
-                        fontSize: AppTextSize.textSizeSmall,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.searchfeild,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 6.4,
+                        width: SizeConfig.widthMultiplier * 92,
+                        child: Obx(() {
+                          TextEditingController activeController;
+
+                          switch (
+                              toolboxTrainingController.selectedOption.value) {
+                            case 0:
+                              activeController = toolboxTrainingController
+                                  .searchtoolAllController;
+                              break;
+                            case 1:
+                              activeController = toolboxTrainingController
+                                  .searchtoolMakerController;
+                              break;
+                            case 2:
+                              activeController = toolboxTrainingController
+                                  .searchtoolReviwerController;
+                              break;
+                            default:
+                              activeController =
+                                  TextEditingController(); // fallback
+                          }
+
+                          return AppTextFormfeild(
+                            controller: activeController,
+                            hintText: 'Search By Name..',
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            prefixIcon: Container(
+                              padding: EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'assets/icons/Search.png',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            onChanged: (value) {
+                              toolboxTrainingController.handleSearchByTab(
+                                toolboxTrainingController.selectedOption.value,
+                                value,
+                              );
+                            },
+                          );
+                        }),
                       ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColors.searchfeild,
-                        size: 30,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                            color: AppColors.searchfeildcolor, width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                            color: AppColors.searchfeildcolor, width: 1),
-                      ),
-                    ),
-                    onChanged: (value) {},
+                    ],
                   ),
                 ),
               ),
@@ -249,184 +219,259 @@ class ToolboxTrainingScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              // Obx(
-              //   () =>
+              SizedBox(
+                height: SizeConfig.widthMultiplier * 3,
+              ),
               Expanded(
                 child: TabBarView(
                   controller: toolboxTrainingController.tabController,
                   children: [
-                    ListView.builder(
-                      //    shrinkWrap: true,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      itemCount: trainingList.length,
+                    Obx(() {
+                      final filteredList =
+                          toolboxTrainingController.filteredtoolboxAllList;
+                      return ListView.builder(
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          final work = filteredList[index];
 
-                      itemBuilder: (context, index) {
-                        var item = trainingList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            // Get.to(ToolboxTDetailsScreen());
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                title: AppTextWidget(
-                                  text: item['Training ID']!,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryText,
+                          return GestureDetector(
+                            onTap: () async {
+                              // log('----------------------------${workPermitController.selectedOption.value}');
+                              // await workPermitAllController
+                              //     .getWorkPermitAllDetails(
+                              //         projectId, userId, 1, work.id);
+                              // Get.to(WorkPermitAllDetails(
+                              //   userId: userId,
+                              //   userName: userName,
+                              //   userImg: userImg,
+                              //   userDesg: userDesg,
+                              //   projectId: projectId,
+                              //   wpId: work.id,
+                              // ));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  title: AppTextWidget(
+                                    text: work.nameOfTbTraining,
+                                    fontSize: AppTextSize.textSizeSmall,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryText,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: work.details,
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: (work.createdAt != null)
+                                            ? DateFormat('dd MMMM yyyy').format(
+                                                work.createdAt is String
+                                                    ? DateTime.parse(work
+                                                        .createdAt as String)
+                                                    : work.createdAt ??
+                                                        DateTime.now())
+                                            : '',
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: AppTextWidget(
+                                    text: work.status.toString() == "0"
+                                        ? "Open"
+                                        : "Closed",
+                                    fontSize: AppTextSize.textSizeExtraSmall,
+                                    fontWeight: FontWeight.w500,
+                                    color: work.status.toString() == "0"
+                                        ? AppColors.buttoncolor
+                                        : AppColors.secondaryText,
+                                  ),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppTextWidget(
-                                      text: item['Training detail']!,
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                    AppTextWidget(
-                                      text: item['Creation Date'].toString(),
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                  ],
+                                Divider(
+                                  color: AppColors.textfeildcolor,
+                                  thickness: 1.5,
+                                  height: 2,
                                 ),
-                                trailing: AppTextWidget(
-                                  text: item['Status'].toString(),
-                                  fontSize: AppTextSize.textSizeExtraSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: item['Status'] == "Open"
-                                      ? AppColors.buttoncolor
-                                      : AppColors.secondaryText,
-                                ),
-                              ),
-                              Divider(
-                                color: AppColors.textfeildcolor,
-                                thickness: 1.5,
-                                height: 2,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    ListView.builder(
-                      //    shrinkWrap: true,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      itemCount: trainingList.length,
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                    Obx(() {
+                      final filteredList =
+                          toolboxTrainingController.filteredtoolboxListMaker;
+                      return ListView.builder(
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          final work = filteredList[index];
 
-                      itemBuilder: (context, index) {
-                        var item = trainingList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            //        Get.to(ToolboxTDetailsScreen());
-                            Get.to(ToolboxPreviewAgainScreen());
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                title: AppTextWidget(
-                                  text: item['Training ID']!,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryText,
+                          return GestureDetector(
+                            onTap: () async {
+                              // log('----------------------------${workPermitController.selectedOption.value}');
+                              // await workPermitAllController
+                              //     .getWorkPermitAllDetails(
+                              //         projectId, userId, 1, work.id);
+                              // Get.to(WorkPermitAllDetails(
+                              //   userId: userId,
+                              //   userName: userName,
+                              //   userImg: userImg,
+                              //   userDesg: userDesg,
+                              //   projectId: projectId,
+                              //   wpId: work.id,
+                              // ));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  title: AppTextWidget(
+                                    text: work.nameOfTbTraining,
+                                    fontSize: AppTextSize.textSizeSmall,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryText,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: work.details,
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: (work.createdAt != null)
+                                            ? DateFormat('dd MMMM yyyy').format(
+                                                work.createdAt is String
+                                                    ? DateTime.parse(work
+                                                        .createdAt as String)
+                                                    : work.createdAt ??
+                                                        DateTime.now())
+                                            : '',
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: AppTextWidget(
+                                    text: work.status.toString() == "0"
+                                        ? "Open"
+                                        : "Closed",
+                                    fontSize: AppTextSize.textSizeExtraSmall,
+                                    fontWeight: FontWeight.w500,
+                                    color: work.status.toString() == "0"
+                                        ? AppColors.buttoncolor
+                                        : AppColors.secondaryText,
+                                  ),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppTextWidget(
-                                      text: item['Training detail']!,
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                    AppTextWidget(
-                                      text: item['Creation Date'].toString(),
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                  ],
+                                Divider(
+                                  color: AppColors.textfeildcolor,
+                                  thickness: 1.5,
+                                  height: 2,
                                 ),
-                                trailing: AppTextWidget(
-                                  text: item['Status'].toString(),
-                                  fontSize: AppTextSize.textSizeExtraSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: item['Status'] == "Open"
-                                      ? AppColors.buttoncolor
-                                      : AppColors.secondaryText,
-                                ),
-                              ),
-                              Divider(
-                                color: AppColors.textfeildcolor,
-                                thickness: 1.5,
-                                height: 2,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    ListView.builder(
-                      //    shrinkWrap: true,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      itemCount: trainingList.length,
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                    Obx(() {
+                      final filteredList =
+                          toolboxTrainingController.filteredtoolboxListReviewer;
+                      return ListView.builder(
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          final work = filteredList[index];
 
-                      itemBuilder: (context, index) {
-                        var item = trainingList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(ToolboxReviewerScreen());
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                title: AppTextWidget(
-                                  text: item['Training ID']!,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryText,
+                          return GestureDetector(
+                            onTap: () async {
+                              // log('----------------------------${workPermitController.selectedOption.value}');
+                              // await workPermitAllController
+                              //     .getWorkPermitAllDetails(
+                              //         projectId, userId, 1, work.id);
+                              // Get.to(WorkPermitAllDetails(
+                              //   userId: userId,
+                              //   userName: userName,
+                              //   userImg: userImg,
+                              //   userDesg: userDesg,
+                              //   projectId: projectId,
+                              //   wpId: work.id,
+                              // ));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  title: AppTextWidget(
+                                    text: work.nameOfTbTraining,
+                                    fontSize: AppTextSize.textSizeSmall,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryText,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: work.details,
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: (work.createdAt != null)
+                                            ? DateFormat('dd MMMM yyyy').format(
+                                                work.createdAt is String
+                                                    ? DateTime.parse(work
+                                                        .createdAt as String)
+                                                    : work.createdAt ??
+                                                        DateTime.now())
+                                            : '',
+                                        fontSize:
+                                            AppTextSize.textSizeExtraSmall,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.secondaryText,
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: AppTextWidget(
+                                    text: work.status.toString() == "0"
+                                        ? "Open"
+                                        : "Closed",
+                                    fontSize: AppTextSize.textSizeExtraSmall,
+                                    fontWeight: FontWeight.w500,
+                                    color: work.status.toString() == "0"
+                                        ? AppColors.buttoncolor
+                                        : AppColors.secondaryText,
+                                  ),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppTextWidget(
-                                      text: item['Training detail']!,
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                    AppTextWidget(
-                                      text: item['Creation Date'].toString(),
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                  ],
+                                Divider(
+                                  color: AppColors.textfeildcolor,
+                                  thickness: 1.5,
+                                  height: 2,
                                 ),
-                                trailing: AppTextWidget(
-                                  text: item['Status'].toString(),
-                                  fontSize: AppTextSize.textSizeExtraSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: item['Status'] == "Open"
-                                      ? AppColors.buttoncolor
-                                      : AppColors.secondaryText,
-                                ),
-                              ),
-                              Divider(
-                                color: AppColors.textfeildcolor,
-                                thickness: 1.5,
-                                height: 2,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
                   ],
                 ),
               ),

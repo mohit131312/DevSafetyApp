@@ -34,6 +34,9 @@ class ContractorListingController extends GetxController {
 
   //-------------------
   List<UserDetail> contractorDetailsList = [];
+  List<ContractorCompanyDetail> contractorCompanyDetailsList = [];
+  List<ContractorServicesDetail> contractorServicesDetail = [];
+
   List<InductionTraining> contractorInductionTrainingsList = [];
   List<ReasonOfVisit> contractorReasonOfVisitList = [];
   bool statusApi = false;
@@ -67,6 +70,18 @@ class ContractorListingController extends GetxController {
               ?.map((e) => UserDetail.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
+      contractorCompanyDetailsList = (data['contractor_company_details']
+                  as List<dynamic>?)
+              ?.map((e) =>
+                  ContractorCompanyDetail.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
+      contractorServicesDetail = (data['contractor_services_details']
+                  as List<dynamic>?)
+              ?.map((e) =>
+                  ContractorServicesDetail.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
       contractorInductionTrainingsList = (data['induction_trainings']
                   as List<dynamic>?)
@@ -83,6 +98,7 @@ class ContractorListingController extends GetxController {
 //---------------------- LOG LENGTH OF EACH LIST ----------------------
       log('------------------contractorDetailsList');
       log('contractorDetailsList length: ${contractorDetailsList.length}');
+      log('contractorCompanyDetailsList length: ${contractorCompanyDetailsList.length}');
       log('contractorInductionTrainingsList length: ${contractorInductionTrainingsList.length}');
       log('contractorReasonOfVisitList length: ${contractorReasonOfVisitList.length}');
     } catch (e) {

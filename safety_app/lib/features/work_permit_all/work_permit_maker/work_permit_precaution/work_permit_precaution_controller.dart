@@ -1,3 +1,4 @@
+import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_controller.dart';
 import 'package:get/get.dart';
 
 import '../new_work_permit/new_work_permit_model.dart';
@@ -5,10 +6,11 @@ import '../new_work_permit/new_work_permit_model.dart';
 class WorkPermitPrecautionController extends GetxController {
   var selectedWorkPermitData = <int, Set<int>>{}.obs;
   var filteredListfinal = <WorkPermitDetail>[].obs;
+  final NewWorkPermitController newWorkPermitController = Get.find();
 
   void updateFilteredList(List<WorkPermitDetail> newList) {
     if (newList.isNotEmpty) {
-      filteredListfinal.addAll(newList); // Keep previous data
+      filteredListfinal.addAll(newList);
     }
   }
 
@@ -29,14 +31,77 @@ class WorkPermitPrecautionController extends GetxController {
     selectedWorkPermitData.refresh();
   }
 
-  void toggleSelectAll(int categoryId, List<int> detailIds, bool isSelected) {
+  // final searchQuery = ''.obs; // Add this line for search functionality
+  // void updateSearchQuery(String query) {
+  //   searchQuery.value = query.toLowerCase();
+  // }
+
+  // List<WorkPermitDetail> getFilteredDetails(
+  //     List<WorkPermitDetail> allDetails, String categoryName) {
+  //   return allDetails.where((item) {
+  //     final matchesCategory = item.categoryName == categoryName;
+  //     final matchesSearch =
+  //         item.permitDetails.toLowerCase().contains(searchQuery.value);
+  //     return matchesCategory && (searchQuery.value.isEmpty || matchesSearch);
+  //   }).toList();
+  // }
+  final searchQueries =
+      <int, String>{}.obs; // Changed to map for category-specific searches
+
+  // Update search query for specific category
+  void updateSearchQuery(int categoryId, String query) {
+    searchQueries[categoryId] = query.toLowerCase();
+  }
+
+  // Updated to handle category-specific searches
+  List<WorkPermitDetail> getFilteredDetails(
+      List<WorkPermitDetail> allDetails, int categoryId, String categoryName) {
+    final query = searchQueries[categoryId] ?? '';
+    return allDetails.where((item) {
+      final matchesCategory = item.categoryName == categoryName;
+      final matchesSearch = item.permitDetails.toLowerCase().contains(query);
+      return matchesCategory && (query.isEmpty || matchesSearch);
+    }).toList();
+  }
+
+  // void toggleSelectAll(int categoryId, List<int> detailIds, bool isSelected) {
+  //   if (isSelected) {
+  //     selectedWorkPermitData[categoryId] = detailIds.toSet();
+  //   } else {
+  //     selectedWorkPermitData.remove(categoryId);
+  //   }
+  //   print(selectedWorkPermitData);
+  //   selectedWorkPermitData.refresh();
+  // }
+
+  void toggleSelectAll(
+      int categoryId, List<int> visibleDetailIds, bool isSelected) {
     if (isSelected) {
-      selectedWorkPermitData[categoryId] = detailIds.toSet();
+      // Add only the visible items
+      selectedWorkPermitData.update(
+        categoryId,
+        (existingIds) => existingIds..addAll(visibleDetailIds),
+        ifAbsent: () => visibleDetailIds.toSet(),
+      );
     } else {
-      selectedWorkPermitData.remove(categoryId);
+      // Remove only the visible items
+      selectedWorkPermitData.update(
+        categoryId,
+        (existingIds) =>
+            existingIds..removeWhere((id) => visibleDetailIds.contains(id)),
+        ifAbsent: () => {},
+      );
+      // Remove category entry if empty
+      if (selectedWorkPermitData[categoryId]?.isEmpty ?? false) {
+        selectedWorkPermitData.remove(categoryId);
+      }
     }
-    print(selectedWorkPermitData);
-    selectedWorkPermitData.refresh();
+  }
+
+  // Check if all VISIBLE items are selected
+  bool isAllVisibleSelected(int categoryId, List<int> visibleDetailIds) {
+    final selectedIds = selectedWorkPermitData[categoryId] ?? {};
+    return visibleDetailIds.every((id) => selectedIds.contains(id));
   }
 
   List<Map<String, dynamic>> getSelectedDataForPost() {
@@ -48,34 +113,35 @@ class WorkPermitPrecautionController extends GetxController {
         .toList();
   }
 
-  var workPermitError = ''.obs;
+  var workPermitErrorMap = <int, String>{}.obs;
   bool validateWorkPermitSelection(List<int> requiredCategoryIds) {
-    // 🔹 Get only categories that actually have data
-    List<int> nonEmptyCategories = requiredCategoryIds.where((categoryId) {
-      return filteredListfinal.any(
-        (item) => item.categoriesId == categoryId, // Check if category has data
-      );
-    }).toList();
+    workPermitErrorMap.clear();
 
-    // 🔹 If no non-empty categories exist, skip validation
-    if (nonEmptyCategories.isEmpty) {
-      return true; // Allow navigation
+    if (requiredCategoryIds.isEmpty) {
+      return true;
     }
 
-    bool allRequiredSelected = nonEmptyCategories.every(
-      (categoryId) =>
-          selectedWorkPermitData.containsKey(categoryId) &&
-          selectedWorkPermitData[categoryId]!.isNotEmpty,
-    );
+    bool allValid = true;
 
-    if (!allRequiredSelected) {
-      workPermitError.value =
-          "Please select at least one option for each required category.";
-    } else {
-      workPermitError.value = "";
+    for (int categoryId in requiredCategoryIds) {
+      // Check if this category has any selectable items in the original list
+      bool hasItems = newWorkPermitController.workPermitRequiredList
+          .any((item) => item.categoriesId == categoryId);
+
+      // Only validate if the category has items available
+      if (hasItems) {
+        bool isSelected = selectedWorkPermitData.containsKey(categoryId) &&
+            selectedWorkPermitData[categoryId]!.isNotEmpty;
+
+        if (!isSelected) {
+          workPermitErrorMap[categoryId] =
+              "Please select at least one option for this category.";
+          allValid = false;
+        }
+      }
     }
 
-    return allRequiredSelected;
+    return allValid;
   }
 
   void clearSelectedWorkPermitData() {
@@ -93,7 +159,7 @@ class WorkPermitPrecautionController extends GetxController {
     filteredListfinal.clear();
     filteredListfinal.refresh();
 
-    workPermitError.value = "";
+    workPermitErrorMap.clear();
 
     print("All data cleared in WorkPermitPrecautionController!");
   }

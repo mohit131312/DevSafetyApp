@@ -770,6 +770,7 @@ class NewWorkPermitScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () async {
                       newWorkPermitController.addfloorbuildFinal(buildingId);
+
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -1014,80 +1015,47 @@ class NewWorkPermitScreen extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 1,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Obx(
-                        () => DropdownButtonFormField<String>(
-                          // isDense: false,
+                    Obx(
+                      () => AppSearchDropdown(
+                        items: workPermitController.safetyToolboxTraining
+                            .map(
+                              (t) => t.nameOfTbTraining,
+                            )
+                            .whereType<String>()
+                            .toList(),
+                        selectedItem: newWorkPermitController
+                                .selectedtoolboxtrainig.value.isNotEmpty
+                            ? newWorkPermitController
+                                .selectedtoolboxtrainig.value
+                            : null,
+                        hintText: 'Select toolbox training',
+                        onChanged: (value) async {
+                          newWorkPermitController.selectedtoolboxtrainig.value =
+                              value ?? '';
+                          var selectedtool = workPermitController
+                              .safetyToolboxTraining
+                              .firstWhereOrNull(
+                                  (t) => t.nameOfTbTraining == value);
+                          if (selectedtool != null) {
+                            newWorkPermitController.selectedtoolboxId.value =
+                                selectedtool.id;
 
-                          value: newWorkPermitController
-                                  .selectedtoolboxtrainig.value.isNotEmpty
-                              ? newWorkPermitController
-                                  .selectedtoolboxtrainig.value
-                              : null,
-                          items: newWorkPermitController.toolboxtrainig
-                              .map((toolboxtrainig) => DropdownMenuItem(
-                                    value: toolboxtrainig,
-                                    child: AppTextWidget(
-                                        text: toolboxtrainig,
-                                        fontSize: AppTextSize.textSizeMedium,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.primaryText),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            newWorkPermitController
-                                .selectedtoolboxtrainig.value = value ?? '';
-                          },
-                          hint: AppTextWidget(
-                            text: 'Select toolbox training',
-                            fontSize: AppTextSize.textSizeSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.searchfeild,
-                          ),
-                          icon: Icon(
-                            Icons
-                                .keyboard_arrow_down, // Your custom dropdown icon
-                            color:
-                                AppColors.searchfeild, // Adjust color as needed
-                            size: 27,
-                          ),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 13, horizontal: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: AppColors.searchfeildcolor, width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: AppColors.searchfeildcolor, width: 1),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 126, 16, 9),
-                                width: 1,
-                              ),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 126, 16, 9),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                        ),
+                            log('Selected newWorkPermitController.selectedtoolboxId: ${newWorkPermitController.selectedtoolboxId.value}');
+                            log('Selected newWorkPermitController.selectedtoolboxtrainig: ${newWorkPermitController.selectedtoolboxtrainig.value}');
+                          } else {
+                            log('No matching reason found for: $value');
+                          }
+                        },
+                        validator: (value) {
+                          if (value == null ||
+                              value.toString().trim().isEmpty) {
+                            return 'toolbox cannot be empty';
+                          }
+                          return null;
+                        },
                       ),
                     ),
+
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
@@ -1481,6 +1449,9 @@ class NewWorkPermitScreen extends StatelessWidget {
                     AppElevatedButton(
                         text: 'Next',
                         onPressed: () {
+                          log(newWorkPermitController
+                              .selectedBuildingIdListFinal
+                              .toString());
                           if (newWorkPermitController
                               .validateBuildingSelection()) {}
 

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_all_model.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ class WorkPermitController extends GetxController
       selectedOption.value = tabController.index;
       print("Selected Tab Index: ${selectedOption.value}");
     });
+
     personalDetails.value = personalDetailData;
     filteredDetails.value = personalDetailData;
   }
@@ -112,6 +114,7 @@ class WorkPermitController extends GetxController
   List<SubActivityList> subActivityWorkList = [];
   List<CheckerUserList> checkuserList = [];
   List<ProjectWiseFloor> projectfloorList = [];
+  List<SafetyToolboxTraining> safetyToolboxTraining = [];
 
   Future getWorkPermitData(projcetId) async {
     try {
@@ -143,15 +146,165 @@ class WorkPermitController extends GetxController
           (await data['project_wise_floor_list'] as List<dynamic>)
               .map((e) => ProjectWiseFloor.fromJson(e as Map<String, dynamic>))
               .toList();
+      safetyToolboxTraining = (await data['safety_toolbox_training']
+              as List<dynamic>)
+          .map((e) => SafetyToolboxTraining.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       log('----------=categoryWorkList: ${(categoryWorkList.length)}');
       log('----------=buildingList: ${(buildingList.length)}');
       log('----------=sub_activity_lists: ${(subActivityWorkList.length)}');
       log('----------=CheckerUserList: ${(checkuserList.length)}');
       log('----------=projectfloorList: ${(projectfloorList.length)}');
+      log('----------=safetyToolboxTraining: ${(safetyToolboxTraining.length)}');
       //-------------------------------------------------
     } catch (e) {
       print("Error: $e");
+    }
+  }
+
+  RxList<WorkPermitListingAll> workPermitListingAll =
+      <WorkPermitListingAll>[].obs;
+
+  Future getWorkPermitAllListing(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData = await globApiCall('get_work_permit_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      workPermitListingAll.value = (await responseData['data'] as List<dynamic>)
+          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      log('----------=workPermitListingAll: ${(workPermitListingAll.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQueryworkpermit = ''.obs;
+  TextEditingController searchWorkAllController = TextEditingController();
+  TextEditingController searchWorkMakerController = TextEditingController();
+  TextEditingController searchWorkCheckerController = TextEditingController();
+
+  void updateSearchworkPermitQuery(String query) {
+    searchQueryworkpermit.value = query;
+  }
+
+  List<WorkPermitListingAll> get filteredworkAllList {
+    final query = searchQueryworkpermit.value.toLowerCase();
+    return workPermitListingAll
+        .where((ind) =>
+            ind.nameOfWorkpermit.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  //--------------------------------------------
+  RxList<WorkPermitListingAll> workPermitMakerList =
+      <WorkPermitListingAll>[].obs;
+
+  Future getWorkPermitMakerListing(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData = await globApiCall('get_work_permit_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
+          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      log('----------=workPermitMakerList: ${(workPermitMakerList.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQuerywpMaker = ''.obs;
+
+  void updateSearchwpMakerQuery(String query) {
+    searchQuerywpMaker.value = query;
+  }
+
+  List<WorkPermitListingAll> get filteredwpMakerList {
+    final query = searchQuerywpMaker.value.toLowerCase();
+    return workPermitMakerList
+        .where((ind) =>
+            ind.nameOfWorkpermit.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  //---------------------------------------------------
+  RxList<WorkPermitListingAll> workPermitCheckerList =
+      <WorkPermitListingAll>[].obs;
+
+  Future getWorkPermitCheckerListing(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData = await globApiCall('get_work_permit_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      workPermitCheckerList.value = (await responseData['data']
+              as List<dynamic>)
+          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      log('----------=workPermitCheckerList: ${(workPermitCheckerList.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQuerywpChecker = ''.obs;
+
+  void updateSearchwpCheckerQuery(String query) {
+    searchQuerywpChecker.value = query;
+  }
+
+  List<WorkPermitListingAll> get filteredwpCheckerList {
+    final query = searchQuerywpChecker.value.toLowerCase();
+    return workPermitCheckerList
+        .where((ind) =>
+            ind.nameOfWorkpermit.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  void handleSearchByTab(int index, String query) {
+    if (index == 0) {
+      searchQueryworkpermit.value = query;
+    } else if (index == 1) {
+      searchQuerywpMaker.value = query;
+    } else if (index == 2) {
+      searchQuerywpChecker.value = query;
     }
   }
 }

@@ -252,100 +252,119 @@ class ContractorPreview extends StatelessWidget {
                             SizedBox(
                               height: SizeConfig.heightMultiplier * 2,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: SizeConfig.widthMultiplier * 40,
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        AppTextWidget(
-                                            text: AppTexts.contractorfirm,
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.searchfeild),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 1,
-                                        ),
-                                        AppTextWidget(
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.widthMultiplier * 4,
+                                vertical: SizeConfig.heightMultiplier * 3,
+                              ),
+                              width: SizeConfig.widthMultiplier * 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: AppColors.appgreycolor,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: SizeConfig.widthMultiplier * 40,
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          AppTextWidget(
+                                              text: AppTexts.contractorfirm,
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.searchfeild),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier * 1,
+                                          ),
+                                          AppTextWidget(
+                                              text: addContractorController
+                                                      .contractorfirmnameController
+                                                      .text
+                                                      .isNotEmpty
+                                                  ? addContractorController
+                                                      .contractorfirmnameController
+                                                      .text
+                                                  : '',
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.primaryText),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier *
+                                                    2.5,
+                                          ),
+                                          AppTextWidget(
+                                              text: AppTexts.gstn,
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.searchfeild),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier * 1,
+                                          ),
+                                          AppTextWidget(
                                             text: addContractorController
-                                                    .contractorfirmnameController
+                                                    .gstnController
                                                     .text
                                                     .isNotEmpty
                                                 ? addContractorController
-                                                    .contractorfirmnameController
-                                                    .text
-                                                : 'Date Not Available',
+                                                    .gstnController.text
+                                                : '',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
-                                            color: AppColors.primaryText),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 2.5,
-                                        ),
-                                        AppTextWidget(
-                                            text: AppTexts.gstn,
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.searchfeild),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 1,
-                                        ),
-                                        AppTextWidget(
-                                          text: addContractorController
-                                                  .gstnController
-                                                  .text
-                                                  .isNotEmpty
-                                              ? addContractorController
-                                                  .gstnController.text
-                                              : 'Date Not Available',
-                                          fontSize: AppTextSize.textSizeSmall,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.primaryText,
-                                        ),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 2.5,
-                                        ),
-                                      ]),
-                                ),
-                                SizedBox(
-                                  width: SizeConfig.widthMultiplier * 40,
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        AppTextWidget(
-                                            text: AppTexts.reasonforvisit,
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.searchfeild),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 1,
-                                        ),
-                                        AppTextWidget(
-                                            text: addContractorController
-                                                .selectedreasons.value, //
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.primaryText),
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 2.5,
-                                        ),
-                                      ]),
-                                ),
-                              ],
+                                            color: AppColors.primaryText,
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier *
+                                                    2.5,
+                                          ),
+                                        ]),
+                                  ),
+                                  SizedBox(
+                                    width: SizeConfig.widthMultiplier * 40,
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          AppTextWidget(
+                                              text: AppTexts.reasonforvisit,
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.searchfeild),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier * 1,
+                                          ),
+                                          AppTextWidget(
+                                              text: addContractorController
+                                                  .selectedreasons.value, //
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.primaryText),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier *
+                                                    2.5,
+                                          ),
+                                        ]),
+                                  ),
+                                ],
+                              ),
                             ),
                           ]),
                     )
@@ -377,12 +396,12 @@ class ContractorPreview extends StatelessWidget {
                                   height: 24,
                                   width: 24,
                                   child: Image.asset(
-                                      'assets/icons/User_orange.png')),
+                                      'assets/icons/Contractor.png')),
                               SizedBox(
                                 width: 5,
                               ),
                               AppTextWidget(
-                                text: AppTexts.personaldetails,
+                                text: AppTexts.contractordetails,
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.buttoncolor,
@@ -935,17 +954,18 @@ class ContractorPreview extends StatelessWidget {
                                                     ? addContractorController
                                                             .userFound.value
                                                         ? Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
                                                                             10),
-                                                                color: AppColors
-                                                                    .primary,
-                                                                border: Border.all(
-                                                                    width: 0.7,
-                                                                    color: AppColors
-                                                                        .backbuttoncolor)),
+                                                                    // color: AppColors
+                                                                    //     .primary,
+                                                                    border: Border.all(
+                                                                        width:
+                                                                            0.7,
+                                                                        color: AppColors
+                                                                            .backbuttoncolor)),
                                                             width: SizeConfig
                                                                     .widthMultiplier *
                                                                 92,

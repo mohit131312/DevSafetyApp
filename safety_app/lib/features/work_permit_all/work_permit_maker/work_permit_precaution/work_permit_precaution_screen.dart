@@ -7,7 +7,6 @@ import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_con
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/assign_checker/assign_checker_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/assign_checker/assign_checker_screen.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_controller.dart';
-import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_model.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_precaution/work_permit_precaution_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_undertaking/work_permit_under_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
@@ -137,79 +136,87 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: workPermitController.categoryWorkList.length,
                     itemBuilder: (context, index) {
-                      String categoryName = workPermitController
-                          .categoryWorkList[index].categoryName;
+                      final category =
+                          workPermitController.categoryWorkList[index];
+                      final allDetailsForCategory = newWorkPermitController
+                          .workPermitRequiredList
+                          .where((item) =>
+                              item.categoryName == category.categoryName)
+                          .toList();
 
-                      // Filter the workPermitRequiredList to match the category
-                      List<WorkPermitDetail> filteredList =
-                          newWorkPermitController.workPermitRequiredList
-                              .where(
-                                  (item) => item.categoryName == categoryName)
-                              .toList();
-                      workPermitPrecautionController
-                          .updateFilteredList(filteredList);
+                      return Obx(() {
+                        // Get filtered list based on search query
+                        final filteredList =
+                            workPermitPrecautionController.getFilteredDetails(
+                          allDetailsForCategory,
+                          category.id,
+                          category.categoryName,
+                        );
 
-                      int categoryId =
-                          workPermitController.categoryWorkList[index].id;
+                        // final detailIds =
+                        //     filteredList.map((e) => e.id).toList();
+                        // final isAllSelected = workPermitPrecautionController
+                        //         .selectedWorkPermitData[category.id]?.length ==
+                        //     detailIds.length;
 
-                      List<int> detailIds =
-                          filteredList.map((e) => e.id).toList();
-                      bool isAllSelected = workPermitPrecautionController
-                              .selectedWorkPermitData[categoryId]?.length ==
-                          detailIds.length;
+                        final visibleDetailIds =
+                            filteredList.map((e) => e.id).toList();
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 2.5,
-                          ),
-                          Row(
-                            children: [
-                              AppTextWidget(
-                                text:
-                                    "${workPermitController.categoryWorkList[index].categoryName} Required",
-                                fontSize: AppTextSize.textSizeMedium,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primaryText,
-                              ),
-                              AppTextWidget(
+                        // Corrected: Check if all VISIBLE items are selected
+                        final isAllSelected = visibleDetailIds.isNotEmpty &&
+                            visibleDetailIds.every((id) =>
+                                workPermitPrecautionController
+                                    .selectedWorkPermitData[category.id]
+                                    ?.contains(id) ??
+                                false);
+                        int categoryId =
+                            workPermitController.categoryWorkList[index].id;
+                        final errorText = workPermitPrecautionController
+                            .workPermitErrorMap[category.id];
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                            Row(
+                              children: [
+                                AppTextWidget(
+                                  text: "${category.categoryName} Required",
+                                  fontSize: AppTextSize.textSizeMedium,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primaryText,
+                                ),
+                                AppTextWidget(
                                   text: AppTexts.star,
                                   fontSize: AppTextSize.textSizeExtraSmall,
                                   fontWeight: FontWeight.w400,
-                                  color: AppColors.starcolor),
-                            ],
-                          ),
-                          Obx(() => workPermitPrecautionController
-                                  .workPermitError.value.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 4,
-                                  ),
-                                  child: Text(
-                                    workPermitPrecautionController
-                                        .workPermitError.value,
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(
-                                          255, 174, 75, 68),
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                )
-                              : SizedBox()),
-                          if (filteredList.isNotEmpty)
+                                  color: AppColors.starcolor,
+                                ),
+                              ],
+                            ),
                             Obx(() {
-                              bool isAllSelected =
-                                  workPermitPrecautionController
-                                          .selectedWorkPermitData[categoryId]
-                                          ?.length ==
-                                      detailIds.length;
-
-                              return Row(
+                              String? errorText = workPermitPrecautionController
+                                  .workPermitErrorMap[categoryId];
+                              return errorText != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        errorText,
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 174, 75, 68),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox();
+                            }),
+                            if (allDetailsForCategory.isNotEmpty) ...[
+                              Row(
                                 children: [
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 2.5,
-                                  ),
+                                      height:
+                                          SizeConfig.heightMultiplier * 2.5),
                                   Checkbox(
                                     value: isAllSelected,
                                     activeColor: AppColors.buttoncolor,
@@ -219,8 +226,11 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                     ),
                                     onChanged: (bool? value) {
                                       workPermitPrecautionController
-                                          .toggleSelectAll(categoryId,
-                                              detailIds, value ?? false);
+                                          .toggleSelectAll(
+                                        category.id,
+                                        visibleDetailIds,
+                                        value ?? false,
+                                      );
                                     },
                                   ),
                                   AppTextWidget(
@@ -230,85 +240,90 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                     color: AppColors.secondaryText,
                                   ),
                                 ],
-                              );
-                            }),
-                          SizedBox(height: SizeConfig.heightMultiplier * 2.5),
-                          filteredList.isNotEmpty
-                              ? Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: SizeConfig.widthMultiplier * 4,
-                                    vertical: SizeConfig.heightMultiplier * 3,
-                                  ),
-                                  width: SizeConfig.widthMultiplier * 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: AppColors.appgreycolor,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    5.5,
-                                            width:
-                                                SizeConfig.widthMultiplier * 82,
-                                            child: TextField(
-                                              // controller: workPermitPrecautionController
-                                              //     .searchHazardsController,
-                                              // readOnly: true,
-                                              decoration: InputDecoration(
-                                                hintText: 'Search here..',
-                                                hintStyle: TextStyle(
-                                                  fontSize:
-                                                      AppTextSize.textSizeSmall,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: AppColors.searchfeild,
-                                                ),
-                                                prefixIcon: Container(
-                                                  padding: EdgeInsets.all(
-                                                      10.0), // Adjust padding as needed
-
-                                                  child: Image.asset(
-                                                    'assets/icons/Search.png',
-                                                    fit: BoxFit
-                                                        .contain, // Ensures it stays within the box
-                                                  ),
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: AppColors
-                                                          .searchfeildcolor,
-                                                      width: 0.5),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: AppColors
-                                                          .searchfeildcolor,
-                                                      width: 0.5),
+                              ),
+                              SizedBox(
+                                  height: SizeConfig.heightMultiplier * 2.5),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: SizeConfig.widthMultiplier * 4,
+                                  vertical: SizeConfig.heightMultiplier * 3,
+                                ),
+                                width: SizeConfig.widthMultiplier * 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: AppColors.appgreycolor,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height:
+                                              SizeConfig.heightMultiplier * 5.5,
+                                          width:
+                                              SizeConfig.widthMultiplier * 82,
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              hintText: 'Search here..',
+                                              hintStyle: TextStyle(
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.searchfeild,
+                                              ),
+                                              prefixIcon: Container(
+                                                padding: EdgeInsets.all(10.0),
+                                                child: Image.asset(
+                                                  'assets/icons/Search.png',
+                                                  fit: BoxFit.contain,
                                                 ),
                                               ),
-                                              onChanged: (value) {},
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    color: AppColors
+                                                        .searchfeildcolor,
+                                                    width: 0.5),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    color: AppColors
+                                                        .searchfeildcolor,
+                                                    width: 0.5),
+                                              ),
                                             ),
+                                            onChanged: (value) {
+                                              workPermitPrecautionController
+                                                  .updateSearchQuery(
+                                                      category.id, value);
+                                            },
                                           ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 2),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            SizeConfig.heightMultiplier * 2),
+                                    if (filteredList.isEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.all(16),
+                                        child: Text(
+                                          'No results found',
+                                          style: TextStyle(
+                                            color: AppColors.secondaryText,
+                                          ),
+                                        ),
+                                      )
+                                    else
                                       SizedBox(
                                         child: SingleChildScrollView(
                                           child: Column(
@@ -319,18 +334,16 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                                     NeverScrollableScrollPhysics(),
                                                 itemCount: filteredList.length,
                                                 itemBuilder: (context, index) {
-                                                  int detailId =
-                                                      filteredList[index].id;
-
+                                                  final detail =
+                                                      filteredList[index];
                                                   return Obx(() {
-                                                    /// Get the checkbox status reactively
-
                                                     bool isChecked =
                                                         workPermitPrecautionController
                                                                 .selectedWorkPermitData[
-                                                                    categoryId]
+                                                                    category.id]
                                                                 ?.contains(
-                                                                    detailId) ??
+                                                                    detail
+                                                                        .id) ??
                                                             false;
                                                     return ListTile(
                                                       visualDensity:
@@ -357,8 +370,8 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                                               (bool? value) {
                                                             workPermitPrecautionController
                                                                 .toggleSelection(
-                                                              categoryId,
-                                                              detailId,
+                                                              category.id,
+                                                              detail.id,
                                                               value ?? false,
                                                             );
                                                           },
@@ -369,13 +382,10 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          //${index + 1}.
-
                                                           Flexible(
                                                             child:
                                                                 AppTextWidget(
-                                                              text: filteredList[
-                                                                      index]
+                                                              text: detail
                                                                   .permitDetails,
                                                               fontSize: AppTextSize
                                                                   .textSizeExtraSmall,
@@ -396,12 +406,13 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                )
-                              : SizedBox()
-                        ],
-                      );
+                                  ],
+                                ),
+                              )
+                            ],
+                          ],
+                        );
+                      });
                     },
                   )
                 : SizedBox(),
@@ -613,8 +624,9 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                           isValidSelection &&
                           workPermitPrecautionController
                               .filteredListfinal.isEmpty) {
-                        workPermitPrecautionController.workPermitError.value =
-                            '';
+                        workPermitPrecautionController.workPermitErrorMap
+                            .clear();
+
                         log('Error: 1.');
                         Get.to(WorkPermitUnderScreen(
                             userId: userId,
@@ -638,8 +650,8 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                             projectId: projectId));
                       }
                       if (!isValidAssignee && !isValidSelection) {
-                        workPermitPrecautionController.workPermitError.value =
-                            '';
+                        workPermitPrecautionController.workPermitErrorMap
+                            .clear();
                       }
                     },
                     child: AppMediumButton(

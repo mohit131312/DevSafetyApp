@@ -61,7 +61,8 @@ class WorkPermitPreviewController extends GetxController {
       request.fields['sub_activity_id'] =
           newWorkPermitController.selectedWorkActivityId.toString();
       // request.fields['sub_activity_id'] = "12";
-      request.fields['toolbox_training_id'] = '';
+      request.fields['toolbox_training_id'] =
+          newWorkPermitController.selectedtoolboxId.value.toString();
       // request.fields['description'] = "abx";
       request.fields['description'] =
           newWorkPermitController.descWorkrController.text;
@@ -174,7 +175,7 @@ class WorkPermitPreviewController extends GetxController {
   void clearAllData() {
     // Clear work permit precaution selections
     workPermitPrecautionController.selectedWorkPermitData.clear();
-    workPermitPrecautionController.workPermitError.value = "";
+    workPermitPrecautionController.workPermitErrorMap.clear();
 
     // Clear assigned checkers
     assignCheckerController.selectedassigneeDataIdsFinal.clear();

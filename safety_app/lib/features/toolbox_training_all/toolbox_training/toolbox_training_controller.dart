@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_listing_model.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
@@ -80,6 +81,158 @@ class ToolboxTrainingController extends GetxController
       //-------------------------------------------------
     } catch (e) {
       print("Error: $e");
+    }
+  }
+
+  //-----------------------------------------------------
+
+  RxList<ToolboxDetails> toolboxListingAll = <ToolboxDetails>[].obs;
+
+  Future getToolBoxListingAll(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData =
+          await globApiCall('get_toolbox_training_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      toolboxListingAll.value = (await responseData['data'] as List<dynamic>)
+          .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      log('----------=toolboxListingAll: ${(toolboxListingAll.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQuerylistingall = ''.obs;
+  TextEditingController searchtoolAllController = TextEditingController();
+  TextEditingController searchtoolMakerController = TextEditingController();
+  TextEditingController searchtoolReviwerController = TextEditingController();
+  void updateSearchworkPermitQuery(String query) {
+    searchQuerylistingall.value = query;
+  }
+
+  List<ToolboxDetails> get filteredtoolboxAllList {
+    final query = searchQuerylistingall.value.toLowerCase();
+    return toolboxListingAll
+        .where((ind) =>
+            ind.nameOfTbTraining.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  //------------------------------------------------------------------
+
+  RxList<ToolboxDetails> toolboxListingMaker = <ToolboxDetails>[].obs;
+
+  Future getToolBoxListingMaker(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData =
+          await globApiCall('get_toolbox_training_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      toolboxListingMaker.value = (await responseData['data'] as List<dynamic>)
+          .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      log('----------=toolboxListingMaker: ${(toolboxListingMaker.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQuerylistingMaker = ''.obs;
+  // TextEditingController searchlistingMakerController = TextEditingController();
+
+  void updateSearchMakerQuery(String query) {
+    searchQuerylistingMaker.value = query;
+  }
+
+  List<ToolboxDetails> get filteredtoolboxListMaker {
+    final query = searchQuerylistingMaker.value.toLowerCase();
+    return toolboxListingMaker
+        .where((ind) =>
+            ind.nameOfTbTraining.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  //------------------------------------------------------------------
+  RxList<ToolboxDetails> toolboxListingReviewer = <ToolboxDetails>[].obs;
+
+  Future getToolBoxListingReviewer(projcetId, userId, userType) async {
+    try {
+      Map<String, dynamic> map = {
+        "project_id": projcetId,
+        "user_id": userId,
+        "user_type": userType,
+      };
+
+      log("Request body: $map");
+
+      var responseData =
+          await globApiCall('get_toolbox_training_all_list', map);
+      //  log("Request body: $data");
+
+      // //-------------------------------------------------
+      toolboxListingReviewer.value =
+          (await responseData['data'] as List<dynamic>)
+              .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+              .toList();
+      log('----------=toolboxListingAll: ${(toolboxListingAll.length)}');
+      log('----------=toolboxListingMaker: ${(toolboxListingMaker.length)}');
+
+      log('----------=toolboxListingReviewer: ${(toolboxListingReviewer.length)}');
+      //-------------------------------------------------
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  var searchQuerylistingReviewer = ''.obs;
+  // TextEditingController searchlistingReviwerController =
+  //     TextEditingController();
+
+  void updateSearchReviewerQuery(String query) {
+    searchQuerylistingReviewer.value = query;
+  }
+
+  List<ToolboxDetails> get filteredtoolboxListReviewer {
+    final query = searchQuerylistingReviewer.value.toLowerCase();
+    return toolboxListingReviewer
+        .where((ind) =>
+            ind.nameOfTbTraining.toLowerCase().contains(query) ||
+            ind.id.toString().contains(query))
+        .toList();
+  }
+
+  void handleSearchByTab(int index, String query) {
+    if (index == 0) {
+      searchQuerylistingall.value = query;
+    } else if (index == 1) {
+      searchQuerylistingMaker.value = query;
+    } else if (index == 2) {
+      searchQuerylistingReviewer.value = query;
     }
   }
 }

@@ -42,8 +42,9 @@ class ContractorListing {
 class Data {
   List<UserDetail> userDetails;
   List<ContractorCompanyDetail> contractorCompanyDetails;
-  List<dynamic> contractorServicesDetails;
   List<InductionTraining> inductionTrainings;
+  List<ContractorServicesDetail> contractorServicesDetails;
+
   List<dynamic> documentDetails;
   List<dynamic> equipmentDetails;
   List<dynamic> instructionDetails;
@@ -66,7 +67,7 @@ class Data {
         contractorCompanyDetails: List<ContractorCompanyDetail>.from(
             json["contractor_company_details"]
                 .map((x) => ContractorCompanyDetail.fromJson(x))),
-        contractorServicesDetails: List<dynamic>.from(
+        contractorServicesDetails: List<ContractorServicesDetail>.from(
             json["contractor_services_details"].map((x) => x)),
         inductionTrainings: List<InductionTraining>.from(
             json["induction_trainings"]
@@ -95,6 +96,71 @@ class Data {
             List<dynamic>.from(instructionDetails.map((x) => x)),
         "reason_of_visit":
             List<dynamic>.from(reasonOfVisit.map((x) => x.toJson())),
+      };
+}
+
+class ContractorServicesDetail {
+  int id;
+  int contractorId;
+  // int activityId;
+  // int subActivityId;
+  // dynamic deletedAt;
+  // DateTime createdAt;
+  // DateTime updatedAt;
+  // String sequenceNo;
+  String activityName;
+  // int createdBy;
+  String subActivityName;
+  // int reportingUnitId;
+  // String subActSequence;
+
+  ContractorServicesDetail({
+    required this.id,
+    required this.contractorId,
+    // required this.activityId,
+    // required this.subActivityId,
+    // required this.deletedAt,
+    // required this.createdAt,
+    // required this.updatedAt,
+    // required this.sequenceNo,
+    required this.activityName,
+    //  required this.createdBy,
+    required this.subActivityName,
+    // required this.reportingUnitId,
+    // required this.subActSequence,
+  });
+
+  factory ContractorServicesDetail.fromJson(Map<String, dynamic> json) =>
+      ContractorServicesDetail(
+        id: json["id"],
+        contractorId: json["contractor_id"],
+        // activityId: json["activity_id"],
+        // subActivityId: json["sub_activity_id"],
+        // deletedAt: json["deleted_at"],
+        // createdAt: DateTime.parse(json["created_at"]),
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // sequenceNo: json["sequence_no"],
+        activityName: json["activity_name"],
+        // createdBy: json["created_by"],
+        subActivityName: json["sub_activity_name"],
+        // reportingUnitId: json["reporting_unit_id"],
+        // subActSequence: json["sub_act_sequence"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "contractor_id": contractorId,
+        // "activity_id": activityId,
+        // "sub_activity_id": subActivityId,
+        // "deleted_at": deletedAt,
+        // "created_at": createdAt.toIso8601String(),
+        // "updated_at": updatedAt.toIso8601String(),
+        // "sequence_no": sequenceNo,
+        "activity_name": activityName,
+        // "created_by": createdBy,
+        "sub_activity_name": subActivityName,
+        // "reporting_unit_id": reportingUnitId,
+        // "sub_act_sequence": subActSequence,
       };
 }
 

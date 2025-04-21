@@ -5,7 +5,9 @@ import 'package:flutter_app/features/induction_training/induction_training_scree
 import 'package:flutter_app/features/project_labour/project_labour_controller.dart';
 import 'package:flutter_app/features/project_labour/project_labour_screen.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_screen.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_screen.dart';
+import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class QuickActionsGrid extends StatelessWidget {
   final int userId;
   final String userName;
@@ -35,6 +38,10 @@ class QuickActionsGrid extends StatelessWidget {
       Get.put(InductionTrainingController());
   final ProjectLabourController projectLabourController =
       Get.put(ProjectLabourController());
+  final WorkPermitController workPermitController =
+      Get.put(WorkPermitController());
+  ToolboxTrainingController toolboxTrainingController =
+      Get.put(ToolboxTrainingController());
   @override
   Widget build(BuildContext context) {
     final actions = [
@@ -61,11 +68,17 @@ class QuickActionsGrid extends StatelessWidget {
           onTap: () async {
             switch (index) {
               case 0:
-                // showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) => CustomLoadingPopup());
-                // await inductionTrainingController.getProjectDetails();
-                // Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomLoadingPopup());
+                await workPermitController.getWorkPermitAllListing(
+                    projectId, userId, 1);
+                await workPermitController.getWorkPermitMakerListing(
+                    projectId, userId, 2);
+                await workPermitController.getWorkPermitCheckerListing(
+                    projectId, userId, 3);
+
+                Navigator.pop(context);
                 if (logStatus == true) {
                   Get.to(() => WorkPermitScreen(
                       userId: userId,
@@ -82,11 +95,17 @@ class QuickActionsGrid extends StatelessWidget {
                 }
                 break;
               case 1:
-                // showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) => CustomLoadingPopup());
-                // await inductionTrainingController.getProjectDetails();
-                // Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomLoadingPopup());
+                await toolboxTrainingController.getToolBoxListingAll(
+                    projectId, userId, 1);
+                await toolboxTrainingController.getToolBoxListingMaker(
+                    projectId, userId, 2);
+                await toolboxTrainingController.getToolBoxListingReviewer(
+                    projectId, userId, 3);
+
+                Navigator.pop(context);
                 if (logStatus == true) {
                   Get.to(() => ToolboxTrainingScreen(
                       userId: userId,

@@ -19,6 +19,7 @@ class NewWorkPermitController extends GetxController {
   var selectedcategoryId = 0.obs;
   var selectedWorkActivity = ''.obs;
   var selectedWorkActivityId = 0.obs;
+  var selectedtoolboxId = 0.obs;
 
   var selectedtoolboxtrainig = ''.obs; // Observable for Blood Group selection
   final List<String> toolboxtrainig = [
@@ -27,13 +28,13 @@ class NewWorkPermitController extends GetxController {
     'AB',
     'O',
   ];
-  var selectedBuilding = ''.obs;
-
-  var selectedFloor = ''.obs;
   var buildings = RxList<String>([
     'A13 Wing',
     'A12 Wing',
   ]);
+  var selectedBuilding = ''.obs;
+
+  var selectedFloor = ''.obs;
 
   TextEditingController descWorkrController = TextEditingController();
   FocusNode dow = FocusNode();
@@ -56,6 +57,9 @@ class NewWorkPermitController extends GetxController {
   var selectedBuildingIdListFinal = <Map<String, dynamic>>[].obs;
 
   void toggleBuildingSelection(int id) {
+    selectedBuildingIdList.clear(); //only added
+    selectedBuildingIdListFinal.clear(); //only added
+    selectedFloorIdsByBuilding.clear();
     if (selectedBuildingIdList.contains(id)) {
       selectedBuildingIdList.remove(id);
       selectedBuildingIdListFinal
@@ -185,6 +189,9 @@ class NewWorkPermitController extends GetxController {
   int? lastSelectedBuildingId; // Store the last selected building
 
   void addfloorbuildFinal(int buildingId) {
+    print(
+        "Final ---new-  selectedFloorIdsByBuilding: $selectedFloorIdsByBuilding");
+
     lastSelectedBuildingId = buildingId; // Update last selected building ID
 
     // Find the building entry in the list
