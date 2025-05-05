@@ -34,7 +34,7 @@ class ToolboxTrainingController extends GetxController
   List<ReviwerUserList> reviewerList = [];
   List<WorkPermit> workPermitList = [];
 
-  Future getSafetyIncidentData(projcetId, userId) async {
+  Future getToolBoxData(projcetId, userId) async {
     try {
       Map<String, dynamic> map = {
         "project_id": projcetId,
@@ -82,6 +82,18 @@ class ToolboxTrainingController extends GetxController
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void clearToolboxData() {
+    toolboxCategoryList.clear();
+    traineesLaboursList.clear();
+    traineesstaffList.clear();
+    traineesContractorList.clear();
+    reviewerList.clear();
+    workPermitList.clear();
+
+    // Optionally, log the data after clearing
+    log('Toolbox data cleared');
   }
 
   //-----------------------------------------------------
@@ -150,8 +162,13 @@ class ToolboxTrainingController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
+      // toolboxListingMaker.value = (await responseData['data'] as List<dynamic>)
+      //     .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+
       toolboxListingMaker.value = (await responseData['data'] as List<dynamic>)
           .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+          .where((item) => item.status != 0) // integer comparison
           .toList();
 
       log('----------=toolboxListingMaker: ${(toolboxListingMaker.length)}');

@@ -252,7 +252,8 @@ class InductionTrainingController extends GetxController {
 
   ///---------------------------------
   ///
-  List<InductionListingData> inductionListingList = [];
+  RxList<InductionListingData> inductionListingList =
+      <InductionListingData>[].obs;
   Future getInductionListing(projectId, userId) async {
     try {
       Map<String, dynamic> map = {"project_id": projectId, "user_id": userId};
@@ -261,7 +262,7 @@ class InductionTrainingController extends GetxController {
 
       var responseData = await globApiCall('get_induction_training_list', map);
 
-      inductionListingList = (await responseData['data'] as List<dynamic>)
+      inductionListingList.value = (await responseData['data'] as List<dynamic>)
           .map((e) => InductionListingData.fromJson(e as Map<String, dynamic>))
           .toList();
       log('----------inductionListingList${inductionListingList.length}');

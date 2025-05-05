@@ -259,7 +259,7 @@ class AddContractorController extends GetxController {
     contractorDetailsController.selectedDoctType.value = '';
     contractorDetailsController.docImg.clear();
     contractorDetailsController.docImgCount.value = 0;
-
+    contractorDetailsController.validityController.clear();
     print(" Contractor Details Cleared");
 
     serviceDetailsController.selectActivityIdList.clear();

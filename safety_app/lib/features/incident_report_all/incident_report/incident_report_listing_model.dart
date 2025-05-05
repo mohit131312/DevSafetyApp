@@ -11,10 +11,10 @@ String incidentReportListingToJson(IncidentReportListing data) =>
     json.encode(data.toJson());
 
 class IncidentReportListing {
-  List<Datum> data;
-  String message;
-  bool status;
-  bool token;
+  final List<IncidentReportList> data;
+  final String message;
+  final bool status;
+  final bool token;
 
   IncidentReportListing({
     required this.data,
@@ -25,7 +25,8 @@ class IncidentReportListing {
 
   factory IncidentReportListing.fromJson(Map<String, dynamic> json) =>
       IncidentReportListing(
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: List<IncidentReportList>.from(
+            json["data"].map((x) => IncidentReportList.fromJson(x))),
         message: json["message"],
         status: json["status"],
         token: json["token"],
@@ -39,69 +40,77 @@ class IncidentReportListing {
       };
 }
 
-class Datum {
-  int id;
-  int projectId;
-  int buildingId;
-  int floorId;
-  int contractorCompanyId;
-  String incidentDetails;
-  int severityLevelId;
-  int assigneeId;
-  int assignerId;
-  String location;
-  String signaturePhoto;
-  dynamic deletedAt;
-  DateTime createdAt;
-  DateTime updatedAt;
-  int createdBy;
-  String rootCause;
-  dynamic signaturePhotoAfter;
-  dynamic assignerComment;
-  dynamic status;
+class IncidentReportList {
+  final int id;
+  final int projectId;
+  final int? buildingId;
+  final int? floorId;
+  final int? contractorCompanyId;
+  final String? incidentDetails;
+  final int? severityLevelId;
+  final int? assigneeId;
+  final int? assignerId;
+  final String? location;
+  // final String? signaturePhoto;
+  // final dynamic deletedAt;
+  final DateTime? createdAt;
+  // final DateTime updatedAt;
+  // final int createdBy;
+  // final String rootCause;
+  // final dynamic signaturePhotoAfter;
+  // final dynamic assignerComment;
+  final int? status;
+  final String? severityColor;
+  final String? colorName;
 
-  Datum({
-    required this.id,
-    required this.projectId,
-    required this.buildingId,
-    required this.floorId,
-    required this.contractorCompanyId,
-    required this.incidentDetails,
-    required this.severityLevelId,
-    required this.assigneeId,
-    required this.assignerId,
-    required this.location,
-    required this.signaturePhoto,
-    required this.deletedAt,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.createdBy,
-    required this.rootCause,
-    required this.signaturePhotoAfter,
-    required this.assignerComment,
-    required this.status,
-  });
+  IncidentReportList(
+      {required this.id,
+      required this.projectId,
+      required this.buildingId,
+      required this.floorId,
+      required this.contractorCompanyId,
+      required this.incidentDetails,
+      required this.severityLevelId,
+      required this.assigneeId,
+      required this.assignerId,
+      required this.location,
+      // required this.signaturePhoto,
+      // required this.deletedAt,
+      required this.createdAt,
+      // required this.updatedAt,
+      // required this.createdBy,
+      // required this.rootCause,
+      // required this.signaturePhotoAfter,
+      // required this.assignerComment,
+      this.status,
+      this.severityColor,
+      this.colorName});
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory IncidentReportList.fromJson(Map<String, dynamic> json) =>
+      IncidentReportList(
         id: json["id"],
         projectId: json["project_id"],
-        buildingId: json["building_id"],
-        floorId: json["floor_id"],
-        contractorCompanyId: json["contractor_company_id"],
-        incidentDetails: json["incident_details"],
-        severityLevelId: json["severity_level_id"],
-        assigneeId: json["assignee_id"],
-        assignerId: json["assigner_id"],
-        location: json["location"],
-        signaturePhoto: json["signature_photo"],
-        deletedAt: json["deleted_at"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        createdBy: json["created_by"],
-        rootCause: json["root_cause"],
-        signaturePhotoAfter: json["signature_photo_after"],
-        assignerComment: json["assigner_comment"],
-        status: json["status"],
+        buildingId: json["building_id"] ?? 0,
+        floorId: json["floor_id"] ?? 0,
+        contractorCompanyId: json["contractor_company_id"] ?? 0,
+        incidentDetails: json["incident_details"] ?? "",
+        severityLevelId: json["severity_level_id"] ?? 0,
+        assigneeId: json["assignee_id"] ?? 0,
+        assignerId: json["assigner_id"] ?? 0,
+        location: json["location"]! ?? "",
+        // signaturePhoto: json["signature_photo"],
+        // deletedAt: json["deleted_at"],
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : null,
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // createdBy: json["created_by"],
+        // rootCause: json["root_cause"],
+        // signaturePhotoAfter: json["signature_photo_after"],
+        // assignerComment: json["assigner_comment"],
+        status: json["status"] ?? 0,
+        severityColor: json["severity_color"] ?? "",
+        colorName: json["Color_name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -115,15 +124,15 @@ class Datum {
         "assignee_id": assigneeId,
         "assigner_id": assignerId,
         "location": locationValues.reverse[location],
-        "signature_photo": signaturePhoto,
-        "deleted_at": deletedAt,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "created_by": createdBy,
-        "root_cause": rootCause,
-        "signature_photo_after": signaturePhotoAfter,
-        "assigner_comment": assignerComment,
-        "status": status,
+        // "signature_photo": signaturePhoto,
+        // "deleted_at": deletedAt,
+        // "created_at": createdAt.toIso8601String(),
+        // "updated_at": updatedAt.toIso8601String(),
+        // "created_by": createdBy,
+        // "root_cause": rootCause,
+        // "signature_photo_after": signaturePhotoAfter,
+        // "assigner_comment": assignerComment,
+        // "status": status,
       };
 }
 

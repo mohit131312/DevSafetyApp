@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/features/contractor/add_contractor/add_contractor_controller.dart';
 import 'package:flutter_app/features/contractor/contractor_details/contractor_details_controller.dart';
 import 'package:flutter_app/features/contractor/service_details/service_details_controller.dart';
 import 'package:flutter_app/features/contractor/service_undertaking/service_undertaking_controller.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
@@ -21,6 +21,8 @@ class ContractorPreviewController extends GetxController {
   void toggleExpansion() {
     isPersonalDetailsExpanded.value = !isPersonalDetailsExpanded.value;
   }
+
+  final LocationController locationController = Get.find();
 
   var isidproofDetailsExpanded =
       true.obs; // Observable to track expansion state
@@ -114,7 +116,9 @@ class ContractorPreviewController extends GetxController {
 
       request.fields['user_id'] = userId.toString();
       request.fields['user_name'] = userName.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
+      request.fields['validity'] =
+          contractorDetailsController.validityController.text;
 
       for (int i = 0;
           i < serviceDetailsController.selectActivityIdList.length;
@@ -129,22 +133,27 @@ class ContractorPreviewController extends GetxController {
             serviceDetailsController.selectSubActivityIdList[i].toString();
       }
 
-      if (contractorDetailsController.docImg.isNotEmpty) {
-        var image = contractorDetailsController.docImg.first;
+      // if (contractorDetailsController.docImg.isNotEmpty) {
+      //   var image = contractorDetailsController.docImg.first;
 
-        if (image.path.isNotEmpty && File(image.path).existsSync()) {
-          log("File exists, attaching: ${image.path}");
+      //   if (image.path.isNotEmpty && File(image.path).existsSync()) {
+      //     log("File exists, attaching: ${image.path}");
 
-          request.files.add(await http.MultipartFile.fromPath(
-            'document_photo',
-            image.path,
-          ));
-        } else {
-          log("File not found: ${image.path}");
-        }
-      } else {
-        log("No image available to upload");
-      }
+      //     request.files.add(await http.MultipartFile.fromPath(
+      //       'document_photo',
+      //       image.path,
+      //     ));
+      //   } else {
+      //     log("File not found: ${image.path}");
+      //   }
+      // } else {
+      //   log("No image available to upload");
+      // }
+
+      request.files.add(await http.MultipartFile.fromPath(
+        'document_photo',
+        contractorDetailsController.docImg.first.path,
+      ));
 
       request.files.add(await http.MultipartFile.fromPath(
         'signature_photo',

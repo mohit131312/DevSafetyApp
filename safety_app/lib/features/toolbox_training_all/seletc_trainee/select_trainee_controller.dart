@@ -67,7 +67,7 @@ class SelectTraineeController extends GetxController
     final query = searchQuery.value.toLowerCase();
     return toolboxTrainingController.traineesLaboursList
         .where((t) =>
-            t.labourName.toLowerCase().contains(query) ||
+            t.labourName!.toLowerCase().contains(query) ||
             t.id.toString().contains(query))
         .toList();
   }

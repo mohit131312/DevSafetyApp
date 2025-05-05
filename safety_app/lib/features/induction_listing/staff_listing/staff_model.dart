@@ -307,7 +307,7 @@ class UserDetail {
   String? emergencyContactRelation;
   // String isActive;
   // dynamic deletedAt;
-  // DateTime createdAt;
+  DateTime? createdAt;
   // DateTime updatedAt;
   // dynamic qrCode;
   // dynamic idCardExpiryDate;
@@ -350,7 +350,7 @@ class UserDetail {
     this.emergencyContactRelation,
     // required this.isActive,
     // required this.deletedAt,
-    // required this.createdAt,
+    this.createdAt,
     // required this.updatedAt,
     // required this.qrCode,
     // required this.idCardExpiryDate,
@@ -396,7 +396,9 @@ class UserDetail {
         emergencyContactRelation: json["emergency_contact_relation"] ?? "",
         // isActive: json["is_active"],
         // deletedAt: json["deleted_at"],
-        // createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : null,
         // updatedAt: DateTime.parse(json["updated_at"]),
         // qrCode: json["qr_code"],
         // idCardExpiryDate: json["id_card_expiry_date"],

@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/features/profile/profile_screen.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/validation.dart';
+import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
@@ -67,6 +67,8 @@ class ChangePasswordController extends GetxController {
     return Validator.validateConfirmPassword(value, newPassword.value);
   }
 
+  var apiStatus = false.obs;
+
   Future<void> submit(BuildContext context, userId) async {
     if (formKey.currentState?.validate() ?? false) {
       if (logStatus == true) {
@@ -85,11 +87,11 @@ class ChangePasswordController extends GetxController {
         var response = await getChangePassword(map, context);
 
         // Close loading popup
-        if (validationchangepass == 'Password changed succesfully') {
+        if (validationchangepass == 'Password changed successfully') {
           Navigator.pop(context);
           Navigator.pop(context);
-          Get.off(ProfileScreen());
           formKey.currentState?.reset();
+          Get.back(); // Go back to the previous screen
         } else {
           Navigator.pop(context);
         }
@@ -135,12 +137,13 @@ class ChangePasswordController extends GetxController {
           validationchangepass = responseData['message'];
 
           log('Success Message: $validationchangepass');
+          apiStatus.value = true;
 
           // Show success message popup
           await showDialog(
             context: context,
             builder: (BuildContext context) {
-              return CustomValidationPopup(message: validationchangepass);
+              return ValidationPopChang(message: validationchangepass);
             },
           );
         } else {

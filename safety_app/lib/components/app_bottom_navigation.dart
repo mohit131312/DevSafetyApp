@@ -28,6 +28,9 @@ class CustomBottomNavItem extends StatelessWidget {
                   height: height,
                 )
               : Text(""),
+          SizedBox(
+            height: 5,
+          )
         ],
       ),
     );

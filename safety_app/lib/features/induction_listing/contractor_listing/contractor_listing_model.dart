@@ -334,7 +334,7 @@ class UserDetail {
   int? contractorCompanyId;
   // int createdBy;
   // dynamic deletedAt;
-  // DateTime createdAt;
+  DateTime? createdAt;
   // DateTime updatedAt;
   String? contractorsCompanyName;
   int? idProofType;
@@ -353,7 +353,7 @@ class UserDetail {
     this.contractorCompanyId,
     // required this.createdBy,
     // required this.deletedAt,
-    // required this.createdAt,
+    this.createdAt,
     // required this.updatedAt,
     this.contractorsCompanyName,
     this.idProofType,
@@ -373,7 +373,9 @@ class UserDetail {
         contractorCompanyId: json["contractor_company_id"] ?? 0,
         // createdBy: json["created_by"],
         // deletedAt: json["deleted_at"],
-        // createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : null,
         // updatedAt: DateTime.parse(json["updated_at"]),
         contractorsCompanyName: json["contractors_company_name"] ?? '',
         idProofType: json["id_proof_type"] ?? 0,

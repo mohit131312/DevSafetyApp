@@ -19,16 +19,14 @@ import 'package:get/get.dart';
 class AssigneeIncidentDetailsScreen extends StatelessWidget {
   AssigneeIncidentDetailsScreen({super.key});
 
-  final IncidentReportController incidentReportController =
-      Get.put(IncidentReportController());
+  final IncidentReportController incidentReportController = Get.find();
 
   final IncidentDetailsController incidentDetailsController =
       Get.put(IncidentDetailsController());
   final IncidentMoreDetailsController incidentMoreDetailsController =
       Get.put(IncidentMoreDetailsController());
 
-  final SelectInjuredController selectInjuredController =
-      Get.put(SelectInjuredController());
+  final SelectInjuredController selectInjuredController = Get.find();
 
   final AssigneeIncidentDetailsController assigneeIncidentDetailsController =
       Get.put(AssigneeIncidentDetailsController());

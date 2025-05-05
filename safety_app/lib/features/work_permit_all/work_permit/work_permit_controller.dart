@@ -24,9 +24,6 @@ class WorkPermitController extends GetxController
       selectedOption.value = tabController.index;
       print("Selected Tab Index: ${selectedOption.value}");
     });
-
-    personalDetails.value = personalDetailData;
-    filteredDetails.value = personalDetailData;
   }
 
   @override
@@ -34,44 +31,6 @@ class WorkPermitController extends GetxController
     tabController.dispose();
     super.onClose();
   }
-
-  final List<Map<String, dynamic>> personalDetailData = [
-    {
-      'img': "assets/icons/profile_icon.png",
-      'title': "Work Permit",
-      "subtitle": "Work Permit detail",
-      "text": "Open",
-      'date': '12 Mar 2024, 02:22 PM',
-    },
-    {
-      'img': "assets/icons/profile_icon.png",
-      'title': "Work Permit",
-      "subtitle": "Work Permit detail",
-      "text": "Open",
-      'date': '12 Mar 2024, 02:22 PM',
-    },
-    {
-      'img': "assets/icons/profile_icon.png",
-      'title': "Work Permit",
-      "subtitle": "Work Permit detail",
-      "text": "Closed",
-      'date': '12 Mar 2024, 02:22 PM',
-    },
-    {
-      'img': "assets/icons/profile_icon.png",
-      'title': "Work Permit",
-      "subtitle": "Work Permit detail",
-      "text": "Accepted",
-      'date': '12 Mar 2024, 02:22 PM',
-    },
-    {
-      'img': "assets/icons/profile_icon.png",
-      'title': "Work data",
-      "subtitle": "Work Permit detail",
-      "text": "Accepted",
-      'date': '12 Mar 2024, 02:22 PM',
-    },
-  ];
 
   void changeSelection(int index) {
     selectedOption.value = index;
@@ -163,6 +122,18 @@ class WorkPermitController extends GetxController
     }
   }
 
+  void clearWorkPermitData() {
+    categoryWorkList.clear();
+    buildingList.clear();
+    subActivityWorkList.clear();
+    checkuserList.clear();
+    projectfloorList.clear();
+    safetyToolboxTraining.clear();
+
+    // Optionally, log the data after clearing
+    log('Data cleared');
+  }
+
   RxList<WorkPermitListingAll> workPermitListingAll =
       <WorkPermitListingAll>[].obs;
 
@@ -227,8 +198,12 @@ class WorkPermitController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
+      // workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
+      //     .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+      //     .toList();
       workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
           .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+          .where((item) => item.status != "0") // status is a String
           .toList();
 
       log('----------=workPermitMakerList: ${(workPermitMakerList.length)}');

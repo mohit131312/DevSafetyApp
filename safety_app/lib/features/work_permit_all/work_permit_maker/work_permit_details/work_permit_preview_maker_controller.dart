@@ -46,6 +46,7 @@ class WorkPermitPreviewMakerController extends GetxController {
   var savedSignatureUrlfetch = ''.obs;
 
   var userFound = false.obs;
+
   Future getWorkPermitMakerDetails(
       projcetId, userId, userType, workpermitId) async {
     try {
@@ -71,11 +72,12 @@ class WorkPermitPreviewMakerController extends GetxController {
               as List<dynamic>)
           .map((e) => SelectedSubActivity.fromJson(e as Map<String, dynamic>))
           .toList();
-      selectedToolboxTrainingMaker =
-          (await data['selected_toolbox_training'] as List<dynamic>)
-              .map((e) =>
+      selectedToolboxTrainingMaker = (data['selected_toolbox_training']
+                  as List<dynamic>?)
+              ?.map((e) =>
                   SelectedToolboxTraining.fromJson(e as Map<String, dynamic>))
-              .toList();
+              .toList() ??
+          [];
       checkerInformation = (await data['checker_information'] as List<dynamic>)
           .map((e) => CheckerInformation.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -95,14 +97,16 @@ class WorkPermitPreviewMakerController extends GetxController {
 
       workPermitRemarksControllerenable.text =
           checkerInformation[0].checkerComment ?? '';
-      workPermitsMakerDetails[0].status == "0" ||
-              workPermitsMakerDetails[0].status == "3"
+
+      workPermitsMakerDetails[0].status == "3"
           ? userFound.value = true
           : userFound.value = false;
       workPermitRemarksController.text =
           workPermitsMakerDetails[0].makerComment ?? '';
       savedSignatureUrlfetch.value =
           await '${workPermitsMakerDetails[0].makerSignaturePhotoAfter ?? ''}';
+      log('-------------status--------------: ${workPermitsMakerDetails[0].status}');
+      log('-------------userFound.value--------------: ${userFound.value}');
       log('savedSignatureUrlOrBase64: ${savedSignatureUrlfetch.value}');
 
       log('----------=workPermitsMakerDetails: ${(workPermitsMakerDetails.length)}');
@@ -256,12 +260,32 @@ class WorkPermitPreviewMakerController extends GetxController {
   }
 
   void clearwpComment() {
-    workPermitRemarksController.clear();
     signatureattestationController.clear();
     savedAttestationSignature.value = null;
     signatureattestationError.value = "";
     signatureFile = File('');
     validationmsg = "";
     apiStatus = false;
+
+    workpermitExpanded.value = true;
+    isprecautionworkpermitExpanded.value = true;
+    userFound.value = false;
+
+    // Clear text controllers
+    workPermitRemarksController.clear();
+    workPermitRemarksControllerenable.clear();
+
+    // Clear API-related fields
+    validationmsg = '';
+    apiStatus = false;
+    savedSignatureUrlfetch.value = '';
+    // Clear lists and maps
+    workPermitsMakerDetails.clear();
+    subActivityWPMakerDetails.clear();
+    selectedToolboxTrainingMaker.clear();
+    checkerInformation.clear();
+    makerInformation.clear();
+    buildingListWPMakerList.clear();
+    categoryListWPMakerList.clear();
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/features/incident_report_all/Incident_report_details_again/incident_report_details_again_controller.dart';
-import 'package:flutter_app/features/incident_report_all/incedent_report_submit_closed/incident_report_submit_closed.dart';
 import 'package:flutter_app/features/incident_report_all/incident_attestation/incident_attestation_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_details/incident_details_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_more_details/incident_more_details_controller.dart';
@@ -79,7 +78,7 @@ class IncidentReportDetailsAgain extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(IncidentReportSubmitClosed());
+                    // Get.to(IncidentReportSubmitClosed());
                   },
                   child: Container(
                     alignment: Alignment.center,

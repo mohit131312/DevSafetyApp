@@ -31,7 +31,7 @@ class SelectInformedIncidentController extends GetxController {
     final query = searchAssigneeQuery.value.toLowerCase();
     return incidentReportController.assigneeIncidentList
         .where((assignee) =>
-            assignee.firstName.toLowerCase().contains(query) ||
+            assignee.firstName!.toLowerCase().contains(query) ||
             assignee.id.toString().contains(query))
         .toList();
   }

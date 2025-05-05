@@ -126,4 +126,15 @@ class WorkPermitDateController extends GetxController {
 
     return isValid;
   }
+
+  void clearDuraion() {
+    selectedStartDate.value = null;
+    selectedEndDate.value = null;
+    selectedStartTime.value = null;
+    selectedEndTime.value = null;
+    startDateError.value = '';
+    endDateError.value = '';
+    startTimeError.value = '';
+    endTimeError.value = '';
+  }
 }

@@ -30,63 +30,59 @@ class ProfileDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+      appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
-          child: AppBar(
-            scrolledUnderElevation: 0.0,
-            backgroundColor: AppColors.buttoncolor,
-            centerTitle: true,
-            toolbarHeight: SizeConfig.heightMultiplier * 10,
-            title: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+        ),
+        scrolledUnderElevation: 0.0,
+        backgroundColor: AppColors.buttoncolor,
+        centerTitle: true,
+        toolbarHeight: SizeConfig.heightMultiplier * 10,
+        title: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: AppTextWidget(
+            text: AppTexts.profiledetails,
+            fontSize: AppTextSize.textSizeMediumm,
+            fontWeight: FontWeight.w400,
+            color: AppColors.primary,
+          ),
+        ),
+        leading: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: SizeConfig.heightMultiplier * 2.5,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Get.to(EditProfileScreen(
+                userId: userId,
+                roleId: roleId,
+              ));
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: SizeConfig.heightMultiplier * 2,
+                  right: SizeConfig.heightMultiplier * 3.5),
               child: AppTextWidget(
-                text: AppTexts.profiledetails,
-                fontSize: AppTextSize.textSizeMediumm,
+                text: AppTexts.edit,
+                fontSize: AppTextSize.textSizeSmall,
                 fontWeight: FontWeight.w400,
                 color: AppColors.primary,
               ),
             ),
-            leading: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: SizeConfig.heightMultiplier * 2.5,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(EditProfileScreen(
-                    userId: userId,
-                    roleId: roleId,
-                  ));
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: SizeConfig.heightMultiplier * 2,
-                      right: SizeConfig.heightMultiplier * 3.5),
-                  child: AppTextWidget(
-                    text: AppTexts.edit,
-                    fontSize: AppTextSize.textSizeSmall,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
           ),
-        ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -123,7 +119,7 @@ class ProfileDetailsScreen extends StatelessWidget {
                   ),
                   AppTextWidget(
                     text: AppTexts.personaldetails,
-                    fontSize: AppTextSize.textSizeMedium,
+                    fontSize: AppTextSize.textSizeSmallm,
                     fontWeight: FontWeight.w500,
                     color: AppColors.buttoncolor,
                   ),
@@ -158,12 +154,12 @@ class ProfileDetailsScreen extends StatelessWidget {
                     AppTextWidget(
                       text:
                           "${profileDetailsController.profiledetails['first_name']} ${profileDetailsController.profiledetails['last_name']}",
-                      fontSize: AppTextSize.textSizeSmallm,
+                      fontSize: AppTextSize.textSizeSmall,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primaryText,
                     ),
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
+                      height: SizeConfig.heightMultiplier * 1.5,
                     ),
                     AppTextWidget(
                       text: 'User Name',
@@ -178,31 +174,12 @@ class ProfileDetailsScreen extends StatelessWidget {
                       text:
                           "${profileDetailsController.profiledetails['first_name']?.trim() ?? ''}_${profileDetailsController.profiledetails['last_name']?.trim() ?? ''}"
                               .replaceAll(RegExp(r'\s+'), ''),
-                      fontSize: AppTextSize.textSizeSmallm,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryText,
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    AppTextWidget(
-                      text: 'User Role',
                       fontSize: AppTextSize.textSizeSmall,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.secondaryText,
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 0.5,
-                    ),
-                    AppTextWidget(
-                      text:
-                          "${profileDetailsController.profiledetails['role']}",
-                      fontSize: AppTextSize.textSizeSmallm,
-                      fontWeight: FontWeight.w500,
                       color: AppColors.primaryText,
                     ),
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
+                      height: SizeConfig.heightMultiplier * 1.5,
                     ),
                     AppTextWidget(
                       text: 'Contact Number',
@@ -216,12 +193,12 @@ class ProfileDetailsScreen extends StatelessWidget {
                     AppTextWidget(
                       text:
                           "${profileDetailsController.profiledetails['mobile_number']}",
-                      fontSize: AppTextSize.textSizeSmallm,
+                      fontSize: AppTextSize.textSizeSmall,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primaryText,
                     ),
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
+                      height: SizeConfig.heightMultiplier * 1.5,
                     ),
                     AppTextWidget(
                       text: 'Email Id',
@@ -235,7 +212,7 @@ class ProfileDetailsScreen extends StatelessWidget {
                     AppTextWidget(
                       text:
                           "${profileDetailsController.profiledetails['email']}",
-                      fontSize: AppTextSize.textSizeSmallm,
+                      fontSize: AppTextSize.textSizeSmall,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primaryText,
                     ),
@@ -256,7 +233,7 @@ class ProfileDetailsScreen extends StatelessWidget {
                   ),
                   AppTextWidget(
                     text: AppTexts.profiledetails,
-                    fontSize: AppTextSize.textSizeMedium,
+                    fontSize: AppTextSize.textSizeSmallm,
                     fontWeight: FontWeight.w500,
                     color: AppColors.buttoncolor,
                   ),
@@ -294,7 +271,7 @@ class ProfileDetailsScreen extends StatelessWidget {
                           Flexible(
                             child: AppTextWidget(
                               text: selectedproject ?? 'No project selected',
-                              fontSize: AppTextSize.textSizeSmallm,
+                              fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w500,
                               color: AppColors.primaryText,
                               textAlign: TextAlign.start,
@@ -331,7 +308,7 @@ class ProfileDetailsScreen extends StatelessWidget {
                                   return AppTextWidget(
                                     text: selectProjectController
                                         .selectProject[index].projectName,
-                                    fontSize: AppTextSize.textSizeSmallm,
+                                    fontSize: AppTextSize.textSizeSmall,
                                     fontWeight: FontWeight.w500,
                                     color: AppColors.primaryText,
                                     textAlign: TextAlign.start,

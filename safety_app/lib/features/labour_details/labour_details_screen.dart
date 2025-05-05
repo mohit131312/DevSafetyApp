@@ -49,56 +49,52 @@ class LabourDetailsScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-            child: AppBar(
-              scrolledUnderElevation: 0.0,
-              elevation: 0,
-              backgroundColor: AppColors.buttoncolor,
-              foregroundColor: AppColors.buttoncolor,
-              centerTitle: true,
-              toolbarHeight: SizeConfig.heightMultiplier * 10,
-              title: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: AppTextWidget(
-                  text: AppTexts.labourdetails,
-                  fontSize: AppTextSize.textSizeMedium,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.primary,
-                ),
-              ),
-              leading: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: SizeConfig.heightMultiplier * 2.5,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: SizeConfig.heightMultiplier * 2,
-                    right: SizeConfig.widthMultiplier * 5,
-                  ),
-                  child: Icon(
-                    Icons.more_vert,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
           ),
+          scrolledUnderElevation: 0.0,
+          elevation: 0,
+          backgroundColor: AppColors.buttoncolor,
+          foregroundColor: AppColors.buttoncolor,
+          centerTitle: true,
+          toolbarHeight: SizeConfig.heightMultiplier * 10,
+          title: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: AppTextWidget(
+              text: AppTexts.labourdetails,
+              fontSize: AppTextSize.textSizeMedium,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: SizeConfig.heightMultiplier * 2.5,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(
+                top: SizeConfig.heightMultiplier * 2,
+                right: SizeConfig.widthMultiplier * 5,
+              ),
+              child: Icon(
+                Icons.more_vert,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,8 +194,8 @@ class LabourDetailsScreen extends StatelessWidget {
                             ),
                             AppTextWidget(
                               text: AppTexts.personaldetails,
-                              fontSize: AppTextSize.textSizeMediumm,
-                              fontWeight: FontWeight.w600,
+                              fontSize: AppTextSize.textSizeMedium,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.primaryText,
                             ),
                             SizedBox(
@@ -255,8 +251,8 @@ class LabourDetailsScreen extends StatelessWidget {
                             ),
                             AppTextWidget(
                               text: AppTexts.professionaldetails,
-                              fontSize: AppTextSize.textSizeMediumm,
-                              fontWeight: FontWeight.w600,
+                              fontSize: AppTextSize.textSizeMedium,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.primaryText,
                             ),
                             SizedBox(
@@ -317,8 +313,8 @@ class LabourDetailsScreen extends StatelessWidget {
                             ),
                             AppTextWidget(
                               text: AppTexts.emergencycontact,
-                              fontSize: AppTextSize.textSizeMediumm,
-                              fontWeight: FontWeight.w600,
+                              fontSize: AppTextSize.textSizeMedium,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.primaryText,
                             ),
                             SizedBox(
@@ -374,8 +370,8 @@ class LabourDetailsScreen extends StatelessWidget {
                             ),
                             AppTextWidget(
                               text: AppTexts.idproof,
-                              fontSize: AppTextSize.textSizeMediumm,
-                              fontWeight: FontWeight.w600,
+                              fontSize: AppTextSize.textSizeMedium,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.primaryText,
                             ),
                             SizedBox(

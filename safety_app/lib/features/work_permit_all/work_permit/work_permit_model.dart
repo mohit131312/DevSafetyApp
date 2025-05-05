@@ -307,7 +307,7 @@ class CheckerUserList {
   // String email;
   // dynamic emailVerifiedAt;
   // String location;
-  // String mobileNumber;
+  String? mobileNumber;
   // int role;
   // DateTime createdAt;
   // DateTime updatedAt;
@@ -334,7 +334,7 @@ class CheckerUserList {
     // required this.email,
     // required this.emailVerifiedAt,
     // required this.location,
-    // required this.mobileNumber,
+    this.mobileNumber,
     // required this.role,
     // required this.createdAt,
     // required this.updatedAt,
@@ -363,7 +363,7 @@ class CheckerUserList {
         // email: json["email"],
         // emailVerifiedAt: json["email_verified_at"],
         // location: json["location"],
-        // mobileNumber: json["mobile_number"],
+        mobileNumber: json["mobile_number"] ?? "",
         // role: json["role"],
         // createdAt: DateTime.parse(json["created_at"]),
         // updatedAt: DateTime.parse(json["updated_at"]),

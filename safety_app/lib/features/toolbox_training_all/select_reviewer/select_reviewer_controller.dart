@@ -103,4 +103,14 @@ class SelectReviewerController extends GetxController {
       );
     }
   }
+
+  void clearReviewerData() {
+    selectedassigneeDataIds.clear();
+    selectedassigneeDataIdsFinal.clear();
+
+    // Optionally, reset any error messages
+    assigneeError.value = '';
+
+    print("Reviewer data cleared");
+  }
 }

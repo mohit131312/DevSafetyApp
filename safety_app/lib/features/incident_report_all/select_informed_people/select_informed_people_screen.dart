@@ -20,65 +20,51 @@ class SelectInformedPeopleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
           ),
-          child: AppBar(
-            scrolledUnderElevation: 0.0,
-            elevation: 0,
-            backgroundColor: AppColors.buttoncolor,
-            foregroundColor: AppColors.buttoncolor,
-            centerTitle: true,
-            toolbarHeight: SizeConfig.heightMultiplier * 10,
-            title: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: AppTextWidget(
-                text: 'Select Informed Persons',
-                fontSize: AppTextSize.textSizeMedium,
-                fontWeight: FontWeight.w400,
+          scrolledUnderElevation: 0.0,
+          elevation: 0,
+          backgroundColor: AppColors.buttoncolor,
+          foregroundColor: AppColors.buttoncolor,
+          centerTitle: true,
+          toolbarHeight: SizeConfig.heightMultiplier * 10,
+          title: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: AppTextWidget(
+              text: 'Select Informed Persons',
+              fontSize: AppTextSize.textSizeMedium,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: SizeConfig.heightMultiplier * 2.5,
                 color: AppColors.primary,
               ),
             ),
-            leading: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: SizeConfig.heightMultiplier * 2.5,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: SizeConfig.heightMultiplier * 2,
-                  right: SizeConfig.widthMultiplier * 5,
-                ),
-                child: Image.asset(
-                  "assets/icons/frame_icon.png",
-                  height: SizeConfig.imageSizeMultiplier * 6,
-                  width: SizeConfig.imageSizeMultiplier * 6,
-                ),
-              )
-            ],
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
+        body: SingleChildScrollView(
+          child: SizedBox(
+            height: SizeConfig.heightMultiplier * 70,
+            child: Column(
               children: [
                 SizedBox(
                   height: SizeConfig.heightMultiplier * 3,
@@ -148,10 +134,51 @@ class SelectInformedPeopleScreen extends StatelessWidget {
                                         activeColor: AppColors.thirdText,
                                       ),
                                     )),
-                                CircleAvatar(
-                                  radius: 22,
-                                  backgroundImage: NetworkImage(
-                                      "$baseUrl${assignee.profilePhoto}"),
+                                // CircleAvatar(
+                                //   radius: 22,
+                                //   backgroundImage: NetworkImage(
+                                //       "$baseUrl${assignee.profilePhoto}"),
+                                // ),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 28,
+                                      backgroundColor: Colors
+                                          .grey.shade200, // Fallback color
+                                      child: ClipOval(
+                                        child: Image.network(
+                                          "$baseUrl${assignee.profilePhoto}",
+                                          fit: BoxFit.cover,
+                                          width: 56, // Diameter = radius * 2
+                                          height: 56,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return Center(
+                                              child: SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: AppColors.buttoncolor,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/icons/image.png',
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -173,21 +200,20 @@ class SelectInformedPeopleScreen extends StatelessWidget {
                 )
               ],
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.widthMultiplier * 4,
-                vertical: SizeConfig.heightMultiplier * 2,
-              ),
-              child: AppElevatedButton(
-                text: "Add",
-                onPressed: () {
-                  selectInformedIncidentController.addIncidentData();
-                  Get.back();
-                },
-              ),
-            ),
-            SizedBox(height: SizeConfig.heightMultiplier * 4),
-          ],
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.heightMultiplier * 1,
+            horizontal: SizeConfig.widthMultiplier * 4,
+          ),
+          child: AppElevatedButton(
+            text: "Add",
+            onPressed: () {
+              selectInformedIncidentController.addIncidentData();
+              Get.back();
+            },
+          ),
         ),
       ),
     );

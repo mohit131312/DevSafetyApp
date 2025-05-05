@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_attestation/incident_attestation_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_details/incident_details_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_more_details/incident_more_details_controller.dart';
@@ -56,6 +57,7 @@ class IncedentReportPreviewController extends GetxController {
     scrollStaffController.dispose();
     scrollContractorController.dispose();
     scrollAssigneeInformedController.dispose();
+
     super.dispose();
   }
 
@@ -69,6 +71,7 @@ class IncedentReportPreviewController extends GetxController {
   final SelectAssigneController selectAssigneController = Get.find();
   final IncidentAttestationController incidentAttestationController =
       Get.find();
+  final LocationController locationController = Get.find();
   String validationmsg = '';
 
   Future<void> safetySaveIncidentReport(
@@ -118,7 +121,7 @@ class IncedentReportPreviewController extends GetxController {
       //request.fields['assigner_id'] = '53';
       request.fields['user_id'] = userId.toString();
       // request.fields['user_name'] = userName.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
       request.fields['root_cause'] =
           incidentMoreDetailsController.rootcauseController.text;
       for (int i = 0;

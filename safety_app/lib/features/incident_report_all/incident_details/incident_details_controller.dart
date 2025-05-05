@@ -13,22 +13,29 @@ class IncidentDetailsController extends GetxController {
 
   final maxPhotos = 10;
 
-  Future<void> pickIncidentImages() async {
+  Future<void> pickIncidentImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
     if (incidentimg.length < maxPhotos) {
       int remainingSlots = maxPhotos - incidentimg.length;
 
-      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      if (source == ImageSource.gallery) {
+        final List<XFile> pickedFiles = await picker.pickMultiImage();
+        final List<XFile> limitedFiles =
+            pickedFiles.take(remainingSlots).toList();
+        incidentimg.addAll(limitedFiles);
+        log('Picked from Gallery: ${limitedFiles.length} images');
+      } else if (source == ImageSource.camera) {
+        final XFile? capturedFile =
+            await picker.pickImage(source: ImageSource.camera);
+        if (capturedFile != null) {
+          incidentimg.add(capturedFile);
+          log('Captured from Camera: 1 image');
+        }
+      }
 
-      final List<XFile> limitedFiles =
-          pickedFiles.take(remainingSlots).toList();
-
-      incidentimg.addAll(limitedFiles);
-      incidentImageCount.value = incidentimg.length; // ✅ Correct update
-
-      log('-----------incidentImageCount------------$incidentImageCount');
-      log('-----------incidentimg-------------${incidentimg.length}');
+      incidentImageCount.value = incidentimg.length;
+      log('incidentImageCount: ${incidentImageCount.value}');
     }
   }
 

@@ -8,6 +8,12 @@ import 'select_project_model.dart';
 class SelectProjectController extends GetxController {
   RxBool isCircleBlack = false.obs;
   RxBool isLoading = false.obs;
+  var selectedProjectIndex =
+      (-1).obs; // This will track the index of the selected project
+  void selectProjectAtIndex(int index) {
+    selectedProjectIndex.value = index;
+  }
+
   void toggleCircleColor() {
     isCircleBlack.value = !isCircleBlack.value;
   }

@@ -30,55 +30,38 @@ class ProjectLabourScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+      appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
-          child: AppBar(
-            scrolledUnderElevation: 0.0, // This will fix the problem
+        ),
+        scrolledUnderElevation: 0.0, // This will fix the problem
 
-            elevation: 0,
-            backgroundColor: AppColors.buttoncolor,
-            centerTitle: true,
-            toolbarHeight: SizeConfig.heightMultiplier * 10,
-            title: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: AppTextWidget(
-                text: AppTexts.projectlabour,
-                fontSize: AppTextSize.textSizeMedium,
-                fontWeight: FontWeight.w400,
-                color: AppColors.primary,
-              ),
+        elevation: 0,
+        backgroundColor: AppColors.buttoncolor,
+        centerTitle: true,
+        toolbarHeight: SizeConfig.heightMultiplier * 10,
+        title: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: AppTextWidget(
+            text: AppTexts.projectlabour,
+            fontSize: AppTextSize.textSizeMedium,
+            fontWeight: FontWeight.w400,
+            color: AppColors.primary,
+          ),
+        ),
+        leading: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: SizeConfig.heightMultiplier * 2.5,
+              color: AppColors.primary,
             ),
-            leading: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: SizeConfig.heightMultiplier * 2.5,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: SizeConfig.heightMultiplier * 2,
-                  right: SizeConfig.widthMultiplier * 5,
-                ),
-                child: Image.asset(
-                  "assets/icons/frame_icon.png",
-                  height: SizeConfig.imageSizeMultiplier * 6,
-                  width: SizeConfig.imageSizeMultiplier * 6,
-                ),
-              )
-            ],
           ),
         ),
       ),
@@ -142,10 +125,45 @@ class ProjectLabourScreen extends StatelessWidget {
                                 Get.to(LabourDetailsScreen());
                               },
                               child: ListTile(
+                                // leading: CircleAvatar(
+                                //   radius: 22,
+                                //   backgroundImage: NetworkImage(
+                                //       "$baseUrl${labour.labourImageUrl}"),
+                                // ),
                                 leading: CircleAvatar(
-                                  radius: 22,
-                                  backgroundImage: NetworkImage(
-                                      "$baseUrl${labour.labourImageUrl}"),
+                                  radius: 24,
+                                  backgroundColor:
+                                      Colors.grey.shade200, // Fallback color
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      "$baseUrl${labour.labourImageUrl}",
+                                      fit: BoxFit.cover,
+                                      width: 56, // Diameter = radius * 2
+                                      height: 56,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: AppColors.buttoncolor,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'assets/icons/image.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 title: AppTextWidget(
                                   text: labour.labourName,
@@ -170,11 +188,10 @@ class ProjectLabourScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                trailing: SizedBox(
-                                  width: SizeConfig.imageSizeMultiplier * 6.67,
-                                  height: SizeConfig.imageSizeMultiplier * 6.67,
-                                  child: Image.asset(
-                                      "assets/icons/forwardarrowblack.png"),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey,
+                                  size: 17,
                                 ),
                               ),
                             ),

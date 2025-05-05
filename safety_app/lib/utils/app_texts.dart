@@ -106,7 +106,7 @@ class AppTexts {
   static const String addlabour = "Add Labour";
   static const String personaldetailss = "Personal Details";
   static const String enterlabourdetails = "Enter Labour’s personal details.";
-  static const String profilephoto = "Profile Photo";
+  static const String profilephoto = "Profile Photo / Induction Photo";
   static const String fullname = "Full Name";
   static const String gender = "Gender";
   static const String bloodgrp = "Blood Group";

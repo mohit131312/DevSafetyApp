@@ -54,7 +54,7 @@ class SelectInjuredController extends GetxController
     final query = searchQuery.value.toLowerCase();
     return incidentReportController.involvedIncidentLaboursList
         .where((labour) =>
-            labour.labourName.toLowerCase().contains(query) ||
+            labour.labourName!.toLowerCase().contains(query) ||
             labour.id.toString().contains(query))
         .toList();
   }
@@ -238,17 +238,48 @@ class SelectInjuredController extends GetxController
 
     // Convert and add Staff IDs
     combinedIncidentIdsFinal.addAll(selectedIncidentStaffIdsFinal.map((e) => {
-          "user_type": "2", // Assuming Staff user type is 2
+          "user_type": "3", // Assuming Staff user type is 2
           "user_id": e["id"].toString()
         }));
 
     // Convert and add Contractor IDs
     combinedIncidentIdsFinal
         .addAll(selectedIncidentContractorIdsFinal.map((e) => {
-              "user_type": "3", // Assuming Contractor user type is 3
+              "user_type": "2", // Assuming Contractor user type is 3
               "user_id": e["id"].toString()
             }));
 
     print(" Updated Combined List: ${combinedIncidentIdsFinal.toList()}");
+  }
+
+  void resetData() {
+    // Clear search inputs
+    searchController.clear();
+    searchStaffController.clear();
+    searchContractorController.clear();
+
+    // Reset search queries
+    searchQuery.value = '';
+    searchStaffQuery.value = '';
+    searchContractorQuery.value = '';
+
+    // Reset tab
+    selectedOption.value = 0;
+    tabController.animateTo(0);
+
+    // Clear selected IDs
+    selectedIncidentLabourIds.clear();
+    selectedIncidentLabourIdsFinal.clear();
+
+    selectedIncidentStaffIds.clear();
+    selectedIncidentStaffIdsFinal.clear();
+
+    selectedIncidentContractorIds.clear();
+    selectedIncidentContractorIdsFinal.clear();
+
+    // Clear combined list
+    combinedIncidentIdsFinal.clear();
+
+    print("All data has been reset.");
   }
 }

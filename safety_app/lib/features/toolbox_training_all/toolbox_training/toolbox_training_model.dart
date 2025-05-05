@@ -159,7 +159,7 @@ class ReviwerUserList {
         // emailVerifiedAt: json["email_verified_at"],
         // location: json["location"],
         mobileNumber: json["mobile_number"] ?? "",
-        role: json["role"] ?? "",
+        role: json["role"] ?? 0,
         // createdAt: DateTime.parse(json["created_at"]),
         // updatedAt: DateTime.parse(json["updated_at"]),
         // encryptPassword: json["encrypt_password"],
@@ -313,16 +313,16 @@ class TraineesContractorUserList {
 
 class TraineesList {
   int id;
-  String inducteeId;
-  String labourName;
+  String? inducteeId;
+  String? labourName;
   // Gender gender;
   // Literacy literacy;
   // MaritalStatus maritalStatus;
   // BloodGroup bloodGroup;
   // DateTime birthDate;
   // int age;
-  String contactNumber;
-  String userPhoto;
+  String? contactNumber;
+  String? userPhoto;
   // String currentStreetName;
   // String currentCity;
   // String currentTaluka;
@@ -362,16 +362,16 @@ class TraineesList {
 
   TraineesList({
     required this.id,
-    required this.inducteeId,
-    required this.labourName,
+    this.inducteeId,
+    this.labourName,
     // required this.gender,
     // required this.literacy,
     // required this.maritalStatus,
     // required this.bloodGroup,
     // required this.birthDate,
     // required this.age,
-    required this.contactNumber,
-    required this.userPhoto,
+    this.contactNumber,
+    this.userPhoto,
     // required this.currentStreetName,
     // required this.currentCity,
     // required this.currentTaluka,
@@ -412,8 +412,8 @@ class TraineesList {
 
   factory TraineesList.fromJson(Map<String, dynamic> json) => TraineesList(
         id: json["id"],
-        inducteeId: json["inductee_id"],
-        labourName: json["labour_name"],
+        inducteeId: json["inductee_id"] ?? "",
+        labourName: json["labour_name"] ?? "",
         // gender: genderValues.map[json["gender"]] ?? Gender.MALE,
         // literacy: literacyValues.map[json["literacy"]] ?? Literacy.ILLITERATE,
         // maritalStatus: maritalStatusValues.map[json["marital_status"]] ??
@@ -421,8 +421,8 @@ class TraineesList {
         // bloodGroup: bloodGroupValues.map[json["blood_group"]] ?? BloodGroup.O,
         // birthDate: DateTime.parse(json["birth_date"]),
         // age: json["age"],
-        contactNumber: json["contact_number"],
-        userPhoto: json["user_photo"],
+        contactNumber: json["contact_number"] ?? "",
+        userPhoto: json["user_photo"] ?? "",
         // currentStreetName: json["current_street_name"],
         // currentCity: json["current_city"],
         // currentTaluka: json["current_taluka"],

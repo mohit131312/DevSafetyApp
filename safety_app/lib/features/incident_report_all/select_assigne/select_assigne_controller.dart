@@ -22,7 +22,7 @@ class SelectAssigneController extends GetxController {
     final query = searchassigneeDataQuery.value.toLowerCase();
     return incidentReportController.assigneeIncidentList
         .where((assignee) =>
-            assignee.firstName.toLowerCase().contains(query) ||
+            assignee.firstName!.toLowerCase().contains(query) ||
             assignee.id.toString().contains(query))
         .toList();
   }

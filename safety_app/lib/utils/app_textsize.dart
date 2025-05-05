@@ -7,6 +7,7 @@ class AppTextSize {
 
   static const double textSizeMedium = 16.0;
   static const double textSizeMediumm = 17.0;
+  static const double textSizeMediumL = 18.0;
 
   static const double textSizeLarge = 20.0;
   static const double textSizeExtraLarge = 24.0;

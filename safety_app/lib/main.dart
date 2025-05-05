@@ -6,6 +6,8 @@ import 'package:get_storage/get_storage.dart';
 import 'utils/size_config.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await GetStorage.init();
   final LoginController loginController = Get.put(LoginController());
 
@@ -20,8 +22,9 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return OrientationBuilder(
         builder: (context, orientation) {
-          SizeConfig().init(constraints, orientation);
-       //   SizeConfig().init(context);
+          //SizeConfig().init(constraints, orientation);
+          //   SizeConfig().init(context);
+          SizeConfig.initWithConstraints(constraints, orientation);
 
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,

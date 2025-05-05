@@ -41,635 +41,717 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      //  resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-          child: AppBar(
-            scrolledUnderElevation: 0.0,
-            elevation: 0,
-            backgroundColor: AppColors.buttoncolor,
-            foregroundColor: AppColors.buttoncolor,
-            centerTitle: true,
-            toolbarHeight: SizeConfig.heightMultiplier * 10,
-            title: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: AppTextWidget(
-                text: 'New Work Permit',
-                fontSize: AppTextSize.textSizeMedium,
-                fontWeight: FontWeight.w400,
-                color: AppColors.primary,
-              ),
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        //  resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
-            leading: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: SizeConfig.heightMultiplier * 2.5,
-                  color: AppColors.primary,
-                ),
+          ),
+          scrolledUnderElevation: 0.0,
+          elevation: 0,
+          backgroundColor: AppColors.buttoncolor,
+          foregroundColor: AppColors.buttoncolor,
+          centerTitle: true,
+          toolbarHeight: SizeConfig.heightMultiplier * 10,
+          title: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: AppTextWidget(
+              text: 'New Work Permit',
+              fontSize: AppTextSize.textSizeMedium,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: SizeConfig.heightMultiplier * 2.5,
+                color: AppColors.primary,
               ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.widthMultiplier * 4,
-            vertical: SizeConfig.heightMultiplier * 2,
-          ),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(
-              children: [
-                Expanded(
-                  child: LinearProgressIndicator(
-                    value: 0.66,
-                    backgroundColor: AppColors.searchfeildcolor,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.defaultPrimary),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.widthMultiplier * 4,
+              vertical: SizeConfig.heightMultiplier * 2,
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: LinearProgressIndicator(
+                      value: 0.66,
+                      backgroundColor: AppColors.searchfeildcolor,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.defaultPrimary),
+                    ),
                   ),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  '02/03',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
+                  SizedBox(width: 8.0),
+                  Text(
+                    '02/03',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 2.5,
-            ),
-            AppTextWidget(
-              text: AppTexts.precaution,
-              fontSize: AppTextSize.textSizeMediumm,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryText,
-            ),
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 0.3,
-            ),
-            AppTextWidget(
-              text: 'Enter work permit details.',
-              fontSize: AppTextSize.textSizeSmalle,
-              fontWeight: FontWeight.w400,
-              color: AppColors.primaryText,
-            ),
+                ],
+              ),
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 2.5,
+              ),
+              AppTextWidget(
+                text: AppTexts.precaution,
+                fontSize: AppTextSize.textSizeMediumm,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryText,
+              ),
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 0.3,
+              ),
+              AppTextWidget(
+                text: 'Enter work permit details.',
+                fontSize: AppTextSize.textSizeSmalle,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primaryText,
+              ),
 
-            workPermitController.categoryWorkList.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: workPermitController.categoryWorkList.length,
-                    itemBuilder: (context, index) {
-                      final category =
-                          workPermitController.categoryWorkList[index];
-                      final allDetailsForCategory = newWorkPermitController
-                          .workPermitRequiredList
-                          .where((item) =>
-                              item.categoryName == category.categoryName)
-                          .toList();
+              workPermitController.categoryWorkList.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: workPermitController.categoryWorkList.length,
+                      itemBuilder: (context, index) {
+                        final category =
+                            workPermitController.categoryWorkList[index];
+                        final allDetailsForCategory = newWorkPermitController
+                            .workPermitRequiredList
+                            .where((item) =>
+                                item.categoryName == category.categoryName)
+                            .toList();
 
-                      return Obx(() {
-                        // Get filtered list based on search query
-                        final filteredList =
-                            workPermitPrecautionController.getFilteredDetails(
-                          allDetailsForCategory,
-                          category.id,
-                          category.categoryName,
-                        );
+                        return Obx(() {
+                          // Get filtered list based on search query
+                          final filteredList =
+                              workPermitPrecautionController.getFilteredDetails(
+                            allDetailsForCategory,
+                            category.id,
+                            category.categoryName,
+                          );
 
-                        // final detailIds =
-                        //     filteredList.map((e) => e.id).toList();
-                        // final isAllSelected = workPermitPrecautionController
-                        //         .selectedWorkPermitData[category.id]?.length ==
-                        //     detailIds.length;
+                          // final detailIds =
+                          //     filteredList.map((e) => e.id).toList();
+                          // final isAllSelected = workPermitPrecautionController
+                          //         .selectedWorkPermitData[category.id]?.length ==
+                          //     detailIds.length;
 
-                        final visibleDetailIds =
-                            filteredList.map((e) => e.id).toList();
+                          final visibleDetailIds =
+                              filteredList.map((e) => e.id).toList();
 
-                        // Corrected: Check if all VISIBLE items are selected
-                        final isAllSelected = visibleDetailIds.isNotEmpty &&
-                            visibleDetailIds.every((id) =>
-                                workPermitPrecautionController
-                                    .selectedWorkPermitData[category.id]
-                                    ?.contains(id) ??
-                                false);
-                        int categoryId =
-                            workPermitController.categoryWorkList[index].id;
-                        final errorText = workPermitPrecautionController
-                            .workPermitErrorMap[category.id];
+                          // Corrected: Check if all VISIBLE items are selected
+                          final isAllSelected = visibleDetailIds.isNotEmpty &&
+                              visibleDetailIds.every((id) =>
+                                  workPermitPrecautionController
+                                      .selectedWorkPermitData[category.id]
+                                      ?.contains(id) ??
+                                  false);
+                          int categoryId =
+                              workPermitController.categoryWorkList[index].id;
+                          final errorText = workPermitPrecautionController
+                              .workPermitErrorMap[category.id];
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: SizeConfig.heightMultiplier * 2.5),
-                            Row(
-                              children: [
-                                AppTextWidget(
-                                  text: "${category.categoryName} Required",
-                                  fontSize: AppTextSize.textSizeMedium,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.primaryText,
-                                ),
-                                AppTextWidget(
-                                  text: AppTexts.star,
-                                  fontSize: AppTextSize.textSizeExtraSmall,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.starcolor,
-                                ),
-                              ],
-                            ),
-                            Obx(() {
-                              String? errorText = workPermitPrecautionController
-                                  .workPermitErrorMap[categoryId];
-                              return errorText != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        errorText,
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 174, 75, 68),
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    )
-                                  : SizedBox();
-                            }),
-                            if (allDetailsForCategory.isNotEmpty) ...[
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                  height: SizeConfig.heightMultiplier * 2.5),
                               Row(
                                 children: [
-                                  SizedBox(
-                                      height:
-                                          SizeConfig.heightMultiplier * 2.5),
-                                  Checkbox(
-                                    value: isAllSelected,
-                                    activeColor: AppColors.buttoncolor,
-                                    side: BorderSide(
-                                      color: AppColors.secondaryText,
-                                      width: 1.2,
-                                    ),
-                                    onChanged: (bool? value) {
-                                      workPermitPrecautionController
-                                          .toggleSelectAll(
-                                        category.id,
-                                        visibleDetailIds,
-                                        value ?? false,
-                                      );
-                                    },
+                                  AppTextWidget(
+                                    text: "${category.categoryName} Required",
+                                    fontSize: AppTextSize.textSizeMedium,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primaryText,
                                   ),
                                   AppTextWidget(
-                                    text: AppTexts.selectall,
-                                    fontSize: AppTextSize.textSizeSmallm,
+                                    text: AppTexts.star,
+                                    fontSize: AppTextSize.textSizeExtraSmall,
                                     fontWeight: FontWeight.w400,
-                                    color: AppColors.secondaryText,
+                                    color: AppColors.starcolor,
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                  height: SizeConfig.heightMultiplier * 2.5),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: SizeConfig.widthMultiplier * 4,
-                                  vertical: SizeConfig.heightMultiplier * 3,
-                                ),
-                                width: SizeConfig.widthMultiplier * 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: AppColors.appgreycolor,
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          height:
-                                              SizeConfig.heightMultiplier * 5.5,
-                                          width:
-                                              SizeConfig.widthMultiplier * 82,
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              hintText: 'Search here..',
-                                              hintStyle: TextStyle(
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.searchfeild,
-                                              ),
-                                              prefixIcon: Container(
-                                                padding: EdgeInsets.all(10.0),
-                                                child: Image.asset(
-                                                  'assets/icons/Search.png',
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                    color: AppColors
-                                                        .searchfeildcolor,
-                                                    width: 0.5),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                    color: AppColors
-                                                        .searchfeildcolor,
-                                                    width: 0.5),
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              workPermitPrecautionController
-                                                  .updateSearchQuery(
-                                                      category.id, value);
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            SizeConfig.heightMultiplier * 2),
-                                    if (filteredList.isEmpty)
-                                      Padding(
-                                        padding: EdgeInsets.all(16),
+                              Obx(() {
+                                String? errorText =
+                                    workPermitPrecautionController
+                                        .workPermitErrorMap[categoryId];
+                                return errorText != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(top: 4),
                                         child: Text(
-                                          'No results found',
+                                          errorText,
                                           style: TextStyle(
-                                            color: AppColors.secondaryText,
+                                            color: Color.fromARGB(
+                                                255, 174, 75, 68),
+                                            fontSize: 12,
                                           ),
                                         ),
                                       )
-                                    else
-                                      SizedBox(
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount: filteredList.length,
-                                                itemBuilder: (context, index) {
-                                                  final detail =
-                                                      filteredList[index];
-                                                  return Obx(() {
-                                                    bool isChecked =
-                                                        workPermitPrecautionController
-                                                                .selectedWorkPermitData[
-                                                                    category.id]
-                                                                ?.contains(
-                                                                    detail
-                                                                        .id) ??
-                                                            false;
-                                                    return ListTile(
-                                                      visualDensity:
-                                                          VisualDensity.compact,
-                                                      contentPadding:
-                                                          EdgeInsets.only(
-                                                              top: 0,
-                                                              bottom: 0,
-                                                              left: 16,
-                                                              right: 16),
-                                                      leading: SizedBox(
-                                                        width: 24.0,
-                                                        height: 24.0,
-                                                        child: Checkbox(
-                                                          value: isChecked,
-                                                          activeColor: AppColors
-                                                              .buttoncolor,
-                                                          side: BorderSide(
-                                                            color: AppColors
-                                                                .secondaryText,
-                                                            width: 1.2,
-                                                          ),
-                                                          onChanged:
-                                                              (bool? value) {
-                                                            workPermitPrecautionController
-                                                                .toggleSelection(
-                                                              category.id,
-                                                              detail.id,
-                                                              value ?? false,
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      title: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Flexible(
-                                                            child:
-                                                                AppTextWidget(
-                                                              text: detail
-                                                                  .permitDetails,
-                                                              fontSize: AppTextSize
-                                                                  .textSizeExtraSmall,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: AppColors
-                                                                  .secondaryText,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  });
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                                    : SizedBox();
+                              }),
+                              if (allDetailsForCategory.isNotEmpty) ...[
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                        height:
+                                            SizeConfig.heightMultiplier * 2.5),
+                                    Checkbox(
+                                      value: isAllSelected,
+                                      activeColor: AppColors.buttoncolor,
+                                      side: BorderSide(
+                                        color: AppColors.secondaryText,
+                                        width: 1.2,
                                       ),
+                                      onChanged: (bool? value) {
+                                        workPermitPrecautionController
+                                            .toggleSelectAll(
+                                          category.id,
+                                          visibleDetailIds,
+                                          value ?? false,
+                                        );
+                                      },
+                                    ),
+                                    AppTextWidget(
+                                      text: AppTexts.selectall,
+                                      fontSize: AppTextSize.textSizeSmallm,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.secondaryText,
+                                    ),
                                   ],
                                 ),
-                              )
+                                SizedBox(
+                                    height: SizeConfig.heightMultiplier * 2.5),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: SizeConfig.widthMultiplier * 4,
+                                    vertical: SizeConfig.heightMultiplier * 3,
+                                  ),
+                                  width: SizeConfig.widthMultiplier * 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: AppColors.appgreycolor,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier *
+                                                    5.5,
+                                            width:
+                                                SizeConfig.widthMultiplier * 82,
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                hintText: 'Search here..',
+                                                hintStyle: TextStyle(
+                                                  fontSize:
+                                                      AppTextSize.textSizeSmall,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: AppColors.searchfeild,
+                                                ),
+                                                prefixIcon: Container(
+                                                  padding: EdgeInsets.all(10.0),
+                                                  child: Image.asset(
+                                                    'assets/icons/Search.png',
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                      color: AppColors
+                                                          .searchfeildcolor,
+                                                      width: 0.5),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                      color: AppColors
+                                                          .searchfeildcolor,
+                                                      width: 0.5),
+                                                ),
+                                              ),
+                                              onChanged: (value) {
+                                                workPermitPrecautionController
+                                                    .updateSearchQuery(
+                                                        category.id, value);
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                          height:
+                                              SizeConfig.heightMultiplier * 2),
+                                      if (filteredList.isEmpty)
+                                        Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Text(
+                                            'No results found',
+                                            style: TextStyle(
+                                              color: AppColors.secondaryText,
+                                            ),
+                                          ),
+                                        )
+                                      else
+                                        SizedBox(
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemCount:
+                                                      filteredList.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    final detail =
+                                                        filteredList[index];
+                                                    return Obx(() {
+                                                      bool isChecked =
+                                                          workPermitPrecautionController
+                                                                  .selectedWorkPermitData[
+                                                                      category
+                                                                          .id]
+                                                                  ?.contains(
+                                                                      detail
+                                                                          .id) ??
+                                                              false;
+                                                      return ListTile(
+                                                        visualDensity:
+                                                            VisualDensity
+                                                                .compact,
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                top: 0,
+                                                                bottom: 0,
+                                                                left: 16,
+                                                                right: 16),
+                                                        leading: SizedBox(
+                                                          width: 24.0,
+                                                          height: 24.0,
+                                                          child: Checkbox(
+                                                            value: isChecked,
+                                                            activeColor:
+                                                                AppColors
+                                                                    .buttoncolor,
+                                                            side: BorderSide(
+                                                              color: AppColors
+                                                                  .secondaryText,
+                                                              width: 1.2,
+                                                            ),
+                                                            onChanged:
+                                                                (bool? value) {
+                                                              workPermitPrecautionController
+                                                                  .toggleSelection(
+                                                                category.id,
+                                                                detail.id,
+                                                                value ?? false,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                        title: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Flexible(
+                                                              child:
+                                                                  AppTextWidget(
+                                                                text: detail
+                                                                    .permitDetails,
+                                                                fontSize:
+                                                                    AppTextSize
+                                                                        .textSizeExtraSmall,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: AppColors
+                                                                    .secondaryText,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                                  },
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                )
+                              ],
                             ],
-                          ],
-                        );
-                      });
-                    },
-                  )
-                : SizedBox(),
-
-            //----------------------------------------------------------------
-
-            //----------------------------------------------------------------
-
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 3,
-            ),
-            Row(
-              children: [
-                AppTextWidget(
-                  text: 'Assign Checkers',
-                  fontSize: AppTextSize.textSizeSmall,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primaryText,
-                ),
-                AppTextWidget(
-                    text: AppTexts.star,
-                    fontSize: AppTextSize.textSizeExtraSmall,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.starcolor),
-              ],
-            ),
-
-            Obx(() {
-              return assignCheckerController
-                      .addInvolveassigneeDataPerson.isNotEmpty
-                  ? SizedBox(
-                      height: SizeConfig.heightMultiplier * 2.5,
+                          );
+                        });
+                      },
                     )
-                  : SizedBox.shrink();
-            }),
+                  : SizedBox(),
 
-            Obx(
-              () {
-                final selectedList =
-                    assignCheckerController.addInvolveassigneeDataPerson;
+              //----------------------------------------------------------------
 
-                return selectedList.isNotEmpty
-                    ? Container(
-                        padding: EdgeInsets.only(left: 8, right: 8, top: 8),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 0.7, color: AppColors.searchfeildcolor),
-                            borderRadius: BorderRadius.circular(8)),
-                        height: SizeConfig.heightMultiplier * 10,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: selectedList.length,
-                          itemBuilder: (context, index) {
-                            final assgneeData = selectedList[index];
+              //----------------------------------------------------------------
 
-                            return ListTile(
-                              contentPadding:
-                                  EdgeInsets.only(left: 0, right: 20),
-                              leading: CircleAvatar(
-                                radius: 22,
-                                backgroundImage: NetworkImage(
-                                    "$baseUrl${assgneeData.profilePhoto}"),
-                              ),
-                              title: AppTextWidget(
-                                text: assgneeData.firstName.toString(),
-                                fontSize: AppTextSize.textSizeSmall,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primaryText,
-                              ),
-                              subtitle: AppTextWidget(
-                                text: assgneeData.designation.toString(),
-                                fontSize: AppTextSize.textSizeSmalle,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.secondaryText,
-                              ),
-                              trailing: GestureDetector(
-                                onTap: () {
-                                  assignCheckerController
-                                      .removeassigneeData(index);
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            );
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 3,
+              ),
+              Row(
+                children: [
+                  AppTextWidget(
+                    text: 'Assign Checkers',
+                    fontSize: AppTextSize.textSizeSmall,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primaryText,
+                  ),
+                  AppTextWidget(
+                      text: AppTexts.star,
+                      fontSize: AppTextSize.textSizeExtraSmall,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.starcolor),
+                ],
+              ),
+
+              workPermitController.checkuserList.isNotEmpty
+                  ? Column(
+                      children: [
+                        Obx(() {
+                          return assignCheckerController
+                                  .addInvolveassigneeDataPerson.isNotEmpty
+                              ? SizedBox(
+                                  height: SizeConfig.heightMultiplier * 2.5,
+                                )
+                              : SizedBox.shrink();
+                        }),
+                        Obx(
+                          () {
+                            final selectedList = assignCheckerController
+                                .addInvolveassigneeDataPerson;
+
+                            return selectedList.isNotEmpty
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                        left: 8, right: 8, top: 8),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 0.7,
+                                            color: AppColors.searchfeildcolor),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    height: SizeConfig.heightMultiplier * 10,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: selectedList.length,
+                                      itemBuilder: (context, index) {
+                                        final assgneeData = selectedList[index];
+
+                                        return ListTile(
+                                          contentPadding: EdgeInsets.only(
+                                              left: 0, right: 20),
+                                          // leading: CircleAvatar(
+                                          //   radius: 22,
+                                          //   backgroundImage: NetworkImage(
+                                          //       "$baseUrl${assgneeData.profilePhoto}"),
+                                          // ),
+                                          leading: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 28,
+                                                backgroundColor: Colors.grey
+                                                    .shade200, // Fallback color
+                                                child: ClipOval(
+                                                  child: Image.network(
+                                                    "$baseUrl${assgneeData.profilePhoto}",
+                                                    fit: BoxFit.cover,
+                                                    width:
+                                                        56, // Diameter = radius * 2
+                                                    height: 56,
+                                                    loadingBuilder: (context,
+                                                        child,
+                                                        loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) return child;
+                                                      return Center(
+                                                        child: SizedBox(
+                                                          width: 24,
+                                                          height: 24,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                            color: AppColors
+                                                                .buttoncolor,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      return Image.asset(
+                                                        'assets/icons/image.png',
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          title: AppTextWidget(
+                                            text: assgneeData.firstName
+                                                .toString(),
+                                            fontSize: AppTextSize.textSizeSmall,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primaryText,
+                                          ),
+                                          subtitle: AppTextWidget(
+                                            text: assgneeData.designation
+                                                .toString(),
+                                            fontSize:
+                                                AppTextSize.textSizeSmalle,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.secondaryText,
+                                          ),
+                                          trailing: GestureDetector(
+                                            onTap: () {
+                                              assignCheckerController
+                                                  .removeassigneeData(index);
+                                            },
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : SizedBox();
                           },
                         ),
-                      )
-                    : SizedBox();
-              },
-            ),
-
-            Obx(() {
-              return assignCheckerController
-                      .addInvolveassigneeDataPerson.isNotEmpty
-                  ? SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
+                        Obx(() {
+                          return assignCheckerController
+                                  .addInvolveassigneeDataPerson.isNotEmpty
+                              ? SizedBox(
+                                  height: SizeConfig.heightMultiplier * 2,
+                                )
+                              : SizedBox
+                                  .shrink(); // Use `SizedBox.shrink()` to avoid unnecessary space
+                        }),
+                        Obx(() => assignCheckerController
+                                    .addInvolveassigneeDataPerson.isEmpty &&
+                                assignCheckerController.assigneeError.isNotEmpty
+                            ? Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 4, left: 5),
+                                    child: Text(
+                                      assignCheckerController
+                                          .assigneeError.value,
+                                      style: TextStyle(
+                                        color: const Color.fromARGB(
+                                            255, 174, 75, 68),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : SizedBox.shrink()),
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 2,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: AppColors.thirdText,
+                                width: 0.8,
+                              ),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          onPressed: () {
+                            Get.to(AssignCheckerScreen());
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                size: 28,
+                                color: AppColors.thirdText,
+                                weight: 0.2,
+                              ),
+                              SizedBox(
+                                width: SizeConfig.widthMultiplier * 1,
+                              ),
+                              AppTextWidget(
+                                text: "Add Checker",
+                                fontSize: AppTextSize.textSizeSmallm,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.thirdText,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     )
-                  : SizedBox
-                      .shrink(); // Use `SizedBox.shrink()` to avoid unnecessary space
-            }),
-
-            Obx(() =>
-                assignCheckerController.addInvolveassigneeDataPerson.isEmpty &&
-                        assignCheckerController.assigneeError.isNotEmpty
-                    ? Padding(
+                  : SizedBox(
+                      child: Padding(
                         padding: const EdgeInsets.only(top: 4, left: 5),
                         child: Text(
-                          assignCheckerController.assigneeError.value,
+                          "Assign checker is Empty",
                           style: TextStyle(
                             color: const Color.fromARGB(255, 174, 75, 68),
                             fontSize: 12,
                           ),
                         ),
-                      )
-                    : SizedBox.shrink()),
+                      ),
+                    ),
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 1.5,
+              ),
+              AppTextWidget(
+                  text: 'Set the checkers in sequence?',
+                  fontSize: AppTextSize.textSizeSmall,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.searchfeild),
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 6,
+              ),
 
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 2,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: AppColors.thirdText,
-                    width: 0.8,
-                  ),
+              SizedBox(
+                height: SizeConfig.heightMultiplier * 6,
+              ),
+            ]),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.heightMultiplier * 1,
+            horizontal: SizeConfig.widthMultiplier * 4,
+          ),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: AppMediumButton(
+                  label: "Previous",
+                  borderColor: AppColors.buttoncolor,
+                  iconColor: AppColors.buttoncolor,
+                  backgroundColor: Colors.white,
+                  textColor: AppColors.buttoncolor,
+                  imagePath: 'assets/icons/arrow-narrow-left.png',
                 ),
-                minimumSize: Size(double.infinity, 50),
               ),
-              onPressed: () {
-                Get.to(AssignCheckerScreen());
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    size: 28,
-                    color: AppColors.thirdText,
-                    weight: 0.2,
-                  ),
-                  SizedBox(
-                    width: SizeConfig.widthMultiplier * 1,
-                  ),
-                  AppTextWidget(
-                    text: "Add Checker",
-                    fontSize: AppTextSize.textSizeSmallm,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.thirdText,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 1.5,
-            ),
-            AppTextWidget(
-                text: 'Set the checkers in sequence?',
-                fontSize: AppTextSize.textSizeSmall,
-                fontWeight: FontWeight.w400,
-                color: AppColors.searchfeild),
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 6,
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: AppMediumButton(
-                      label: "Previous",
-                      borderColor: AppColors.buttoncolor,
-                      iconColor: AppColors.buttoncolor,
-                      backgroundColor: Colors.white,
-                      textColor: AppColors.buttoncolor,
-                      imagePath: 'assets/icons/arrow-narrow-left.png',
-                    ),
-                  ),
-                  SizedBox(width: SizeConfig.widthMultiplier * 5),
-                  GestureDetector(
-                    onTap: () {
-                      var postData = workPermitPrecautionController
-                          .getSelectedDataForPost();
+              SizedBox(width: SizeConfig.widthMultiplier * 5),
+              GestureDetector(
+                onTap: () {
+                  var postData =
+                      workPermitPrecautionController.getSelectedDataForPost();
+                  assignCheckerController.validateAssignee();
+                  List<int> requiredCategories = workPermitController
+                      .categoryWorkList
+                      .map((e) => e.id)
+                      .toList();
+                  log('-------------$postData');
+                  bool isValidSelection = workPermitPrecautionController
+                      .validateWorkPermitSelection(requiredCategories);
+                  log('Selection Valid: $isValidSelection');
+
+                  bool isValidAssignee =
                       assignCheckerController.validateAssignee();
-                      List<int> requiredCategories = workPermitController
-                          .categoryWorkList
-                          .map((e) => e.id)
-                          .toList();
-                      log('-------------$postData');
-                      bool isValidSelection = workPermitPrecautionController
-                          .validateWorkPermitSelection(requiredCategories);
-                      log('Selection Valid: $isValidSelection');
+                  log('Assignee Valid: $isValidAssignee');
 
-                      bool isValidAssignee =
-                          assignCheckerController.validateAssignee();
-                      log('Assignee Valid: $isValidAssignee');
+                  log('filteredListfinal List: ${workPermitPrecautionController.filteredListfinal}');
 
-                      log('filteredListfinal List: ${workPermitPrecautionController.filteredListfinal}');
+                  if (isValidAssignee &&
+                      isValidSelection &&
+                      workPermitPrecautionController
+                          .filteredListfinal.isEmpty) {
+                    workPermitPrecautionController.workPermitErrorMap.clear();
 
-                      if (isValidAssignee &&
-                          isValidSelection &&
-                          workPermitPrecautionController
-                              .filteredListfinal.isEmpty) {
-                        workPermitPrecautionController.workPermitErrorMap
-                            .clear();
+                    log('Error: 1.');
+                    Get.to(WorkPermitUnderScreen(
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId));
+                  }
 
-                        log('Error: 1.');
-                        Get.to(WorkPermitUnderScreen(
-                            userId: userId,
-                            userName: userName,
-                            userImg: userImg,
-                            userDesg: userDesg,
-                            projectId: projectId));
-                      }
+                  if (isValidSelection &&
+                      isValidAssignee &&
+                      workPermitPrecautionController
+                          .filteredListfinal.isNotEmpty) {
+                    log('Error: 2.');
 
-                      if (isValidSelection &&
-                          isValidAssignee &&
-                          workPermitPrecautionController
-                              .filteredListfinal.isNotEmpty) {
-                        log('Error: 2.');
-
-                        Get.to(WorkPermitUnderScreen(
-                            userId: userId,
-                            userName: userName,
-                            userImg: userImg,
-                            userDesg: userDesg,
-                            projectId: projectId));
-                      }
-                      if (!isValidAssignee && !isValidSelection) {
-                        workPermitPrecautionController.workPermitErrorMap
-                            .clear();
-                      }
-                    },
-                    child: AppMediumButton(
-                      label: "Next",
-                      borderColor: AppColors.backbuttoncolor,
-                      iconColor: Colors.white,
-                      textColor: Colors.white,
-                      backgroundColor: AppColors.buttoncolor,
-                      imagePath2: 'assets/icons/arrow-narrow-right.png',
-                    ),
-                  ),
-                ],
+                    Get.to(WorkPermitUnderScreen(
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId));
+                  }
+                  if (!isValidAssignee && !isValidSelection) {
+                    workPermitPrecautionController.workPermitErrorMap.clear();
+                  }
+                },
+                child: AppMediumButton(
+                  label: "Next",
+                  borderColor: AppColors.backbuttoncolor,
+                  iconColor: Colors.white,
+                  textColor: Colors.white,
+                  backgroundColor: AppColors.buttoncolor,
+                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                ),
               ),
-            ),
-            SizedBox(
-              height: SizeConfig.heightMultiplier * 6,
-            ),
-          ]),
+            ],
+          ),
         ),
       ),
     );

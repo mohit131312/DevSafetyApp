@@ -2,11 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_attestaion/safety_attestaion_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_preview/safety_preview_controller.dart';
-import 'package:flutter_app/features/safety_violation_all/safety_preview_again/safety_preview_again_screen.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_all/safety_violation_details_all.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_all/safety_violation_details_cotroller.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_assignee/safety_violation_details_assignee.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_assignee/safety_violation_details_assignee_cont.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_assignor/safety_violation_details_assignor.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_assignor/safety_violation_details_assignor_cont.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_controller.dart';
-import 'package:flutter_app/features/safety_violation_all/safety_violation_assignee/safety_preview_assignee/safety_preview_assignee_screen.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_details.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_details_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/select_assignee/select_safety_assignee_controller.dart';
@@ -18,6 +24,7 @@ import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class SefetyViolationScreen extends StatelessWidget {
   final int userId;
@@ -39,8 +46,9 @@ class SefetyViolationScreen extends StatelessWidget {
       Get.put(SefetyViolationController());
   final SafetyViolationDetailsController safetyViolationDetailsController =
       Get.put(SafetyViolationDetailsController());
-  final SelectInvolvedPersonController selectInvolvedPersonController =
-      Get.put(SelectInvolvedPersonController());
+  final SelectInvolvedPersonController selectInvolvedPersonController = Get.put(
+    SelectInvolvedPersonController(),
+  );
   final SelectSafetyInformedPeopleController
       selectSafetyInformedPeopleController =
       Get.put(SelectSafetyInformedPeopleController());
@@ -52,6 +60,14 @@ class SefetyViolationScreen extends StatelessWidget {
   final SafetyPreviewController safetyPreviewController =
       Get.put(SafetyPreviewController());
 
+  final SafetyViolationDetailsCotroller safetyViolationDetailsCotroller =
+      Get.put(SafetyViolationDetailsCotroller());
+  final SafetyViolationDetailsAssigneeCont safetyViolationDetailsAssigneeCont =
+      Get.put(SafetyViolationDetailsAssigneeCont());
+  final SafetyViolationDetailsAssignorCont safetyViolationDetailsAssignorCont =
+      Get.put(SafetyViolationDetailsAssignorCont());
+  final LocationController locationController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -59,55 +75,38 @@ class SefetyViolationScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
-            child: AppBar(
-              scrolledUnderElevation: 0.0,
-              elevation: 0,
-              backgroundColor: AppColors.buttoncolor,
-              foregroundColor: AppColors.buttoncolor,
-              centerTitle: true,
-              toolbarHeight: SizeConfig.heightMultiplier * 10,
-              title: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: AppTextWidget(
-                  text: 'Safety Violation & Debit Note',
-                  fontSize: AppTextSize.textSizeMedium,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.primary,
-                ),
+          ),
+          scrolledUnderElevation: 0.0,
+          elevation: 0,
+          backgroundColor: AppColors.buttoncolor,
+          foregroundColor: AppColors.buttoncolor,
+          centerTitle: true,
+          toolbarHeight: SizeConfig.heightMultiplier * 10,
+          title: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: AppTextWidget(
+              text: 'Safety Violation & Debit Note',
+              fontSize: AppTextSize.textSizeMedium,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: SizeConfig.heightMultiplier * 2.5,
+                color: AppColors.primary,
               ),
-              leading: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: SizeConfig.heightMultiplier * 2.5,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: SizeConfig.heightMultiplier * 2,
-                    right: SizeConfig.widthMultiplier * 5,
-                  ),
-                  child: Image.asset(
-                    "assets/icons/frame_icon.png",
-                    height: SizeConfig.imageSizeMultiplier * 6,
-                    width: SizeConfig.imageSizeMultiplier * 6,
-                  ),
-                )
-              ],
             ),
           ),
         ),
@@ -120,37 +119,56 @@ class SefetyViolationScreen extends StatelessWidget {
               ),
               child: SizedBox(
                 height: SizeConfig.heightMultiplier * 6.5,
-                child: TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search labour here..',
-                    hintStyle: TextStyle(
-                      fontSize: AppTextSize.textSizeSmall,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.searchfeildcolor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 6.4,
+                      width: SizeConfig.widthMultiplier * 92,
+                      child: Obx(() {
+                        TextEditingController activeController;
+
+                        switch (
+                            sefetyViolationController.selectedOption.value) {
+                          case 0:
+                            activeController = sefetyViolationController
+                                .searchSafetyAllController;
+                            break;
+                          case 1:
+                            activeController = sefetyViolationController
+                                .searchSafetyAssignorController;
+                            break;
+                          case 2:
+                            activeController = sefetyViolationController
+                                .searchSafetyAssigneeController;
+                            break;
+                          default:
+                            activeController =
+                                TextEditingController(); // fallback
+                        }
+
+                        return AppTextFormfeild(
+                          controller: activeController,
+                          hintText: 'Search By Name..',
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          prefixIcon: Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Image.asset(
+                              'assets/icons/Search.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            sefetyViolationController.handleSearchByTab(
+                              sefetyViolationController.selectedOption.value,
+                              value,
+                            );
+                          },
+                        );
+                      }),
                     ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: AppColors.searchfeildcolor,
-                      size: 30,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                          color: AppColors.searchfeildcolor, width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                          color: AppColors.searchfeildcolor, width: 1),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    sefetyViolationController.searchLabor(value);
-                  },
+                  ],
                 ),
               ),
             ),
@@ -199,92 +217,157 @@ class SefetyViolationScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Obx(
-              () => Expanded(
-                child: TabBarView(
-                  controller: sefetyViolationController.tabController,
-                  children: [
-                    ListView.builder(
-                      //    shrinkWrap: true,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      itemCount: sefetyViolationController
-                          .incidentfilteredDetails.length,
+            Expanded(
+              child: TabBarView(
+                controller: sefetyViolationController.tabController,
+                children: [
+                  Obx(() {
+                    final filteredList =
+                        sefetyViolationController.filteredSafetyAllList;
+                    return ListView.builder(
+                      itemCount: filteredList.length,
                       itemBuilder: (context, index) {
-                        var item = sefetyViolationController
-                            .incidentfilteredDetails[index];
-                        return Column(
-                          children: [
-                            ListTile(
-                              title: AppTextWidget(
-                                text: item['title']!,
-                                fontSize: AppTextSize.textSizeSmall,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primaryText,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppTextWidget(
-                                    text: item['subtitle']!,
-                                    fontSize: AppTextSize.textSizeExtraSmall,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.secondaryText,
-                                  ),
-                                  AppTextWidget(
-                                    text: item['date']!,
-                                    fontSize: AppTextSize.textSizeExtraSmall,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.secondaryText,
-                                  ),
-                                ],
-                              ),
-                              trailing: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 12, right: 12, top: 8, bottom: 3),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                        final safety = filteredList[index];
+
+                        return GestureDetector(
+                          onTap: () async {
+                            log('----------------------------${sefetyViolationController.selectedOption.value}');
+                            safetyViolationDetailsCotroller.resetData();
+                            await safetyViolationDetailsCotroller
+                                .getSafetyViolationAllDetails(
+                                    projectId, userId, 1, safety.id);
+
+                            Get.to(SafetyViolationDetailsAll(
+                              userId: userId,
+                              userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              projectId: projectId,
+                              safetyId: safety.id,
+                            ));
+                          },
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: AppTextWidget(
+                                  text: safety.id.toString(),
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryText,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: item['text']!,
+                                      text: safety.details,
                                       fontSize: AppTextSize.textSizeExtraSmall,
                                       fontWeight: FontWeight.w500,
-                                      color: AppColors.buttoncolor,
+                                      color: AppColors.secondaryText,
+                                    ),
+                                    AppTextWidget(
+                                      // ignore: unnecessary_null_comparison
+                                      text: (safety.createdAt != null)
+                                          ? DateFormat('dd MMMM yyyy').format(
+                                              safety.createdAt is String
+                                                  ? DateTime.parse(safety
+                                                      .createdAt as String)
+                                                  : safety.createdAt)
+                                          : '',
+                                      fontSize: AppTextSize.textSizeExtraSmall,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.secondaryText,
                                     ),
                                   ],
                                 ),
+                                trailing: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 12, right: 12, top: 8, bottom: 3),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          AppTextWidget(
+                                            text: safety.status.toString() ==
+                                                    "0"
+                                                ? 'Open'
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? 'Accepted'
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? 'Closed'
+                                                        : "",
+                                            fontSize:
+                                                AppTextSize.textSizeExtraSmall,
+                                            fontWeight: FontWeight.w500,
+                                            color: safety.status.toString() ==
+                                                    "0"
+                                                ? AppColors
+                                                    .buttoncolor // Open → Orange
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? Colors
+                                                        .green // Accepted → Green
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? Colors
+                                                            .grey // Closed → Grey
+                                                        : Colors.black,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                            Divider(
-                              color: AppColors.textfeildcolor,
-                              thickness: 1.5,
-                              height: 2,
-                            ),
-                          ],
+                              Divider(
+                                color: AppColors.textfeildcolor,
+                                thickness: 1.5,
+                                height: 2,
+                              ),
+                            ],
+                          ),
                         );
                       },
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        log('----------------------------${sefetyViolationController.selectedOption.value}');
+                    );
+                  }),
+                  Obx(() {
+                    final filteredList =
+                        sefetyViolationController.safetyViolationAssignor;
+                    return ListView.builder(
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        final safety = filteredList[index];
 
-                        if (sefetyViolationController.selectedOption.value ==
-                            1) {
-                          Get.to(SafetyPreviewAgainScreen());
-                        }
-                      },
-                      child: ListView.builder(
-                        //    shrinkWrap: true,
-                        //   physics: NeverScrollableScrollPhysics(),
-                        itemCount: sefetyViolationController
-                            .incidentfilteredDetails.length,
-                        itemBuilder: (context, index) {
-                          var item = sefetyViolationController
-                              .incidentfilteredDetails[index];
-                          return Column(
+                        return GestureDetector(
+                          onTap: () async {
+                            log('----------------------------${sefetyViolationController.selectedOption.value}');
+                            safetyViolationDetailsAssignorCont.clearAllData();
+
+                            await safetyViolationDetailsAssignorCont
+                                .getSafetyViolationAssginorDetails(
+                                    projectId, userId, 2, safety.id);
+
+                            Get.to(SafetyViolationDetailsAssignor(
+                              userId: userId,
+                              userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              projectId: projectId,
+                              safetyId: safety.id,
+                            ));
+                          },
+                          child: Column(
                             children: [
                               ListTile(
                                 title: AppTextWidget(
-                                  text: item['title']!,
+                                  text: safety.id.toString(),
                                   fontSize: AppTextSize.textSizeSmall,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.primaryText,
@@ -293,13 +376,20 @@ class SefetyViolationScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: item['subtitle']!,
+                                      text: safety.details,
                                       fontSize: AppTextSize.textSizeExtraSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.secondaryText,
                                     ),
                                     AppTextWidget(
-                                      text: item['date']!,
+                                      // ignore: unnecessary_null_comparison
+                                      text: (safety.createdAt != null)
+                                          ? DateFormat('dd MMMM yyyy').format(
+                                              safety.createdAt is String
+                                                  ? DateTime.parse(safety
+                                                      .createdAt as String)
+                                                  : safety.createdAt)
+                                          : '',
                                       fontSize: AppTextSize.textSizeExtraSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.secondaryText,
@@ -315,11 +405,37 @@ class SefetyViolationScreen extends StatelessWidget {
                                       Column(
                                         children: [
                                           AppTextWidget(
-                                            text: item['text']!,
+                                            text: safety.status.toString() ==
+                                                    "0"
+                                                ? 'Open'
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? 'Accepted'
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? 'Closed'
+                                                        : "",
                                             fontSize:
                                                 AppTextSize.textSizeExtraSmall,
                                             fontWeight: FontWeight.w500,
-                                            color: AppColors.buttoncolor,
+                                            color: safety.status.toString() ==
+                                                    "0"
+                                                ? AppColors
+                                                    .buttoncolor // Open → Orange
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? Colors
+                                                        .green // Accepted → Green
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? Colors
+                                                            .grey // Closed → Grey
+                                                        : Colors.black,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
                                           ),
                                         ],
                                       ),
@@ -333,31 +449,42 @@ class SefetyViolationScreen extends StatelessWidget {
                                 height: 2,
                               ),
                             ],
-                          );
-                        },
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        log('----------------------------${sefetyViolationController.selectedOption.value}');
-                        if (sefetyViolationController.selectedOption.value ==
-                            1) {
-                          Get.to(SafetyPreviewAssigneeScreen());
-                        }
+                          ),
+                        );
                       },
-                      child: ListView.builder(
-                        //    shrinkWrap: true,
-                        //   physics: NeverScrollableScrollPhysics(),
-                        itemCount: sefetyViolationController
-                            .incidentfilteredDetails.length,
-                        itemBuilder: (context, index) {
-                          var item = sefetyViolationController
-                              .incidentfilteredDetails[index];
-                          return Column(
+                    );
+                  }),
+                  Obx(() {
+                    final filteredList =
+                        sefetyViolationController.safetyViolationAssignee;
+                    return ListView.builder(
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        final safety = filteredList[index];
+
+                        return GestureDetector(
+                          onTap: () async {
+                            log('----------------------------${sefetyViolationController.selectedOption.value}');
+                            safetyViolationDetailsAssigneeCont
+                                .resetSafetyAssigneeData();
+                            await safetyViolationDetailsAssigneeCont
+                                .getSafetyViolationAssigneeDetails(
+                                    projectId, userId, 3, safety.id);
+
+                            Get.to(SafetyViolationDetailsAssignee(
+                              userId: userId,
+                              userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              projectId: projectId,
+                              safetyId: safety.id,
+                            ));
+                          },
+                          child: Column(
                             children: [
                               ListTile(
                                 title: AppTextWidget(
-                                  text: item['title']!,
+                                  text: safety.id.toString(),
                                   fontSize: AppTextSize.textSizeSmall,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.primaryText,
@@ -366,13 +493,20 @@ class SefetyViolationScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: item['subtitle']!,
+                                      text: safety.details,
                                       fontSize: AppTextSize.textSizeExtraSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.secondaryText,
                                     ),
                                     AppTextWidget(
-                                      text: item['date']!,
+                                      // ignore: unnecessary_null_comparison
+                                      text: (safety.createdAt != null)
+                                          ? DateFormat('dd MMMM yyyy').format(
+                                              safety.createdAt is String
+                                                  ? DateTime.parse(safety
+                                                      .createdAt as String)
+                                                  : safety.createdAt)
+                                          : '',
                                       fontSize: AppTextSize.textSizeExtraSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.secondaryText,
@@ -388,11 +522,37 @@ class SefetyViolationScreen extends StatelessWidget {
                                       Column(
                                         children: [
                                           AppTextWidget(
-                                            text: item['text']!,
+                                            text: safety.status.toString() ==
+                                                    "0"
+                                                ? 'Open'
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? 'Accepted'
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? 'Closed'
+                                                        : "",
                                             fontSize:
                                                 AppTextSize.textSizeExtraSmall,
                                             fontWeight: FontWeight.w500,
-                                            color: AppColors.buttoncolor,
+                                            color: safety.status.toString() ==
+                                                    "0"
+                                                ? AppColors
+                                                    .buttoncolor // Open → Orange
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? Colors
+                                                        .green // Accepted → Green
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? Colors
+                                                            .grey // Closed → Grey
+                                                        : Colors.black,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
                                           ),
                                         ],
                                       ),
@@ -406,12 +566,12 @@ class SefetyViolationScreen extends StatelessWidget {
                                 height: 2,
                               ),
                             ],
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                ],
               ),
             ),
           ],
@@ -426,6 +586,8 @@ class SefetyViolationScreen extends StatelessWidget {
                   height: SizeConfig.heightMultiplier * 6.5,
                   child: FloatingActionButton(
                     onPressed: () async {
+                      locationController.fetchLocation();
+                      safetyViolationDetailsController.resetAllSafetyData();
                       safetyPreviewController.clearAllFields();
                       safetyViolationDetailsController.resetData();
                       showDialog(
@@ -433,7 +595,7 @@ class SefetyViolationScreen extends StatelessWidget {
                           builder: (BuildContext context) =>
                               CustomLoadingPopup());
                       await safetyViolationDetailsController
-                          .getSafetyViolationData();
+                          .getSafetyViolationData(projectId);
                       Get.back();
                       Get.to(SafetyViolationDetails(
                         userId: userId,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/incident_report_all/incident_report/incident_report_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_report/incident_report_screen.dart';
 import 'package:flutter_app/features/induction_training/induction_training_controller.dart';
 import 'package:flutter_app/features/induction_training/induction_training_screen.dart';
 import 'package:flutter_app/features/project_labour/project_labour_controller.dart';
 import 'package:flutter_app/features/project_labour/project_labour_screen.dart';
+import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_screen.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_screen.dart';
@@ -42,6 +44,10 @@ class QuickActionsGrid extends StatelessWidget {
       Get.put(WorkPermitController());
   ToolboxTrainingController toolboxTrainingController =
       Get.put(ToolboxTrainingController());
+  final IncidentReportController incidentReportController =
+      Get.put(IncidentReportController());
+  final SefetyViolationController sefetyViolationController =
+      Get.put(SefetyViolationController());
   @override
   Widget build(BuildContext context) {
     final actions = [
@@ -71,6 +77,8 @@ class QuickActionsGrid extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => CustomLoadingPopup());
+                workPermitController.tabController.animateTo(0);
+
                 await workPermitController.getWorkPermitAllListing(
                     projectId, userId, 1);
                 await workPermitController.getWorkPermitMakerListing(
@@ -98,6 +106,8 @@ class QuickActionsGrid extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => CustomLoadingPopup());
+                toolboxTrainingController.tabController.animateTo(0);
+
                 await toolboxTrainingController.getToolBoxListingAll(
                     projectId, userId, 1);
                 await toolboxTrainingController.getToolBoxListingMaker(
@@ -125,6 +135,7 @@ class QuickActionsGrid extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => CustomLoadingPopup());
+
                 await inductionTrainingController.getProjectDetails();
                 await inductionTrainingController.getInductionListing(
                     projectId, userId);
@@ -147,10 +158,19 @@ class QuickActionsGrid extends StatelessWidget {
                 }
                 break;
               case 3:
-                // showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) => CustomLoadingPopup());
-                // Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomLoadingPopup());
+                sefetyViolationController.tabController.animateTo(0);
+
+                await sefetyViolationController.getSafetyViolationAllListing(
+                    projectId, userId, 1);
+                await sefetyViolationController
+                    .getSafetyViolationAssignorListing(projectId, userId, 2);
+                await sefetyViolationController
+                    .getSafetyViolationAssigneeListing(projectId, userId, 3);
+
+                Navigator.pop(context);
                 if (logStatus == true) {
                   Get.to(() => SefetyViolationScreen(
                         userId: userId,
@@ -170,6 +190,19 @@ class QuickActionsGrid extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => CustomLoadingPopup());
+                Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomLoadingPopup());
+                incidentReportController.tabController.animateTo(0);
+
+                await incidentReportController.getIncidentReportAllListing(
+                    projectId, userId, 1);
+                await incidentReportController.getIncidentReportAssignorListing(
+                    projectId, userId, 2);
+                await incidentReportController.getIncidentReportAssigneeListing(
+                    projectId, userId, 3);
+
                 Navigator.pop(context);
                 if (logStatus == true) {
                   Get.to(() => IncidentReportScreen(

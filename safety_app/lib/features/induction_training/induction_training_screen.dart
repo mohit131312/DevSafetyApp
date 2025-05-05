@@ -7,6 +7,7 @@ import 'package:flutter_app/features/Labour_add/add_labour_controller.dart';
 import 'package:flutter_app/features/Labour_add/add_labour_screen.dart';
 import 'package:flutter_app/features/contractor/add_contractor/add_contractor.dart';
 import 'package:flutter_app/features/contractor/add_contractor/add_contractor_controller.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/induction_listing/contractor_listing/contractor_listing_controller.dart';
 import 'package:flutter_app/features/induction_listing/contractor_listing/contractor_listing_screen.dart';
 import 'package:flutter_app/features/induction_listing/staff_listing/staff_listing_controller.dart';
@@ -48,6 +49,7 @@ class InductionTrainingScreen extends StatelessWidget {
       Get.put(StaffListingController());
   final ContractorListingController contractorListingController =
       Get.put(ContractorListingController());
+  final LocationController locationController = Get.find();
   String getUserTypeLabel(dynamic userType) {
     int? userTypeInt;
 
@@ -131,183 +133,198 @@ class InductionTrainingScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 6,
-                              mainAxisSpacing: 4,
-                              childAspectRatio: 1,
-                            ),
-                            itemCount: inductionTrainingController
-                                .selectCatogery.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  if (inductionTrainingController
-                                          .selectCatogery[index].id ==
-                                      1) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CustomLoadingPopup());
-                                    await inductionTrainingController
-                                        .getInductionTrainingAdd(
-                                            inductionTrainingController
-                                                .selectCatogery[index].id);
+                      child: SizedBox(
+                        height: SizeConfig.heightMultiplier * 20,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 6,
+                                mainAxisSpacing: 4,
+                                childAspectRatio: 1,
+                              ),
+                              itemCount: 3,
+                              // itemCount: inductionTrainingController
+                              //     .selectCatogery.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if (inductionTrainingController
+                                            .selectCatogery[index].id ==
+                                        1) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              CustomLoadingPopup());
+                                      await inductionTrainingController
+                                          .getInductionTrainingAdd(
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id);
 
-                                    Navigator.pop(context);
-                                    isFabExpanded.value = !isFabExpanded.value;
+                                      Navigator.pop(context);
+                                      isFabExpanded.value =
+                                          !isFabExpanded.value;
 
-                                    Navigator.pop(context);
+                                      Navigator.pop(context);
 
-                                    if (logStatus == true) {
-                                      final AddLabourController
-                                          addLabourController =
-                                          Get.put(AddLabourController());
-                                      addLabourController
-                                          .clearUserFieldsFinal();
-                                      Get.to(AddLabourScreen(
-                                        categoryId: inductionTrainingController
-                                            .selectCatogery[index].id,
-                                        userId: userId,
-                                        userName: userName,
-                                        userImg: userImg,
-                                        userDesg: userDesg,
-                                        projectId: projectId,
-                                      ));
+                                      if (logStatus == true) {
+                                        final AddLabourController
+                                            addLabourController =
+                                            Get.put(AddLabourController());
+                                        addLabourController
+                                            .clearUserFieldsFinal();
+                                        Get.to(AddLabourScreen(
+                                          categoryId:
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id,
+                                          userId: userId,
+                                          userName: userName,
+                                          userImg: userImg,
+                                          userDesg: userDesg,
+                                          projectId: projectId,
+                                        ));
 
-                                      print("Navigating to AddLabour with:");
-                                      print("User ID: $userId");
-                                      print("User Name: $userName");
-                                      print("Project ID: $projectId");
+                                        print("Navigating to AddLabour with:");
+                                        print("User ID: $userId");
+                                        print("User Name: $userName");
+                                        print("Project ID: $projectId");
+                                      } else {
+                                        logout();
+                                      }
+                                      print(
+                                          "Tapped on item 1-----------AddLabourScreen");
+                                    } else if (inductionTrainingController
+                                            .selectCatogery[index].id ==
+                                        2) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              CustomLoadingPopup());
+                                      await inductionTrainingController
+                                          .getInductionTrainingAdd(
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id);
+
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      isFabExpanded.value =
+                                          !isFabExpanded.value;
+                                      if (logStatus == true) {
+                                        final AddContractorController
+                                            addContractorController =
+                                            Get.put(AddContractorController());
+                                        addContractorController
+                                            .clearUserFieldsFinalContractor();
+                                        Get.to(AddContractor(
+                                          categoryId:
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id,
+                                          userId: userId,
+                                          userName: userName,
+                                          userImg: userImg,
+                                          userDesg: userDesg,
+                                          projectId: projectId,
+                                        ));
+
+                                        print(
+                                            "Navigating to AddContractor with:");
+                                        print("User ID: $userId");
+                                        print("User Name: $userName");
+                                        print("Project ID: $projectId");
+                                      }
+
+                                      print(
+                                          "Tapped on item 2----------------AddContractor");
+                                    } else if (inductionTrainingController
+                                            .selectCatogery[index].id ==
+                                        3) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              CustomLoadingPopup());
+                                      await inductionTrainingController
+                                          .getInductionTrainingAdd(
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id);
+
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      isFabExpanded.value =
+                                          !isFabExpanded.value;
+
+                                      if (logStatus == true) {
+                                        final AddStaffController
+                                            addStaffController =
+                                            Get.put(AddStaffController());
+                                        addStaffController
+                                            .clearStaffUserFieldsFinal();
+
+                                        Get.to(AddStaffScreen(
+                                          categoryId:
+                                              inductionTrainingController
+                                                  .selectCatogery[index].id,
+                                          userId: userId,
+                                          userName: userName,
+                                          userImg: userImg,
+                                          userDesg: userDesg,
+                                          projectId: projectId,
+                                        ));
+
+                                        print(
+                                            "Navigating to AddStaffScreen with:");
+                                        print("User ID: $userId");
+                                        print("User Name: $userName");
+                                        print("Project ID: $projectId");
+                                      }
+                                      print(
+                                          "Tapped on item 3--------AddStaffScreen");
+                                    } else if (index == 3) {
+                                    } else if (index == 4) {
+                                      print("Tapped on item 2");
                                     } else {
-                                      logout();
+                                      print("Tapped on item $index");
                                     }
-                                    print(
-                                        "Tapped on item 1-----------AddLabourScreen");
-                                  } else if (inductionTrainingController
-                                          .selectCatogery[index].id ==
-                                      2) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CustomLoadingPopup());
-                                    await inductionTrainingController
-                                        .getInductionTrainingAdd(
-                                            inductionTrainingController
-                                                .selectCatogery[index].id);
-
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    isFabExpanded.value = !isFabExpanded.value;
-                                    if (logStatus == true) {
-                                      final AddContractorController
-                                          addContractorController =
-                                          Get.put(AddContractorController());
-                                      addContractorController
-                                          .clearUserFieldsFinalContractor();
-                                      Get.to(AddContractor(
-                                        categoryId: inductionTrainingController
-                                            .selectCatogery[index].id,
-                                        userId: userId,
-                                        userName: userName,
-                                        userImg: userImg,
-                                        userDesg: userDesg,
-                                        projectId: projectId,
-                                      ));
-
-                                      print(
-                                          "Navigating to AddContractor with:");
-                                      print("User ID: $userId");
-                                      print("User Name: $userName");
-                                      print("Project ID: $projectId");
-                                    }
-
-                                    print(
-                                        "Tapped on item 2----------------AddContractor");
-                                  } else if (inductionTrainingController
-                                          .selectCatogery[index].id ==
-                                      3) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CustomLoadingPopup());
-                                    await inductionTrainingController
-                                        .getInductionTrainingAdd(
-                                            inductionTrainingController
-                                                .selectCatogery[index].id);
-
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    isFabExpanded.value = !isFabExpanded.value;
-
-                                    if (logStatus == true) {
-                                      final AddStaffController
-                                          addStaffController =
-                                          Get.put(AddStaffController());
-                                      addStaffController
-                                          .clearStaffUserFieldsFinal();
-
-                                      Get.to(AddStaffScreen(
-                                        categoryId: inductionTrainingController
-                                            .selectCatogery[index].id,
-                                        userId: userId,
-                                        userName: userName,
-                                        userImg: userImg,
-                                        userDesg: userDesg,
-                                        projectId: projectId,
-                                      ));
-
-                                      print(
-                                          "Navigating to AddStaffScreen with:");
-                                      print("User ID: $userId");
-                                      print("User Name: $userName");
-                                      print("Project ID: $projectId");
-                                    }
-                                    print(
-                                        "Tapped on item 3--------AddStaffScreen");
-                                  } else if (index == 3) {
-                                  } else if (index == 4) {
-                                    print("Tapped on item 2");
-                                  } else {
-                                    print("Tapped on item $index");
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.network(
-                                      '$baseUrl2${inductionTrainingController.selectCatogery[index].iconPath}',
-                                      height: 30,
-                                      width: 30,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Flexible(
-                                      child: Text(
-                                        inductionTrainingController
-                                            .selectCatogery[index].categoryName,
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: AppTextSize.textSizeSmalle,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w400,
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: SizeConfig.widthMultiplier * 3,
+                                      ),
+                                      SvgPicture.network(
+                                        '$baseUrl2${inductionTrainingController.selectCatogery[index].iconPath}',
+                                        height: 30,
+                                        width: 30,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Flexible(
+                                        child: Text(
+                                          inductionTrainingController
+                                              .selectCatogery[index]
+                                              .categoryName,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize:
+                                                AppTextSize.textSizeSmalle,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -325,55 +342,38 @@ class InductionTrainingScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
-            child: AppBar(
-              scrolledUnderElevation: 0.0,
-              elevation: 0,
-              backgroundColor: AppColors.buttoncolor,
-              foregroundColor: AppColors.buttoncolor,
-              centerTitle: true,
-              toolbarHeight: SizeConfig.heightMultiplier * 10,
-              title: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: AppTextWidget(
-                  text: AppTexts.inductiontraining,
-                  fontSize: AppTextSize.textSizeMedium,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.primary,
-                ),
+          ),
+          scrolledUnderElevation: 0.0,
+          elevation: 0,
+          backgroundColor: AppColors.buttoncolor,
+          foregroundColor: AppColors.buttoncolor,
+          centerTitle: true,
+          toolbarHeight: SizeConfig.heightMultiplier * 10,
+          title: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: AppTextWidget(
+              text: AppTexts.inductiontraining,
+              fontSize: AppTextSize.textSizeMedium,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: SizeConfig.heightMultiplier * 2.5,
+                color: AppColors.primary,
               ),
-              leading: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: SizeConfig.heightMultiplier * 2.5,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: SizeConfig.heightMultiplier * 2,
-                    right: SizeConfig.widthMultiplier * 5,
-                  ),
-                  child: Image.asset(
-                    "assets/icons/frame_icon.png",
-                    height: SizeConfig.imageSizeMultiplier * 6,
-                    width: SizeConfig.imageSizeMultiplier * 6,
-                  ),
-                )
-              ],
             ),
           ),
         ),
@@ -628,8 +628,8 @@ class InductionTrainingScreen extends StatelessWidget {
                                           width:
                                               SizeConfig.widthMultiplier * 70,
                                           child: AppTextWidget(
-                                            text: (ind.inductionId.isNotEmpty)
-                                                ? ind.inductionId
+                                            text: (ind.inductionId!.isNotEmpty)
+                                                ? ind.inductionId!
                                                 : "",
                                             fontSize:
                                                 AppTextSize.textSizeExtraSmall,
@@ -679,7 +679,8 @@ class InductionTrainingScreen extends StatelessWidget {
                                           children: [
                                             Image.asset(
                                               getUserTypeImage(
-                                                  ind.userType.toString()),
+                                                  ind.userType?.toString() ??
+                                                      'Unknown'),
                                               height: SizeConfig
                                                       .imageSizeMultiplier *
                                                   4,
@@ -737,6 +738,7 @@ class InductionTrainingScreen extends StatelessWidget {
                 isFabExpanded.value = !isFabExpanded.value;
 
                 _showFabMenu(context, userId, userName, projectId);
+                locationController.fetchLocation();
               },
               backgroundColor: AppColors.buttoncolor,
               elevation: 0,

@@ -249,13 +249,13 @@ class ContractorCompany {
 
 class InformedAsgineeUserList {
   int id;
-  String firstName;
-  String lastName;
-  String email;
+  String? firstName;
+  String? lastName;
+  String? email;
   // dynamic emailVerifiedAt;
   // String location;
-  String mobileNumber;
-  int role;
+  String? mobileNumber;
+  int? role;
   // DateTime createdAt;
   // DateTime updatedAt;
   // String encryptPassword;
@@ -276,13 +276,13 @@ class InformedAsgineeUserList {
 
   InformedAsgineeUserList({
     required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
+    this.firstName,
+    this.lastName,
+    this.email,
     // required this.emailVerifiedAt,
     // required this.location,
-    required this.mobileNumber,
-    required this.role,
+    this.mobileNumber,
+    this.role,
     // required this.createdAt,
     // required this.updatedAt,
     // required this.encryptPassword,
@@ -305,13 +305,13 @@ class InformedAsgineeUserList {
   factory InformedAsgineeUserList.fromJson(Map<String, dynamic> json) =>
       InformedAsgineeUserList(
         id: json["id"],
-        firstName: json["first_name"],
-        lastName: json["last_name"],
-        email: json["email"],
+        firstName: json["first_name"] ?? "",
+        lastName: json["last_name"] ?? "",
+        email: json["email"] ?? '',
         // emailVerifiedAt: json["email_verified_at"],
         // location: json["location"],
-        mobileNumber: json["mobile_number"],
-        role: json["role"],
+        mobileNumber: json["mobile_number"] ?? "",
+        role: json["role"] ?? 0,
         // createdAt: DateTime.parse(json["created_at"]),
         // updatedAt: DateTime.parse(json["updated_at"]),
         // encryptPassword: json["encrypt_password"],
@@ -444,13 +444,13 @@ class InvolvedContractorUserList {
 
 class InvolvedList {
   int id;
-  String inducteeId;
-  String labourName;
+  String? inducteeId;
+  String? labourName;
 
   // DateTime birthDate;
   // int age;
-  String contactNumber;
-  String userPhoto;
+  String? contactNumber;
+  String? userPhoto;
   // String currentStreetName;
   // String currentCity;
   // String currentTaluka;
@@ -490,12 +490,12 @@ class InvolvedList {
 
   InvolvedList({
     required this.id,
-    required this.inducteeId,
-    required this.labourName,
+    this.inducteeId,
+    this.labourName,
     // required this.birthDate,
     // required this.age,
-    required this.contactNumber,
-    required this.userPhoto,
+    this.contactNumber,
+    this.userPhoto,
     // required this.currentStreetName,
     // required this.currentCity,
     // required this.currentTaluka,
@@ -536,12 +536,12 @@ class InvolvedList {
 
   factory InvolvedList.fromJson(Map<String, dynamic> json) => InvolvedList(
         id: json["id"],
-        inducteeId: json["inductee_id"],
-        labourName: json["labour_name"],
+        inducteeId: json["inductee_id"] ?? "",
+        labourName: json["labour_name"] ?? "",
         // birthDate: DateTime.parse(json["birth_date"]),
         // age: json["age"],
-        contactNumber: json["contact_number"],
-        userPhoto: json["user_photo"],
+        contactNumber: json["contact_number"] ?? "",
+        userPhoto: json["user_photo"] ?? "",
         // currentStreetName: json["current_street_name"],
         // currentCity: json["current_city"],
         // currentTaluka: json["current_taluka"],

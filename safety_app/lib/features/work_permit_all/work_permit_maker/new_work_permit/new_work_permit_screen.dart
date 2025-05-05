@@ -42,7 +42,8 @@ class NewWorkPermitScreen extends StatelessWidget {
       Get.find();
   final WorkPermitController workPermitController = Get.find();
   final NewWorkPermitController newWorkPermitController = Get.find();
-  final WorkPermitUnderController workPermitUnderController = Get.find();
+  final WorkPermitUnderController workPermitUnderController =
+      Get.put(WorkPermitUnderController());
   final AssignCheckerController assignCheckerController = Get.find();
   final formKey = GlobalKey<FormState>();
 
@@ -51,6 +52,7 @@ class NewWorkPermitScreen extends StatelessWidget {
         Get.put(WorkPermitDateController());
 
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
       isScrollControlled: true, // Allow bottom sheet to resize based on content
       shape: RoundedRectangleBorder(
@@ -61,7 +63,7 @@ class NewWorkPermitScreen extends StatelessWidget {
           padding: EdgeInsets.only(
             left: 16.0,
             right: 16.0,
-            top: 16.0,
+            top: 36.0,
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: SingleChildScrollView(
@@ -175,7 +177,7 @@ class NewWorkPermitScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 36),
 
                   // Start Time Section with AM/PM toggle
                   Row(
@@ -804,583 +806,103 @@ class NewWorkPermitScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-            child: AppBar(
-              scrolledUnderElevation: 0.0,
-              elevation: 0,
-              backgroundColor: AppColors.buttoncolor,
-              foregroundColor: AppColors.buttoncolor,
-              centerTitle: true,
-              toolbarHeight: SizeConfig.heightMultiplier * 10,
-              title: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: AppTextWidget(
-                  text: 'New Work Permit',
-                  fontSize: AppTextSize.textSizeMedium,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.primary,
-                ),
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
               ),
-              leading: Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: SizeConfig.heightMultiplier * 2.5,
-                    color: AppColors.primary,
-                  ),
+            ),
+            scrolledUnderElevation: 0.0,
+            elevation: 0,
+            backgroundColor: AppColors.buttoncolor,
+            foregroundColor: AppColors.buttoncolor,
+            centerTitle: true,
+            toolbarHeight: SizeConfig.heightMultiplier * 10,
+            title: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: AppTextWidget(
+                text: 'New Work Permit',
+                fontSize: AppTextSize.textSizeMedium,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primary,
+              ),
+            ),
+            leading: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: SizeConfig.heightMultiplier * 2.5,
+                  color: AppColors.primary,
                 ),
               ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.widthMultiplier * 4,
-                vertical: SizeConfig.heightMultiplier * 2,
-              ),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: LinearProgressIndicator(
-                            value: 0.33,
-                            backgroundColor: AppColors.searchfeildcolor,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.defaultPrimary),
-                          ),
-                        ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          '01/03',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2.5,
-                    ),
-                    AppTextWidget(
-                      text: 'Work Permit Details',
-                      fontSize: AppTextSize.textSizeMediumm,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primaryText,
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 0.3,
-                    ),
-                    AppTextWidget(
-                      text: 'Enter work permit details.',
-                      fontSize: AppTextSize.textSizeSmalle,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.secondaryText,
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        AppTextWidget(
-                          text: 'Select SubActivity',
-                          fontSize: AppTextSize.textSizeSmall,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    Obx(
-                      () => AppSearchDropdown(
-                        items: workPermitController.subActivityWorkList
-                            .map(
-                              (sub) => sub.subActivityName,
-                            )
-                            .whereType<String>()
-                            .toList(),
-                        selectedItem: newWorkPermitController
-                                .selectedWorkActivity.value.isNotEmpty
-                            ? newWorkPermitController.selectedWorkActivity.value
-                            : null,
-                        hintText: 'Select SubActivity',
-                        onChanged: (value) async {
-                          newWorkPermitController.selectedWorkActivity.value =
-                              value ?? '';
-                          var selectedcat = workPermitController
-                              .subActivityWorkList
-                              .firstWhereOrNull(
-                                  (sub) => sub.subActivityName == value);
-                          if (selectedcat != null) {
-                            newWorkPermitController
-                                .selectedWorkActivityId.value = selectedcat.id;
-                            workPermitPrecautionController
-                                .clearSelectedWorkPermitData();
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    CustomLoadingPopup());
-                            await newWorkPermitController
-                                .getDocumentRequiredData(newWorkPermitController
-                                    .selectedWorkActivityId.value);
-                            Get.back();
-                            log('Selected newWorkPermitController.selectedWorkActivity: ${newWorkPermitController.selectedWorkActivity.value}');
-                            log('Selected newWorkPermitController.selectedWorkActivityId: ${newWorkPermitController.selectedWorkActivityId.value}');
-                          } else {
-                            log('No matching reason found for: $value');
-                          }
-                        },
-                        validator: (value) {
-                          if (value == null ||
-                              value.toString().trim().isEmpty) {
-                            return 'SubActivity cannot be empty';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        AppTextWidget(
-                          text: 'Description of Work ',
-                          fontSize: AppTextSize.textSizeSmall,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    AppTextFormfeild(
-                      controller: newWorkPermitController.descWorkrController,
-                      hintText: 'Description of Work here...',
-                      focusNode: newWorkPermitController.dow,
-                      onFieldSubmitted: (_) {
-                        newWorkPermitController.dow.unfocus();
-                      },
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.toString().trim().isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {},
-                    ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        AppTextWidget(
-                          text: 'Attach Toolbox Training',
-                          fontSize: AppTextSize.textSizeSmall,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    Obx(
-                      () => AppSearchDropdown(
-                        items: workPermitController.safetyToolboxTraining
-                            .map(
-                              (t) => t.nameOfTbTraining,
-                            )
-                            .whereType<String>()
-                            .toList(),
-                        selectedItem: newWorkPermitController
-                                .selectedtoolboxtrainig.value.isNotEmpty
-                            ? newWorkPermitController
-                                .selectedtoolboxtrainig.value
-                            : null,
-                        hintText: 'Select toolbox training',
-                        onChanged: (value) async {
-                          newWorkPermitController.selectedtoolboxtrainig.value =
-                              value ?? '';
-                          var selectedtool = workPermitController
-                              .safetyToolboxTraining
-                              .firstWhereOrNull(
-                                  (t) => t.nameOfTbTraining == value);
-                          if (selectedtool != null) {
-                            newWorkPermitController.selectedtoolboxId.value =
-                                selectedtool.id;
-
-                            log('Selected newWorkPermitController.selectedtoolboxId: ${newWorkPermitController.selectedtoolboxId.value}');
-                            log('Selected newWorkPermitController.selectedtoolboxtrainig: ${newWorkPermitController.selectedtoolboxtrainig.value}');
-                          } else {
-                            log('No matching reason found for: $value');
-                          }
-                        },
-                        validator: (value) {
-                          if (value == null ||
-                              value.toString().trim().isEmpty) {
-                            return 'toolbox cannot be empty';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        AppTextWidget(
-                          text: 'Name of Work Permit',
-                          fontSize: AppTextSize.textSizeSmall,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    AppTextFormfeild(
-                      controller:
-                          newWorkPermitController.nameworkpermitController,
-                      hintText: 'Work permit name',
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a valid work permit name';
-                        }
-                        return null;
-                      },
-                      focusNode: newWorkPermitController.nameofworkpermit,
-                      onFieldSubmitted: (_) {
-                        newWorkPermitController.nameofworkpermit.unfocus();
-                      },
-                      onChanged: (value) {},
-                    ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: AppTextWidget(
-                            text: 'Select Building',
-                            fontSize: AppTextSize.textSizeSmall,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primaryText,
-                          ),
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Obx(
-                        () => GestureDetector(
-                          onTap: () {
-                            showBuildingSelectionSheetBulding(
-                                context, Get.find<WorkPermitController>());
-                          },
-                          child: AbsorbPointer(
-                            child: DropdownButtonFormField<String>(
-                              value: newWorkPermitController
-                                      .selectedBuilding.value.isNotEmpty
-                                  ? newWorkPermitController
-                                      .selectedBuilding.value
-                                  : null,
-                              items: newWorkPermitController.buildings
-                                  .map((building) => DropdownMenuItem(
-                                        value: building,
-                                        child: AppTextWidget(
-                                          text: building,
-                                          fontSize: AppTextSize.textSizeMedium,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.primaryText,
-                                        ),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {},
-                              hint: AppTextWidget(
-                                text: 'Select Building',
-                                fontSize: AppTextSize.textSizeSmall,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.searchfeild,
-                              ),
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: AppColors.searchfeild,
-                                size: 27,
-                              ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 13, horizontal: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppColors.searchfeildcolor,
-                                      width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppColors.searchfeildcolor,
-                                      width: 1),
-                                ),
-                              ),
+          body: SingleChildScrollView(
+            child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.widthMultiplier * 4,
+                  vertical: SizeConfig.heightMultiplier * 2,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: LinearProgressIndicator(
+                              value: 0.33,
+                              backgroundColor: AppColors.searchfeildcolor,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.defaultPrimary),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Obx(() => newWorkPermitController
-                            .buildingfloorerror.value.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 4, left: 12),
-                            child: Text(
-                              newWorkPermitController.buildingfloorerror.value,
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 174, 75, 68),
-                                fontSize: 12,
-                              ),
+                          SizedBox(width: 8.0),
+                          Text(
+                            '01/03',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[600],
                             ),
-                          )
-                        : SizedBox()),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: AppTextWidget(
-                            text: 'Select Floor',
-                            fontSize: AppTextSize.textSizeSmall,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primaryText,
                           ),
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 0.6,
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: AppTextWidget(
-                            text: 'Note : Tap on Building to add Floor',
-                            fontSize: AppTextSize.textSizeSmalle,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.red,
-                          ),
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    // UI Code Update
-                    Obx(() {
-                      if (newWorkPermitController
-                          .selectedBuildingIdListFinal.isEmpty) {
-                        return SizedBox
-                            .shrink(); // If list is empty, don't take up space
-                      }
-                      return SizedBox(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: newWorkPermitController
-                              .selectedBuildingIdListFinal.length,
-                          itemBuilder: (context, index) {
-                            final building = newWorkPermitController
-                                .selectedBuildingIdListFinal[index];
-
-                            // Ensure key names match the stored structure
-                            int? id = building['building_id'] as int?;
-                            List<int> floorIds = building['floor_ids'] ?? [];
-
-                            if (id == null) {
-                              log('Error: Building ID is null');
-                              return SizedBox(); // Skip rendering for null entries
-                            }
-
-                            String buildingName =
-                                newWorkPermitController.getBuildingNameById(id);
-                            String getFloorNameById = newWorkPermitController
-                                .getFloorNamesByIds(floorIds);
-
-                            log('Selected ID: $id');
-
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.secondaryText.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  CustomLoadingPopup(),
-                                            );
-
-                                            await newWorkPermitController
-                                                .getSafetyfloorData(id);
-                                            Get.back();
-
-                                            log('Selected ID: $id');
-
-                                            showBuildingSelectionSheetFloor(
-                                              context,
-                                              Get.find<WorkPermitController>(),
-                                              id,
-                                            );
-                                          },
-                                          child: SizedBox(
-                                            width:
-                                                SizeConfig.widthMultiplier * 73,
-                                            child: AppTextWidget(
-                                              text:
-                                                  "Selected Building : $buildingName",
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.primaryText,
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            newWorkPermitController
-                                                .deleteBuilding(index, id);
-                                          },
-                                          child: Icon(
-                                            Icons.close,
-                                            size: 20,
-                                            color: AppColors.primaryText,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width:
-                                              SizeConfig.widthMultiplier * 75,
-                                          child: AppTextWidget(
-                                            text:
-                                                "Selected Floor : ${getFloorNameById}",
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.primaryText,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        showCustomBottomSheetDate(context);
-                      },
-                      child: Row(
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2.5,
+                      ),
+                      AppTextWidget(
+                        text: 'Work Permit Details',
+                        fontSize: AppTextSize.textSizeMediumm,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryText,
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 0.3,
+                      ),
+                      AppTextWidget(
+                        text: 'Enter work permit details.',
+                        fontSize: AppTextSize.textSizeSmalle,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.secondaryText,
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      Row(
                         children: [
                           AppTextWidget(
-                            text: 'Duration of Work',
+                            text: 'Select SubActivity',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -1392,89 +914,581 @@ class NewWorkPermitScreen extends StatelessWidget {
                               color: AppColors.starcolor),
                         ],
                       ),
-                    ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      Obx(
+                        () => AppSearchDropdown(
+                          items: workPermitController.subActivityWorkList
+                              .map(
+                                (sub) => sub.subActivityName,
+                              )
+                              .whereType<String>()
+                              .toList(),
+                          selectedItem: newWorkPermitController
+                                  .selectedWorkActivity.value.isNotEmpty
+                              ? newWorkPermitController
+                                  .selectedWorkActivity.value
+                              : null,
+                          hintText: 'Select SubActivity',
+                          onChanged: (value) async {
+                            newWorkPermitController.selectedWorkActivity.value =
+                                value ?? '';
+                            var selectedcat = workPermitController
+                                .subActivityWorkList
+                                .firstWhereOrNull(
+                                    (sub) => sub.subActivityName == value);
+                            if (selectedcat != null) {
+                              newWorkPermitController.selectedWorkActivityId
+                                  .value = selectedcat.id;
+                              workPermitPrecautionController
+                                  .clearSelectedWorkPermitData();
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              await newWorkPermitController
+                                  .getDocumentRequiredData(
+                                      newWorkPermitController
+                                          .selectedWorkActivityId.value);
+                              Get.back();
+                              log('Selected newWorkPermitController.selectedWorkActivity: ${newWorkPermitController.selectedWorkActivity.value}');
+                              log('Selected newWorkPermitController.selectedWorkActivityId: ${newWorkPermitController.selectedWorkActivityId.value}');
+                            } else {
+                              log('No matching reason found for: $value');
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null ||
+                                value.toString().trim().isEmpty) {
+                              return 'SubActivity cannot be empty';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
 
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await showCustomBottomSheetDate(context);
-                      },
-                      child: Container(
-                        height: 50,
-                        width: SizeConfig.widthMultiplier * 91,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: 'Description of Work ',
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          AppTextWidget(
+                              text: AppTexts.star,
+                              fontSize: AppTextSize.textSizeExtraSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.starcolor),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      AppTextFormfeild(
+                        controller: newWorkPermitController.descWorkrController,
+                        hintText: 'Description of Work here...',
+                        focusNode: newWorkPermitController.dow,
+                        onFieldSubmitted: (_) {
+                          newWorkPermitController.dow.unfocus();
+                        },
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value == null ||
+                              value.toString().trim().isEmpty) {
+                            return 'Please enter description';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {},
+                      ),
+
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: 'Attach Toolbox Training',
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      Obx(
+                        () => AppSearchDropdown(
+                          items: workPermitController.safetyToolboxTraining
+                              .map(
+                                (t) => t.nameOfTbTraining,
+                              )
+                              .whereType<String>()
+                              .toList(),
+                          selectedItem: newWorkPermitController
+                                  .selectedtoolboxtrainig.value.isNotEmpty
+                              ? newWorkPermitController
+                                  .selectedtoolboxtrainig.value
+                              : null,
+                          hintText: 'Select toolbox training',
+                          onChanged: (value) async {
+                            newWorkPermitController
+                                .selectedtoolboxtrainig.value = value ?? '';
+                            var selectedtool = workPermitController
+                                .safetyToolboxTraining
+                                .firstWhereOrNull(
+                                    (t) => t.nameOfTbTraining == value);
+                            if (selectedtool != null) {
+                              newWorkPermitController.selectedtoolboxId.value =
+                                  selectedtool.id;
+
+                              log('Selected newWorkPermitController.selectedtoolboxId: ${newWorkPermitController.selectedtoolboxId.value}');
+                              log('Selected newWorkPermitController.selectedtoolboxtrainig: ${newWorkPermitController.selectedtoolboxtrainig.value}');
+                            } else {
+                              log('No matching reason found for: $value');
+                            }
+                          },
+                          // validator: (value) {
+                          //   if (value == null ||
+                          //       value.toString().trim().isEmpty) {
+                          //     return 'toolbox cannot be empty';
+                          //   }
+                          //   return null;
+                          // },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: 'Name of Work Permit',
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          AppTextWidget(
+                              text: AppTexts.star,
+                              fontSize: AppTextSize.textSizeExtraSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.starcolor),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      AppTextFormfeild(
+                        controller:
+                            newWorkPermitController.nameworkpermitController,
+                        hintText: 'Work permit name',
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter a valid work permit name';
+                          }
+                          return null;
+                        },
+                        focusNode: newWorkPermitController.nameofworkpermit,
+                        onFieldSubmitted: (_) {
+                          newWorkPermitController.nameofworkpermit.unfocus();
+                        },
+                        onChanged: (value) {},
+                      ),
+
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: AppTextWidget(
+                              text: 'Select Building',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                          ),
+                          AppTextWidget(
+                              text: AppTexts.star,
+                              fontSize: AppTextSize.textSizeExtraSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.starcolor),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+
+                      Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: AppColors.searchfeildcolor, width: 1),
                         ),
-                        child: Obx(() {
-                          return Text(
-                            newWorkPermitController.workDuration.value.isEmpty
-                                ? 'Select Duration of Work'
-                                : newWorkPermitController.workDuration.value,
-                            style: GoogleFonts.inter(
-                              fontSize: AppTextSize.textSizeSmall,
-                              fontWeight: FontWeight.w400,
-                              color: newWorkPermitController
-                                      .workDuration.value.isEmpty
-                                  ? AppColors.searchfeild
-                                  : AppColors.primaryText,
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                    Obx(() => newWorkPermitController.workDuration.value.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 4, left: 12),
-                            child: Text(
-                              newWorkPermitController.workDurationError.value,
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 174, 75, 68),
-                                fontSize: 12,
+                        child: Obx(
+                          () => GestureDetector(
+                            onTap: () {
+                              showBuildingSelectionSheetBulding(
+                                  context, Get.find<WorkPermitController>());
+                            },
+                            child: AbsorbPointer(
+                              child: DropdownButtonFormField<String>(
+                                value: newWorkPermitController
+                                        .selectedBuilding.value.isNotEmpty
+                                    ? newWorkPermitController
+                                        .selectedBuilding.value
+                                    : null,
+                                items: newWorkPermitController.buildings
+                                    .map((building) => DropdownMenuItem(
+                                          value: building,
+                                          child: AppTextWidget(
+                                            text: building,
+                                            fontSize:
+                                                AppTextSize.textSizeMedium,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.primaryText,
+                                          ),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) {},
+                                hint: AppTextWidget(
+                                  text: 'Select Building',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: AppColors.searchfeild,
+                                  size: 27,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 13, horizontal: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: AppColors.searchfeildcolor,
+                                        width: 1),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: AppColors.searchfeildcolor,
+                                        width: 1),
+                                  ),
+                                ),
                               ),
                             ),
-                          )
-                        : SizedBox()),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 3,
-                    ),
-                    //--------------------------------------
+                          ),
+                        ),
+                      ),
+                      Obx(() => newWorkPermitController
+                              .buildingfloorerror.value.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 4, left: 12),
+                              child: Text(
+                                newWorkPermitController
+                                    .buildingfloorerror.value,
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 174, 75, 68),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            )
+                          : SizedBox()),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: AppTextWidget(
+                              text: 'Select Floor',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                          ),
+                          AppTextWidget(
+                              text: AppTexts.star,
+                              fontSize: AppTextSize.textSizeExtraSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.starcolor),
+                        ],
+                      ),
 
-                    SizedBox(height: SizeConfig.heightMultiplier * 5),
-                    AppElevatedButton(
-                        text: 'Next',
-                        onPressed: () {
-                          log(newWorkPermitController
-                              .selectedBuildingIdListFinal
-                              .toString());
-                          if (newWorkPermitController
-                              .validateBuildingSelection()) {}
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 0.6,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: AppTextWidget(
+                              text: 'Note : Tap on Building to add Floor',
+                              fontSize: AppTextSize.textSizeSmalle,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.red,
+                            ),
+                          ),
+                          AppTextWidget(
+                              text: AppTexts.star,
+                              fontSize: AppTextSize.textSizeExtraSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.starcolor),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2,
+                      ),
+                      // UI Code Update
+                      Obx(() {
+                        if (newWorkPermitController
+                            .selectedBuildingIdListFinal.isEmpty) {
+                          return SizedBox
+                              .shrink(); // If list is empty, don't take up space
+                        }
+                        return SizedBox(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: newWorkPermitController
+                                .selectedBuildingIdListFinal.length,
+                            itemBuilder: (context, index) {
+                              final building = newWorkPermitController
+                                  .selectedBuildingIdListFinal[index];
 
-                          newWorkPermitController
-                              .validateWorkDuration(); // Call work duration validation
+                              // Ensure key names match the stored structure
+                              int? id = building['building_id'] as int?;
+                              List<int> floorIds = building['floor_ids'] ?? [];
 
-                          if (formKey.currentState!.validate() &&
-                              newWorkPermitController
-                                  .validateBuildingSelection() &&
-                              newWorkPermitController
-                                  .workDuration.value.isNotEmpty) {
-                            Get.to(WorkPermitPrecautionScreen(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId));
-                          }
-                        }),
-                    SizedBox(height: SizeConfig.heightMultiplier * 5),
-                  ],
-                ),
-              )),
+                              if (id == null) {
+                                log('Error: Building ID is null');
+                                return SizedBox(); // Skip rendering for null entries
+                              }
+
+                              String buildingName = newWorkPermitController
+                                  .getBuildingNameById(id);
+                              String getFloorNameById = newWorkPermitController
+                                  .getFloorNamesByIds(floorIds);
+
+                              log('Selected ID: $id');
+
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          CustomLoadingPopup(),
+                                    );
+
+                                    await newWorkPermitController
+                                        .getSafetyfloorData(id);
+                                    Get.back();
+
+                                    log('Selected ID: $id');
+                                    showBuildingSelectionSheetFloor(
+                                      context,
+                                      Get.find<WorkPermitController>(),
+                                      id,
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondaryText
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width:
+                                                  SizeConfig.widthMultiplier *
+                                                      73,
+                                              child: AppTextWidget(
+                                                text:
+                                                    "Selected Building : $buildingName",
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.primaryText,
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                newWorkPermitController
+                                                    .deleteBuilding(index, id);
+                                              },
+                                              child: Icon(
+                                                Icons.close,
+                                                size: 20,
+                                                color: AppColors.primaryText,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width:
+                                                  SizeConfig.widthMultiplier *
+                                                      75,
+                                              child: AppTextWidget(
+                                                text:
+                                                    "Selected Floor : ${getFloorNameById}",
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.primaryText,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          dateController.clearDuraion();
+                          showCustomBottomSheetDate(context);
+                        },
+                        child: Row(
+                          children: [
+                            AppTextWidget(
+                              text: 'Duration of Work',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                            AppTextWidget(
+                                text: AppTexts.star,
+                                fontSize: AppTextSize.textSizeExtraSmall,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.starcolor),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 1,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          dateController.clearDuraion();
+
+                          await showCustomBottomSheetDate(context);
+                        },
+                        child: Container(
+                          height: 50,
+                          width: SizeConfig.widthMultiplier * 91,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: AppColors.searchfeildcolor, width: 1),
+                          ),
+                          child: Obx(() {
+                            return Text(
+                              newWorkPermitController.workDuration.value.isEmpty
+                                  ? 'Select Duration of Work'
+                                  : newWorkPermitController.workDuration.value,
+                              style: GoogleFonts.inter(
+                                fontSize: AppTextSize.textSizeSmall,
+                                fontWeight: FontWeight.w400,
+                                color: newWorkPermitController
+                                        .workDuration.value.isEmpty
+                                    ? AppColors.searchfeild
+                                    : AppColors.primaryText,
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                      Obx(() => newWorkPermitController
+                              .workDuration.value.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 4, left: 12),
+                              child: Text(
+                                newWorkPermitController.workDurationError.value,
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 174, 75, 68),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            )
+                          : SizedBox()),
+                    ],
+                  ),
+                )),
+          ),
+          bottomNavigationBar: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: SizeConfig.heightMultiplier * 1,
+              horizontal: SizeConfig.widthMultiplier * 4,
+            ),
+            child: AppElevatedButton(
+                text: 'Next',
+                onPressed: () {
+                  log(newWorkPermitController.selectedBuildingIdListFinal
+                      .toString());
+                  if (newWorkPermitController.validateBuildingSelection()) {}
+
+                  newWorkPermitController
+                      .validateWorkDuration(); // Call work duration validation
+
+                  if (formKey.currentState!.validate() &&
+                      newWorkPermitController.validateBuildingSelection() &&
+                      newWorkPermitController.workDuration.value.isNotEmpty) {
+                    Get.to(WorkPermitPrecautionScreen(
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId));
+                  }
+                }),
+          ),
         ),
       ),
     );

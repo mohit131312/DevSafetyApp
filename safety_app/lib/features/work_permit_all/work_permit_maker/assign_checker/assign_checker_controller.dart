@@ -73,5 +73,13 @@ class AssignCheckerController extends GetxController {
     }
   }
 
+  void clearAssigneeData() {
+    selectedassigneeDataIds.clear();
+    selectedassigneeDataIdsFinal.clear();
+    assigneeError.value = ''; // Optionally, clear the error message
+
+    print("Assignee data cleared");
+  }
+
   ///------------------------------
 }

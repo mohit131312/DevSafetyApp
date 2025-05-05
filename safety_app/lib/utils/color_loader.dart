@@ -7,7 +7,7 @@ class ColorLoader extends StatefulWidget {
   final double radius;
   final double dotRadius;
 
-  const ColorLoader({super.key, this.radius = 40.0, this.dotRadius = 10.0});
+  const ColorLoader({super.key, this.radius = 40.0, this.dotRadius = 7.0});
 
   @override
   _ColorLoaderState createState() => _ColorLoaderState();
@@ -90,10 +90,15 @@ class _ColorLoaderState extends State<ColorLoader>
                 child: Center(
                   child: Stack(
                     children: <Widget>[
-                      Dot(
-                        radius: dotRadius,
-                        color: AppColors.buttoncolor,
+                      //      Image.asset('assets/icons/logoloader.png')
+                      Center(
+                        child: Image.asset(
+                          'assets/icons/ic_launcher.png',
+                          width: dotRadius * 5,
+                          height: dotRadius * 5,
+                        ),
                       ),
+
                       Transform.translate(
                         offset: Offset(
                           radius * cos(0.0),

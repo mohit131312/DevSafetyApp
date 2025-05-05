@@ -38,7 +38,7 @@ class LabourRowDetails extends StatelessWidget {
               : AppTextWidget(
                   text: value ?? '',
                   fontSize: AppTextSize.textSizeSmall,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.primaryText,
                   textAlign: TextAlign.start,
                 ),

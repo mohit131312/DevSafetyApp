@@ -3,7 +3,6 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild_login.dart';
 import 'package:flutter_app/features/login/login_controller.dart';
-import 'package:flutter_app/features/reset_password/reset_pass_screen.dart';
 import 'package:flutter_app/features/select_role/select_role.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
@@ -164,20 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               SizedBox(height: SizeConfig.heightMultiplier * 1),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(ResetPasswordScreen());
-                                  },
-                                  child: AppTextWidget(
-                                    text: AppTexts.forgotpassword,
-                                    fontSize: AppTextSize.textSizeExtraSmall,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.thirdText,
-                                  ),
-                                ),
-                              ),
                               SizedBox(
                                   height: SizeConfig.heightMultiplier * 2.0),
                               AppElevatedButton(

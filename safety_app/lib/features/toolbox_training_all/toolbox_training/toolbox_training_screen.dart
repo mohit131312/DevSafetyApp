@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_add_trainee/toolbox_add_trainee_controller.dart';
@@ -8,7 +11,13 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_attestation/to
 import 'package:flutter_app/features/toolbox_training_all/toolbox_preview/toolbox_preview_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_t_details/toolbox_t_details_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_t_details/toolbox_t_details_screen.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_all_list_details/toolbox_training_all_listdet.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_all_list_details/toolbox_training_all_listdet_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_controller.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_maker/toolbox_training_maker_controller.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_maker/toolbox_training_maker_screen.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_reviewer/toolbox_training_reviewer.dart';
+import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_reviewer/toolbox_training_reviewer_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
@@ -48,8 +57,15 @@ class ToolboxTrainingScreen extends StatelessWidget {
   final ToolboxPreviewController toolboxPreviewCotroller =
       Get.put(ToolboxPreviewController());
 
+  final ToolboxTrainingAllListdetController
+      toolboxTrainingAllListdetController =
+      Get.put(ToolboxTrainingAllListdetController());
+  final ToolboxTrainingMakerController toolboxTrainingMakerController =
+      Get.put(ToolboxTrainingMakerController());
+  final ToolboxTrainingReviewerController toolboxTrainingReviewerController =
+      Get.put(ToolboxTrainingReviewerController());
   final TextEditingController searchController = TextEditingController();
-
+  final LocationController locationController = Get.find();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -57,57 +73,38 @@ class ToolboxTrainingScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+          appBar: AppBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
               ),
-              child: AppBar(
-                scrolledUnderElevation: 0.0,
-                elevation: 0,
-                backgroundColor: AppColors.buttoncolor,
-                foregroundColor: AppColors.buttoncolor,
-                centerTitle: true,
-                toolbarHeight: SizeConfig.heightMultiplier * 10,
-                title: Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                  child: AppTextWidget(
-                    text: AppTexts.toolboxtraining,
-                    fontSize: AppTextSize.textSizeMedium,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.primary,
-                  ),
+            ),
+            scrolledUnderElevation: 0.0,
+            elevation: 0,
+            backgroundColor: AppColors.buttoncolor,
+            foregroundColor: AppColors.buttoncolor,
+            centerTitle: true,
+            toolbarHeight: SizeConfig.heightMultiplier * 10,
+            title: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: AppTextWidget(
+                text: AppTexts.toolboxtraining,
+                fontSize: AppTextSize.textSizeMedium,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primary,
+              ),
+            ),
+            leading: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: SizeConfig.heightMultiplier * 2.5,
+                  color: AppColors.primary,
                 ),
-                leading: Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                  child: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: SizeConfig.heightMultiplier * 2.5,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: SizeConfig.heightMultiplier * 2,
-                      right: SizeConfig.widthMultiplier * 5,
-                    ),
-                    child: Image.asset(
-                      "assets/icons/frame_icon.png",
-                      height: SizeConfig.imageSizeMultiplier * 6,
-                      width: SizeConfig.imageSizeMultiplier * 6,
-                    ),
-                  )
-                ],
               ),
             ),
           ),
@@ -232,29 +229,35 @@ class ToolboxTrainingScreen extends StatelessWidget {
                       return ListView.builder(
                         itemCount: filteredList.length,
                         itemBuilder: (context, index) {
-                          final work = filteredList[index];
+                          final tool = filteredList[index];
 
                           return GestureDetector(
                             onTap: () async {
-                              // log('----------------------------${workPermitController.selectedOption.value}');
-                              // await workPermitAllController
-                              //     .getWorkPermitAllDetails(
-                              //         projectId, userId, 1, work.id);
-                              // Get.to(WorkPermitAllDetails(
-                              //   userId: userId,
-                              //   userName: userName,
-                              //   userImg: userImg,
-                              //   userDesg: userDesg,
-                              //   projectId: projectId,
-                              //   wpId: work.id,
-                              // ));
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              log('----------------------------${toolboxTrainingController.selectedOption.value}');
+                              toolboxTrainingAllListdetController.resetData();
+                              await toolboxTrainingAllListdetController
+                                  .gettoolBoxAllDetails(
+                                      projectId, userId, 1, tool.id);
+                              Get.back();
+                              Get.to(ToolboxTrainingAllListdet(
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                                toolBox: tool.id,
+                              ));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: work.nameOfTbTraining,
+                                    text: tool.nameOfTbTraining,
                                     fontSize: AppTextSize.textSizeSmall,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
@@ -264,19 +267,19 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       AppTextWidget(
-                                        text: work.details,
+                                        text: tool.details,
                                         fontSize:
                                             AppTextSize.textSizeExtraSmall,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.secondaryText,
                                       ),
                                       AppTextWidget(
-                                        text: (work.createdAt != null)
+                                        text: (tool.createdAt != null)
                                             ? DateFormat('dd MMMM yyyy').format(
-                                                work.createdAt is String
-                                                    ? DateTime.parse(work
+                                                tool.createdAt is String
+                                                    ? DateTime.parse(tool
                                                         .createdAt as String)
-                                                    : work.createdAt ??
+                                                    : tool.createdAt ??
                                                         DateTime.now())
                                             : '',
                                         fontSize:
@@ -287,14 +290,18 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                     ],
                                   ),
                                   trailing: AppTextWidget(
-                                    text: work.status.toString() == "0"
+                                    text: tool.status.toString() == "0"
                                         ? "Open"
-                                        : "Closed",
+                                        : tool.status.toString() == "1"
+                                            ? "Accepted"
+                                            : "Closed",
                                     fontSize: AppTextSize.textSizeExtraSmall,
                                     fontWeight: FontWeight.w500,
-                                    color: work.status.toString() == "0"
+                                    color: tool.status.toString() == "0"
                                         ? AppColors.buttoncolor
-                                        : AppColors.secondaryText,
+                                        : tool.status.toString() == "1"
+                                            ? Colors.green
+                                            : AppColors.secondaryText,
                                   ),
                                 ),
                                 Divider(
@@ -314,29 +321,36 @@ class ToolboxTrainingScreen extends StatelessWidget {
                       return ListView.builder(
                         itemCount: filteredList.length,
                         itemBuilder: (context, index) {
-                          final work = filteredList[index];
+                          final tool = filteredList[index];
 
                           return GestureDetector(
                             onTap: () async {
-                              // log('----------------------------${workPermitController.selectedOption.value}');
-                              // await workPermitAllController
-                              //     .getWorkPermitAllDetails(
-                              //         projectId, userId, 1, work.id);
-                              // Get.to(WorkPermitAllDetails(
-                              //   userId: userId,
-                              //   userName: userName,
-                              //   userImg: userImg,
-                              //   userDesg: userDesg,
-                              //   projectId: projectId,
-                              //   wpId: work.id,
-                              // ));
+                              log('----------------------------${toolboxTrainingController.selectedOption.value}');
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              toolboxTrainingMakerController
+                                  .cleartoolboxComment();
+                              await toolboxTrainingMakerController
+                                  .gettoolBoxMakerDetails(
+                                      projectId, userId, 2, tool.id);
+                              Get.back();
+                              Get.to(ToolboxTrainingMakerScreen(
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                                toolBox: tool.id,
+                              ));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: work.nameOfTbTraining,
+                                    text: tool.nameOfTbTraining,
                                     fontSize: AppTextSize.textSizeSmall,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
@@ -346,19 +360,19 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       AppTextWidget(
-                                        text: work.details,
+                                        text: tool.details,
                                         fontSize:
                                             AppTextSize.textSizeExtraSmall,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.secondaryText,
                                       ),
                                       AppTextWidget(
-                                        text: (work.createdAt != null)
+                                        text: (tool.createdAt != null)
                                             ? DateFormat('dd MMMM yyyy').format(
-                                                work.createdAt is String
-                                                    ? DateTime.parse(work
+                                                tool.createdAt is String
+                                                    ? DateTime.parse(tool
                                                         .createdAt as String)
-                                                    : work.createdAt ??
+                                                    : tool.createdAt ??
                                                         DateTime.now())
                                             : '',
                                         fontSize:
@@ -369,14 +383,18 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                     ],
                                   ),
                                   trailing: AppTextWidget(
-                                    text: work.status.toString() == "0"
+                                    text: tool.status.toString() == "0"
                                         ? "Open"
-                                        : "Closed",
+                                        : tool.status.toString() == "1"
+                                            ? "Accepted"
+                                            : "Closed",
                                     fontSize: AppTextSize.textSizeExtraSmall,
                                     fontWeight: FontWeight.w500,
-                                    color: work.status.toString() == "0"
+                                    color: tool.status.toString() == "0"
                                         ? AppColors.buttoncolor
-                                        : AppColors.secondaryText,
+                                        : tool.status.toString() == "1"
+                                            ? Colors.green
+                                            : AppColors.secondaryText,
                                   ),
                                 ),
                                 Divider(
@@ -396,29 +414,36 @@ class ToolboxTrainingScreen extends StatelessWidget {
                       return ListView.builder(
                         itemCount: filteredList.length,
                         itemBuilder: (context, index) {
-                          final work = filteredList[index];
+                          final tool = filteredList[index];
 
                           return GestureDetector(
                             onTap: () async {
-                              // log('----------------------------${workPermitController.selectedOption.value}');
-                              // await workPermitAllController
-                              //     .getWorkPermitAllDetails(
-                              //         projectId, userId, 1, work.id);
-                              // Get.to(WorkPermitAllDetails(
-                              //   userId: userId,
-                              //   userName: userName,
-                              //   userImg: userImg,
-                              //   userDesg: userDesg,
-                              //   projectId: projectId,
-                              //   wpId: work.id,
-                              // ));
+                              toolboxTrainingReviewerController
+                                  .cleartoolboxComment();
+                              log('----------------------------${toolboxTrainingController.selectedOption.value}');
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              await toolboxTrainingReviewerController
+                                  .gettoolBoxreviewerDetails(
+                                      projectId, userId, 3, tool.id);
+                              Get.back();
+                              Get.to(ToolboxTrainingReviewer(
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                                toolBox: tool.id,
+                              ));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: work.nameOfTbTraining,
+                                    text: tool.nameOfTbTraining,
                                     fontSize: AppTextSize.textSizeSmall,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
@@ -428,19 +453,19 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       AppTextWidget(
-                                        text: work.details,
+                                        text: tool.details,
                                         fontSize:
                                             AppTextSize.textSizeExtraSmall,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.secondaryText,
                                       ),
                                       AppTextWidget(
-                                        text: (work.createdAt != null)
+                                        text: (tool.createdAt != null)
                                             ? DateFormat('dd MMMM yyyy').format(
-                                                work.createdAt is String
-                                                    ? DateTime.parse(work
+                                                tool.createdAt is String
+                                                    ? DateTime.parse(tool
                                                         .createdAt as String)
-                                                    : work.createdAt ??
+                                                    : tool.createdAt ??
                                                         DateTime.now())
                                             : '',
                                         fontSize:
@@ -451,14 +476,18 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                     ],
                                   ),
                                   trailing: AppTextWidget(
-                                    text: work.status.toString() == "0"
+                                    text: tool.status.toString() == "0"
                                         ? "Open"
-                                        : "Closed",
+                                        : tool.status.toString() == "1"
+                                            ? "Accepted"
+                                            : "Closed",
                                     fontSize: AppTextSize.textSizeExtraSmall,
                                     fontWeight: FontWeight.w500,
-                                    color: work.status.toString() == "0"
+                                    color: tool.status.toString() == "0"
                                         ? AppColors.buttoncolor
-                                        : AppColors.secondaryText,
+                                        : tool.status.toString() == "1"
+                                            ? Colors.green
+                                            : AppColors.secondaryText,
                                   ),
                                 ),
                                 Divider(
@@ -489,18 +518,22 @@ class ToolboxTrainingScreen extends StatelessWidget {
                     height: SizeConfig.heightMultiplier * 6.5,
                     child: FloatingActionButton(
                       onPressed: () async {
+                        locationController.fetchLocation();
+                        toolboxTrainingController.clearToolboxData();
+
                         toolboxPreviewCotroller.resetAllData();
                         toolboxTDetailsController.resetTdetailsAllData();
                         toolboxAddTraineeController.clearAllData();
                         selectTraineeController.clearAllTrainneData();
                         toolboxAttestationController.clearAllData();
+                        selectReviewerController.clearReviewerData();
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
                                 CustomLoadingPopup());
-
-                        await toolboxTrainingController.getSafetyIncidentData(
+                        await toolboxTrainingController.getToolBoxData(
                             projectId, userId);
+
                         // await toolboxTrainingController.getInstructionData(
                         //     projectId, userId, userId);
                         Get.back();

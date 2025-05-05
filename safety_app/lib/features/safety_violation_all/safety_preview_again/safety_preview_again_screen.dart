@@ -5,7 +5,6 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_attestaion/safety_attestaion_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_preview/safety_preview_controller.dart';
-import 'package:flutter_app/features/safety_violation_all/safety_submit/safety_submit_closed_screen.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_details_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/select_informed_people/select_safety_informed_people_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/select_involved_person/select_involved_person_controller.dart';
@@ -73,7 +72,7 @@ class SafetyPreviewAgainScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(SafetySubmitClosedScreen());
+                    //  Get.to(SafetySubmitClosedScreen());
                   },
                   child: Container(
                     alignment: Alignment.center,

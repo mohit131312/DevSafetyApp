@@ -22,16 +22,8 @@ class NewWorkPermitController extends GetxController {
   var selectedtoolboxId = 0.obs;
 
   var selectedtoolboxtrainig = ''.obs; // Observable for Blood Group selection
-  final List<String> toolboxtrainig = [
-    'A',
-    'B',
-    'AB',
-    'O',
-  ];
-  var buildings = RxList<String>([
-    'A13 Wing',
-    'A12 Wing',
-  ]);
+
+  var buildings = RxList<String>([]);
   var selectedBuilding = ''.obs;
 
   var selectedFloor = ''.obs;

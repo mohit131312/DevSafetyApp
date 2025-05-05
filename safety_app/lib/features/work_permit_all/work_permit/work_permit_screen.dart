@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_all_details/work_permit_all_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_all_details/work_permit_all_details.dart';
@@ -72,57 +73,38 @@ class WorkPermitScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+          appBar: AppBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
               ),
-              child: AppBar(
-                scrolledUnderElevation: 0.0,
-                elevation: 0,
-                backgroundColor: AppColors.buttoncolor,
-                foregroundColor: AppColors.buttoncolor,
-                centerTitle: true,
-                toolbarHeight: SizeConfig.heightMultiplier * 10,
-                title: Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                  child: AppTextWidget(
-                    text: 'Work Permit',
-                    fontSize: AppTextSize.textSizeMedium,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.primary,
-                  ),
+            ),
+            scrolledUnderElevation: 0.0,
+            elevation: 0,
+            backgroundColor: AppColors.buttoncolor,
+            foregroundColor: AppColors.buttoncolor,
+            centerTitle: true,
+            toolbarHeight: SizeConfig.heightMultiplier * 10,
+            title: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: AppTextWidget(
+                text: 'Work Permit',
+                fontSize: AppTextSize.textSizeMedium,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primary,
+              ),
+            ),
+            leading: Padding(
+              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+              child: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: SizeConfig.heightMultiplier * 2.5,
+                  color: AppColors.primary,
                 ),
-                leading: Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                  child: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: SizeConfig.heightMultiplier * 2.5,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: SizeConfig.heightMultiplier * 2,
-                      right: SizeConfig.widthMultiplier * 5,
-                    ),
-                    child: Image.asset(
-                      "assets/icons/frame_icon.png",
-                      height: SizeConfig.imageSizeMultiplier * 6,
-                      width: SizeConfig.imageSizeMultiplier * 6,
-                    ),
-                  )
-                ],
               ),
             ),
           ),
@@ -247,6 +229,8 @@ class WorkPermitScreen extends StatelessWidget {
                           return GestureDetector(
                             onTap: () async {
                               log('----------------------------${workPermitController.selectedOption.value}');
+
+                              workPermitAllController.resetData();
                               await workPermitAllController
                                   .getWorkPermitAllDetails(
                                       projectId, userId, 1, work.id);
@@ -365,6 +349,8 @@ class WorkPermitScreen extends StatelessWidget {
                             return GestureDetector(
                               onTap: () async {
                                 log('----------------------------${workPermitController.selectedOption.value}');
+
+                                workPermitDetailsController.clearwpComment();
                                 await workPermitDetailsController
                                     .getWorkPermitMakerDetails(
                                         projectId, userId, 2, work.id);
@@ -609,7 +595,14 @@ class WorkPermitScreen extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.065,
                     child: FloatingActionButton(
                       onPressed: () async {
+                        final LocationController locationController =
+                            Get.find();
+                        locationController.fetchLocation();
+
+                        workPermitController.clearWorkPermitData();
+
                         workPermitPreviewController.clearAllData();
+                        assignCheckerController.clearAssigneeData();
                         newWorkPermitController.resetData();
                         workPermitPrecautionController.resetData();
                         showDialog(
@@ -618,11 +611,6 @@ class WorkPermitScreen extends StatelessWidget {
                                 CustomLoadingPopup());
                         await workPermitController.getWorkPermitData(projectId);
                         Get.back();
-                        // Get.to(SafetyViolationDetails(
-                        //     userId: userId,
-                        //     userName: userName,
-                        //     userImg: userImg,
-                        //     userDesg: userDesg));
 
                         Get.to(NewWorkPermitScreen(
                             userId: userId,

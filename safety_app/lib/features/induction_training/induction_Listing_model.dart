@@ -42,8 +42,8 @@ class InductionListing {
 
 class InductionListingData {
   int id;
-  String inductionId;
-  int userId;
+  String? inductionId;
+  int? userId;
   String? userType;
   String? inducteeName;
   int? contractorCompanyId;
@@ -68,8 +68,8 @@ class InductionListingData {
 
   InductionListingData({
     required this.id,
-    required this.inductionId,
-    required this.userId,
+    this.inductionId,
+    this.userId,
     this.userType,
     this.inducteeName,
     this.contractorCompanyId,
@@ -96,7 +96,7 @@ class InductionListingData {
   factory InductionListingData.fromJson(Map<String, dynamic> json) =>
       InductionListingData(
         id: json["id"],
-        inductionId: json["induction_id"],
+        inductionId: json["induction_id"] ?? "",
         userId: json["user_id"] ?? 0,
         userType: json["user_type"] ?? 1,
         inducteeName: json["inductee_name"] ?? "",

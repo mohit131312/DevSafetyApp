@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_add_trainee/toolbox_add_trainee_controller.dart';
@@ -17,7 +18,7 @@ import 'package:http/http.dart' as http;
 
 class ToolboxPreviewController extends GetxController {
   var istoolboxExpanded = true.obs; // Observable to track expansion state
-
+  final LocationController locationController = Get.find();
   void toolboxtoggleExpansion() {
     istoolboxExpanded.value = !istoolboxExpanded.value;
   }
@@ -84,7 +85,9 @@ class ToolboxPreviewController extends GetxController {
       request.fields['name_of_tb_training'] =
           toolboxTDetailsController.tbtController.text;
       request.fields['maker_id'] = userId.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
+      request.fields['work_permit_id'] =
+          toolboxTDetailsController.selectWorkPermitId.value.toString();
 
       request.fields['reviwer_id'] = reviwerId.toString();
 

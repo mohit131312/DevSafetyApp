@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -14,22 +13,30 @@ class SafetyViolationDetailsController extends GetxController {
 
   final maxPhotos = 5;
 
-  Future<void> pickViolationImages() async {
+  Future<void> pickViolationImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
     if (violationimg.length < maxPhotos) {
       int remainingSlots = maxPhotos - violationimg.length;
 
-      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      if (source == ImageSource.gallery) {
+        final List<XFile> pickedFiles = await picker.pickMultiImage();
+        final List<XFile> limitedFiles =
+            pickedFiles.take(remainingSlots).toList();
 
-      final List<XFile> limitedFiles =
-          pickedFiles.take(remainingSlots).toList();
+        violationimg.addAll(limitedFiles);
+        log('Picked from Gallery: ${limitedFiles.length} images');
+      } else if (source == ImageSource.camera) {
+        final XFile? capturedFile =
+            await picker.pickImage(source: ImageSource.camera);
+        if (capturedFile != null) {
+          violationimg.add(capturedFile);
+          log('Captured from Camera: 1 image');
+        }
+      }
 
-      violationimg.addAll(limitedFiles);
       violationImageCount.value = violationimg.length;
-
-      log('-----------incidentImageCount------------$violationImageCount');
-      log('-----------incidentimg-------------${violationimg.length}');
+      log('violationImageCount: ${violationImageCount.value}');
     }
   }
 
@@ -212,6 +219,20 @@ class SafetyViolationDetailsController extends GetxController {
   TextEditingController turnArounttimeController = TextEditingController();
   TextEditingController loactionofBreachController = TextEditingController();
   var loactionofBreachFocusNode = FocusNode();
+
+  void resetAllSafetyData() async {
+    violationTypeList.clear();
+    categoryList.clear();
+    riskLevelList.clear();
+    souceofObsList.clear();
+    involvedSafetyLaboursList.clear();
+    involvedSafetyStaffList.clear();
+    involvedSafetycontactor.clear();
+    assigneeList.clear();
+
+    print("All lists have been reset.");
+  }
+
 // required this.involvedLaboursList,
 //     required this.involvedStaffList,
 //     required this.involvedContractorUserList,
@@ -221,14 +242,16 @@ class SafetyViolationDetailsController extends GetxController {
   List<Category> categoryList = [];
   List<Category> riskLevelList = [];
   List<Category> souceofObsList = [];
-  List<InvolvedList> involvedLaboursList = [];
-  List<InvolvedStaffList> involvedStaffList = [];
-  List<InvolvedContractorUserList> involvedcontactor = [];
+  List<InvolvedList> involvedSafetyLaboursList = [];
+  List<InvolvedStaffList> involvedSafetyStaffList = [];
+  List<InvolvedContractorUserList> involvedSafetycontactor = [];
   List<InformedAsgineeUserList> assigneeList = [];
 
-  Future getSafetyViolationData() async {
+  Future getSafetyViolationData(projectId) async {
     try {
-      Map<String, dynamic> map = {};
+      Map<String, dynamic> map = {
+        "project_id": projectId,
+      };
 
       print("Request body: $map");
 
@@ -249,13 +272,14 @@ class SafetyViolationDetailsController extends GetxController {
       souceofObsList = (data['source_of_observation'] as List<dynamic>)
           .map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList();
-      involvedLaboursList = (data['involved_labours_list'] as List<dynamic>)
-          .map((e) => InvolvedList.fromJson(e as Map<String, dynamic>))
-          .toList();
-      involvedStaffList = (data['involved_staff_list'] as List<dynamic>)
+      involvedSafetyLaboursList =
+          (data['involved_labours_list'] as List<dynamic>)
+              .map((e) => InvolvedList.fromJson(e as Map<String, dynamic>))
+              .toList();
+      involvedSafetyStaffList = (data['involved_staff_list'] as List<dynamic>)
           .map((e) => InvolvedStaffList.fromJson(e as Map<String, dynamic>))
           .toList();
-      involvedcontactor = (data['involved_contractor_user_list']
+      involvedSafetycontactor = (data['involved_contractor_user_list']
               as List<dynamic>)
           .map((e) =>
               InvolvedContractorUserList.fromJson(e as Map<String, dynamic>))
@@ -269,10 +293,13 @@ class SafetyViolationDetailsController extends GetxController {
       log('----------contractorLists${categoryList.length}');
       log('----------riskLevelList${riskLevelList.length}');
       log('----------souceofObsList${souceofObsList.length}');
-      log('---------- Involved Labours List: ${jsonEncode(involvedLaboursList)}');
-      log('---------- Involved Staff List: ${jsonEncode(involvedStaffList)}');
-      log('---------- Involved Contactor: ${jsonEncode(involvedcontactor)}');
-      log('----------=assigneeList: ${jsonEncode(assigneeList)}');
+      log('---------- Involved Labours List: ${(involvedSafetyLaboursList.length)}');
+      log('---------- Involved Staff List: ${(involvedSafetyStaffList.length)}');
+      log('---------- Involved Contactor: ${(involvedSafetycontactor.length)}');
+      // log('---------- Involved Labours List: ${jsonEncode(involvedSafetyLaboursList)}');
+      // log('---------- Involved Staff List: ${jsonEncode(involvedStaffList)}');
+      // log('---------- Involved Contactor: ${jsonEncode(involvedcontactor)}');
+      // log('----------=assigneeList: ${jsonEncode(assigneeList)}');
       //-------------------------------------------------
     } catch (e) {
       print("Error: $e");
@@ -332,9 +359,9 @@ class SafetyViolationDetailsController extends GetxController {
     categoryList.clear();
     riskLevelList.clear();
     souceofObsList.clear();
-    involvedLaboursList.clear();
-    involvedStaffList.clear();
-    involvedcontactor.clear();
+    // involvedLaboursList.clear();
+    // involvedStaffList.clear();
+    // involvedcontactor.clear();
     assigneeList.clear();
 
     photoError.value = '';

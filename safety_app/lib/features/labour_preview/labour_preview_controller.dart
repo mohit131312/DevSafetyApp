@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/features/Labour_add/add_labour_controller.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/labour_precaution/labour_precaution_controller.dart';
 import 'package:flutter_app/features/labour_professional_details/labour_profess_details_controller.dart';
 import 'package:flutter_app/features/labour_undertaking/labour_undertaking_controller.dart';
@@ -47,6 +48,7 @@ class LabourPreviewController extends GetxController {
   var isprecautionDetailsExpanded =
       true.obs; // Observable to track expansion state
 
+  final LocationController locationController = Get.find();
   void toggleExpansionPrecaution() {
     isprecautionDetailsExpanded.value = !isprecautionDetailsExpanded.value;
   }
@@ -178,7 +180,7 @@ class LabourPreviewController extends GetxController {
 
       request.fields['user_id'] = userId.toString();
       request.fields['user_name'] = userName.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
 
       for (int i = 0;
           i < labourPrecautionController.selectedItemIds.length;

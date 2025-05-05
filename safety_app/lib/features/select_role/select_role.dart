@@ -31,47 +31,43 @@ class _SelectRoleState extends State<SelectRole> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+      appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
-          child: AppBar(
-            scrolledUnderElevation: 0.0,
-            elevation: 0,
-            backgroundColor: AppColors.buttoncolor,
-            foregroundColor: AppColors.buttoncolor,
-            centerTitle: true,
-            toolbarHeight: SizeConfig.heightMultiplier * 10,
-            title: Padding(
-              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-              child: AppTextWidget(
-                text: AppTexts.selectrole,
-                fontSize: AppTextSize.textSizeMediumm,
-                fontWeight: FontWeight.w400,
+        ),
+        scrolledUnderElevation: 0.0,
+        elevation: 0,
+        backgroundColor: AppColors.buttoncolor,
+        foregroundColor: AppColors.buttoncolor,
+        centerTitle: true,
+        toolbarHeight: SizeConfig.heightMultiplier * 10,
+        title: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: AppTextWidget(
+            text: AppTexts.selectrole,
+            fontSize: AppTextSize.textSizeMediumm,
+            fontWeight: FontWeight.w400,
+            color: AppColors.primary,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+            child: IconButton(
+              onPressed: () {
+                logout();
+                Get.offAll(() => LoginScreen());
+              },
+              icon: Icon(
+                Icons.logout,
+                size: SizeConfig.heightMultiplier * 2.5,
                 color: AppColors.primary,
               ),
             ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
-                child: IconButton(
-                  onPressed: () {
-                    logout();
-                    Get.offAll(() => LoginScreen());
-                  },
-                  icon: Icon(
-                    Icons.logout,
-                    size: SizeConfig.heightMultiplier * 2.5,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
           ),
-        ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -91,7 +87,10 @@ class _SelectRoleState extends State<SelectRole> {
                     log('-------------${selectRoleController.roleArray.length}');
                     return GestureDetector(
                       onTap: () async {
-                        selectRoleController.selectRole(index);
+                        selectRoleController.roleId.value = 0;
+                        selectRoleController.userDesg.value = '';
+                        selectRoleController.selectedIndex.value = -1;
+                        await selectRoleController.selectRole(index);
 
                         showDialog(
                             context: context,

@@ -5,6 +5,7 @@ import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class ContractorDetailsController extends GetxController {
   TextEditingController nameController = TextEditingController();
@@ -139,7 +140,23 @@ class ContractorDetailsController extends GetxController {
 //------------------------------------------------
 
   var selectedDoctType = ''.obs;
+  var validityError = ''.obs;
   var selectedIdProofId = 0.obs;
+
+  var selectedDateValidity = Rxn<DateTime>();
+
+  void updateDateValidity(DateTime newDate) {
+    selectedDateValidity.value = newDate;
+    validityController.text = DateFormat("yyyy-MM-dd").format(newDate);
+  }
+
+  var shouldValidate = false.obs; // Controls validation state
+
+  void enableValidation() {
+    shouldValidate.value = false;
+  }
+
+  TextEditingController validityController = TextEditingController();
 
 //----------------------------------
 }

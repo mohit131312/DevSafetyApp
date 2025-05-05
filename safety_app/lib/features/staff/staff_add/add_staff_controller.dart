@@ -261,7 +261,8 @@ class AddStaffController extends GetxController {
       } else {}
 
       selectedStaffData.value = data['staff_name'] ?? "";
-      staffID = data['id'];
+      staffID = data['staff_id'];
+      log('Staffffff id -------------$staffID');
 
       staffnameController.text = data['staff_name'] ?? "";
       contactnumberController.text = data['contact_number'] ?? "";

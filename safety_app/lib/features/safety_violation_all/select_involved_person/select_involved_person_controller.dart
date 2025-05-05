@@ -134,9 +134,9 @@ class SelectInvolvedPersonController extends GetxController
 
   List<InvolvedList> get filteredLabours {
     final query = searchQuery.value.toLowerCase();
-    return safetyViolationDetailsController.involvedLaboursList
+    return safetyViolationDetailsController.involvedSafetyLaboursList
         .where((labour) =>
-            labour.labourName.toLowerCase().contains(query) ||
+            labour.labourName!.toLowerCase().contains(query) ||
             labour.id.toString().contains(query))
         .toList();
   }
@@ -167,7 +167,7 @@ class SelectInvolvedPersonController extends GetxController
   }
 
   List<InvolvedList> get addInvolvePerson {
-    return safetyViolationDetailsController.involvedLaboursList
+    return safetyViolationDetailsController.involvedSafetyLaboursList
         .where((labour) =>
             selectedLabourIdsFinal.any((item) => item["id"] == labour.id))
         .toList();
@@ -197,7 +197,7 @@ class SelectInvolvedPersonController extends GetxController
 
   List<InvolvedStaffList> get filteredStaff {
     final query = searchStaffQuery.value.toLowerCase();
-    return safetyViolationDetailsController.involvedStaffList
+    return safetyViolationDetailsController.involvedSafetyStaffList
         .where((staff) =>
             staff.staffName.toLowerCase().contains(query) ||
             staff.id.toString().contains(query))
@@ -230,7 +230,7 @@ class SelectInvolvedPersonController extends GetxController
   }
 
   List<InvolvedStaffList> get addInvolveStaffPerson {
-    return safetyViolationDetailsController.involvedStaffList
+    return safetyViolationDetailsController.involvedSafetyStaffList
         .where((staff) =>
             selectedStaffIdsFinal.any((item) => item["id"] == staff.id))
         .toList();
@@ -258,7 +258,7 @@ class SelectInvolvedPersonController extends GetxController
 
   List<InvolvedContractorUserList> get filteredContractor {
     final query = searchContractorQuery.value.toLowerCase();
-    return safetyViolationDetailsController.involvedcontactor
+    return safetyViolationDetailsController.involvedSafetycontactor
         .where((contractor) =>
             contractor.contractorName.toLowerCase().contains(query) ||
             contractor.id.toString().contains(query))
@@ -291,7 +291,7 @@ class SelectInvolvedPersonController extends GetxController
   }
 
   List<InvolvedContractorUserList> get addInvolveContractorPerson {
-    return safetyViolationDetailsController.involvedcontactor
+    return safetyViolationDetailsController.involvedSafetycontactor
         .where((contractor) => selectedContractorIdsFinal
             .any((item) => item["id"] == contractor.id))
         .toList();
@@ -311,13 +311,13 @@ class SelectInvolvedPersonController extends GetxController
 
     // Convert and add Staff IDs
     combinedSelectedIdsFinal.addAll(selectedStaffIdsFinal.map((e) => {
-          "user_type": "2", // Assuming Staff user type is 2
+          "user_type": "3", // Assuming Staff user type is 2
           "user_id": e["id"].toString()
         }));
 
     // Convert and add Contractor IDs
     combinedSelectedIdsFinal.addAll(selectedContractorIdsFinal.map((e) => {
-          "user_type": "3", // Assuming Contractor user type is 3
+          "user_type": "2", // Assuming Contractor user type is 3
           "user_id": e["id"].toString()
         }));
 

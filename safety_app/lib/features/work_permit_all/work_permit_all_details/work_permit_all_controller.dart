@@ -57,11 +57,13 @@ class WorkPermitAllController extends GetxController {
               as List<dynamic>)
           .map((e) => SelectedSubActivity.fromJson(e as Map<String, dynamic>))
           .toList();
-      selectedToolboxTrainingMaker =
-          (await data['selected_toolbox_training'] as List<dynamic>)
-              .map((e) =>
+      selectedToolboxTrainingMaker = (data['selected_toolbox_training']
+                  as List<dynamic>?)
+              ?.map((e) =>
                   SelectedToolboxTraining.fromJson(e as Map<String, dynamic>))
-              .toList();
+              .toList() ??
+          [];
+
       checkerInformation = (await data['checker_information'] as List<dynamic>)
           .map((e) => CheckerInformation.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -97,5 +99,21 @@ class WorkPermitAllController extends GetxController {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void resetData() {
+    workpermitExpanded.value = true;
+    isprecautionworkpermitExpanded.value = true;
+
+    workPermitRemarksController.clear();
+    workPermitRemarksControllerenable.clear();
+
+    workPermitsMakerDetails.clear();
+    subActivityWPMakerDetails.clear();
+    selectedToolboxTrainingMaker.clear();
+    checkerInformation.clear();
+    makerInformation.clear();
+    buildingListWPMakerList.clear();
+    categoryListWPMakerList.clear();
   }
 }

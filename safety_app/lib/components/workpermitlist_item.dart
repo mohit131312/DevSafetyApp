@@ -1,79 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/features/home/home_screen_controller.dart';
+import 'package:flutter_app/features/home/work_permit_details/work_permit_details_controller.dart';
+import 'package:flutter_app/features/home/work_permit_details/work_permit_details_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class WorkPermitListItem extends StatelessWidget {
-  WorkPermitListItem({super.key});
+  final int userId;
+  final String userName;
+  final String userImg;
+  final String userDesg;
+  final int projectId;
 
-  final List listData = [
-    {
-      'title': 'Work Permit',
-      'sub': 'Work Permit detail',
-      'subtitle': '12 Mar 2024, 02:22 PM',
-      'status': 'Open'
-    },
-    {
-      'title': 'Work Permit',
-      'sub': 'Work Permit detail',
-      'subtitle': '13 Mar 2024, 03:30 PM',
-      'status': 'open'
-    },
-    {
-      'title': 'Work Permit',
-      'sub': 'Work Permit detail',
-      'subtitle': '14 Mar 2024, 01:15 PM',
-      'status': 'Open'
-    },
-  ];
-
+  WorkPermitListItem({
+    super.key,
+    required this.userId,
+    required this.userName,
+    required this.userImg,
+    required this.userDesg,
+    required this.projectId,
+  });
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
+  final WorkPermitDetailsController workPermitAllController =
+      Get.put(WorkPermitDetailsController());
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      itemCount: listData.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(
-            listData[index]['title']!,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: AppTextSize.textSizeSmall,
-              color: AppColors.primaryText,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                listData[index]['sub']!,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: AppTextSize.textSizeExtraSmall,
-                  color: AppColors.secondaryText,
-                ),
+    return Obx(() {
+      final filteredList = homeScreenController.workPermitListing;
+      return SizedBox(
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: filteredList.length,
+          itemBuilder: (context, index) {
+            final work = filteredList[index];
+
+            return GestureDetector(
+              onTap: () async {
+                await workPermitAllController.getWorkPermitAllDetails(
+                    projectId, userId, 1, work.id);
+                Get.to(WorkPermitDetailsScreen(
+                  userId: userId,
+                  userName: userName,
+                  userImg: userImg,
+                  userDesg: userDesg,
+                  projectId: projectId,
+                  wpId: work.id,
+                ));
+              },
+              child: Column(
+                children: [
+                  ListTile(
+                    title: AppTextWidget(
+                      text: work.nameOfWorkpermit,
+                      fontSize: AppTextSize.textSizeSmall,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primaryText,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (work.description != null)
+                          AppTextWidget(
+                            text: work.description!,
+                            fontSize: AppTextSize.textSizeExtraSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.secondaryText,
+                          ),
+                        AppTextWidget(
+                          text: (work.createdAt != null)
+                              ? DateFormat('dd MMMM yyyy').format(
+                                  work.createdAt is String
+                                      ? DateTime.parse(work.createdAt as String)
+                                      : work.createdAt ?? DateTime.now(),
+                                )
+                              : '',
+                          fontSize: AppTextSize.textSizeExtraSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.secondaryText,
+                        ),
+                      ],
+                    ),
+                    trailing: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppTextWidget(
+                            text: work.status == "0"
+                                ? 'Open'
+                                : work.status == "1"
+                                    ? 'Accepted'
+                                    : work.status == "2"
+                                        ? 'Rejected'
+                                        : work.status == "3"
+                                            ? 'Closed'
+                                            : 'Unknown',
+                            fontSize: AppTextSize.textSizeExtraSmall,
+                            fontWeight: FontWeight.w500,
+                            color: work.status == "0"
+                                ? AppColors.buttoncolor // Open → Orange
+                                : work.status == "1"
+                                    ? Colors.green // Accepted → Green
+                                    : work.status == "2"
+                                        ? Colors.red // Rejected → Red
+                                        : work.status == "3"
+                                            ? Colors.grey // Closed → Grey
+                                            : Colors
+                                                .black, // Fallback for unknown statuses
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    color: AppColors.textfeildcolor,
+                    thickness: 1.5,
+                    height: 2,
+                  ),
+                ],
               ),
-              Text(
-                listData[index]['subtitle']!,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: AppTextSize.textSizeExtraSmall,
-                  color: AppColors.secondaryText,
-                ),
-              ),
-            ],
-          ),
-          trailing: Text(
-            listData[index]['status']!,
-            style: TextStyle(
-              color: AppColors.buttoncolor,
-              fontWeight: FontWeight.bold,
-              fontSize: AppTextSize.textSizeExtraSmall,
-            ),
-          ),
-        );
-      },
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 }

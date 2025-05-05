@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/assign_checker/assign_checker_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_precaution/work_permit_precaution_controller.dart';
@@ -16,7 +17,7 @@ import 'package:http/http.dart' as http;
 
 class WorkPermitPreviewController extends GetxController {
   var workpermitExpanded = true.obs; // Observable to track expansion state
-
+  final LocationController locationController = Get.find();
   void toggleExpansionWorkpermit() {
     workpermitExpanded.value = !workpermitExpanded.value;
   }
@@ -80,8 +81,8 @@ class WorkPermitPreviewController extends GetxController {
 
       request.fields['maker_id'] = userId.toString();
       request.fields['project_id'] = projectId.toString();
-      request.fields['maker_id'] = "52";
-      request.fields['location'] = "pune";
+      // request.fields['maker_id'] = "52";
+      request.fields['location'] = locationController.locationString.value;
       for (int i = 0;
           i < workPermitUnderController.filteredDetailsUndertaking.length;
           i++) {

@@ -95,7 +95,7 @@ class ToolboxDetails {
         // makerSignaturePhoto: json["maker_signature_photo"],
         // makerPhotoSignatureAfter: json["maker_photo_signature_after"],
         // reviwerPhotoSignatureAfter: json["reviwer_photo_signature_after"],
-        status: json["status"] ?? 0,
+        status: json["status"] ?? 4,
         // reviewerUpdatedAt: json["reviewer_updated_at"],
         createdAt: DateTime.parse(json["created_at"]),
         // updatedAt: DateTime.parse(json["updated_at"]),

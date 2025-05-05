@@ -17,22 +17,49 @@ class ToolboxAddTraineeController extends GetxController {
 
   final maxPhotos = 10;
 
-  Future<void> picktraineeImages() async {
+  // Future<void> picktraineeImages() async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   if (traineeimg.length < maxPhotos) {
+  //     int remainingSlots = maxPhotos - traineeimg.length;
+
+  //     final List<XFile> pickedFiles = await picker.pickMultiImage();
+
+  //     final List<XFile> limitedFiles =
+  //         pickedFiles.take(remainingSlots).toList();
+
+  //     traineeimg.addAll(limitedFiles);
+  //     traineeImageCount.value = traineeimg.length; // ✅ Correct update
+
+  //     log('-----------incidentImageCount------------$traineeImageCount');
+  //     log('-----------incidentimg-------------${traineeimg.length}');
+  //   }
+  // }
+
+  Future<void> picktraineeImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
     if (traineeimg.length < maxPhotos) {
       int remainingSlots = maxPhotos - traineeimg.length;
 
-      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      if (source == ImageSource.gallery) {
+        final List<XFile> pickedFiles = await picker.pickMultiImage();
+        final List<XFile> limitedFiles =
+            pickedFiles.take(remainingSlots).toList();
+        traineeimg.addAll(limitedFiles);
+        log('Picked from Gallery: ${limitedFiles.length} images');
+      } else if (source == ImageSource.camera) {
+        final XFile? capturedFile =
+            await picker.pickImage(source: ImageSource.camera);
+        if (capturedFile != null) {
+          traineeimg.add(capturedFile);
+          log('Captured from Camera: 1 image');
+        }
+      }
 
-      final List<XFile> limitedFiles =
-          pickedFiles.take(remainingSlots).toList();
-
-      traineeimg.addAll(limitedFiles);
-      traineeImageCount.value = traineeimg.length; // ✅ Correct update
-
-      log('-----------incidentImageCount------------$traineeImageCount');
-      log('-----------incidentimg-------------${traineeimg.length}');
+      traineeImageCount.value = traineeimg.length;
+      log('-----------traineeImageCount------------$traineeImageCount');
+      log('-----------traineeimg-------------${traineeimg.length}');
     }
   }
 
@@ -101,7 +128,7 @@ class ToolboxAddTraineeController extends GetxController {
 
       if (signatureBytes != null && signatureBytes.isNotEmpty) {
         Directory tempDir = await getTemporaryDirectory();
-        File signatureFile = File('${tempDir.path}/signature.png');
+        File signatureFile = File('${tempDir.path}/signature_$userId.png');
         await signatureFile.writeAsBytes(signatureBytes);
         log("✅ Signature saved at: ${signatureFile.path} for user $userId");
         return signatureFile.path;

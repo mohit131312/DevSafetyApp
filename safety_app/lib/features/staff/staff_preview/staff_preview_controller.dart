@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/staff/staff_add/add_staff_controller.dart';
 import 'package:flutter_app/features/staff/staff_documentation/staff_documentation_controller.dart';
 import 'package:flutter_app/features/staff/staff_precaution/staff_precaution_controller.dart';
@@ -22,6 +23,7 @@ class StaffPreviewController extends GetxController {
   final StaffPrecautionController staffPrecautionController = Get.find();
   var isPersonalDetailsExpanded = true.obs;
 
+  final LocationController locationController = Get.find();
   void toggleExpansion() {
     isPersonalDetailsExpanded.value = !isPersonalDetailsExpanded.value;
   }
@@ -164,7 +166,7 @@ class StaffPreviewController extends GetxController {
 
       request.fields['user_id'] = userId.toString();
       request.fields['user_name'] = userName.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
 
       for (int i = 0;
           i < staffPrecautionController.selectedItemIds.length;

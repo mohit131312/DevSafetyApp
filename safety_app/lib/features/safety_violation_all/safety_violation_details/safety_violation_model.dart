@@ -317,16 +317,16 @@ class InvolvedContractorUserList {
 
 class InvolvedList {
   int id;
-  String inducteeId;
-  String labourName;
+  String? inducteeId;
+  String? labourName;
   // Gender? gender;
   // Literacy? literacy;
   // MaritalStatus? maritalStatus;
   // BloodGroup? bloodGroup;
   // DateTime? birthDate;
   // int age;
-  String contactNumber;
-  String userPhoto;
+  String? contactNumber;
+  String? userPhoto;
   // String currentStreetName;
   // String currentCity;
   // String currentTaluka;
@@ -366,16 +366,16 @@ class InvolvedList {
 
   InvolvedList({
     required this.id,
-    required this.inducteeId,
-    required this.labourName,
+    this.inducteeId,
+    this.labourName,
     // this.gender,
     // this.literacy,
     // this.maritalStatus,
     // this.bloodGroup,
     // required this.birthDate,
     // required this.age,
-    required this.contactNumber,
-    required this.userPhoto,
+    this.contactNumber,
+    this.userPhoto,
     // required this.currentStreetName,
     // required this.currentCity,
     // required this.currentTaluka,

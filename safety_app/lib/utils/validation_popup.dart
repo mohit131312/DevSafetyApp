@@ -21,6 +21,7 @@ class CustomValidationPopup extends StatelessWidget {
 
   Widget dialogContent(BuildContext context) {
     return Container(
+      width: SizeConfig.widthMultiplier * 95,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,

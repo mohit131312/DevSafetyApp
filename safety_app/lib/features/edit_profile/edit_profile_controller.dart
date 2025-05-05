@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
+import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +41,7 @@ class EditProfileController extends GetxController {
         await showDialog(
           context: context,
           builder: (BuildContext context) {
-            return CustomValidationPopup(message: validationmsg);
+            return ValidationPopChang(message: validationmsg);
           },
         );
       }

@@ -3,7 +3,6 @@ import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 
 import '../utils/app_color.dart';
-import '../utils/size_config.dart';
 
 class ProfileListItem extends StatelessWidget {
   final String imagePath;
@@ -24,8 +23,8 @@ class ProfileListItem extends StatelessWidget {
       child: ListTile(
         leading: Image.asset(
           imagePath,
-          height: 24,
-          width: 24,
+          height: 26,
+          width: 26,
         ),
         title: AppTextWidget(
           text: title,
@@ -33,16 +32,10 @@ class ProfileListItem extends StatelessWidget {
           fontWeight: FontWeight.w400,
           color: AppColors.primaryText,
         ),
-        trailing: SizedBox(
-          width: SizeConfig.widthMultiplier * 7,
-          height: SizeConfig.heightMultiplier * 4,
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-                color: AppColors.fourtText,
-              )),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: Colors.grey,
+          size: 17,
         ),
       ),
     );

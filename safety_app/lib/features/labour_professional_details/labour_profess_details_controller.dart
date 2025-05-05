@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class LabourProfessDetailsController extends GetxController {
-  var selectedSkillLevel = 'Skilled'.obs; // Default value
+  var selectedSkillLevel = 'Skilled'.obs;
 
   void updateSkillLevel(String value) {
     selectedSkillLevel.value = value;

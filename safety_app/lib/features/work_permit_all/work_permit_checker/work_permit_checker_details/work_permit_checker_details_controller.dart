@@ -67,11 +67,12 @@ class WorkPermitCheckerDetailsController extends GetxController {
               as List<dynamic>)
           .map((e) => SelectedSubActivity.fromJson(e as Map<String, dynamic>))
           .toList();
-      selectedToolboxTrainingMaker =
-          (await data['selected_toolbox_training'] as List<dynamic>)
-              .map((e) =>
+      selectedToolboxTrainingMaker = (data['selected_toolbox_training']
+                  as List<dynamic>?)
+              ?.map((e) =>
                   SelectedToolboxTraining.fromJson(e as Map<String, dynamic>))
-              .toList();
+              .toList() ??
+          [];
       checkerInformation = (await data['checker_information'] as List<dynamic>)
           .map((e) => CheckerInformation.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -246,12 +247,38 @@ class WorkPermitCheckerDetailsController extends GetxController {
   }
 
   void clearwpCheckerComment() {
-    workPermitRemarksController.clear();
     signatureCheckerController.clear();
     savedCheckerSignature.value = null;
     signatureattestationError.value = "";
     signatureFile = File('');
     validationmsg = "";
     apiStatus = false;
+
+    workpermitExpanded.value = true;
+    isprecautionworkpermitExpanded.value = true;
+    userFound.value = false;
+
+    // Clear text controllers
+    workPermitRemarksController.clear();
+    workPermitRemarksControllerenable.clear();
+
+    // Clear lists and maps
+    workPermitsCheckerDetails.clear();
+    subActivityWPCheckerDetails.clear();
+    selectedToolboxTrainingMaker.clear();
+    checkerInformation.clear();
+    makerInformation.clear();
+    buildingListWPCheckerList.clear();
+    categoryListWPCheckerList.clear();
+
+    // Reset signature-related variables
+    signatureCheckerController.clear();
+    savedCheckerSignature.value = null;
+    signatureattestationError.value = "";
+    signatureFile = File('');
+    savedSignatureUrlfetch.value = '';
+
+    // Reset validation and API status
+    validationmsg = '';
   }
 }

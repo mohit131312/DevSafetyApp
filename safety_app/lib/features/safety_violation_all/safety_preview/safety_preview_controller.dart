@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_attestaion/safety_attestaion_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_details_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/select_assignee/select_safety_assignee_controller.dart';
@@ -35,6 +36,7 @@ class SafetyPreviewController extends GetxController {
   }
 
   //-----------------------------------------------------------------------------------
+  final LocationController locationController = Get.find();
 
   final SelectSafetyAssigneeController selectSafetyAssigneeController =
       Get.find();
@@ -94,6 +96,7 @@ class SafetyPreviewController extends GetxController {
       request.fields['risk_level_id'] =
           safetyViolationDetailsController.selectRisklevelId.toString();
       request.fields['turn_around_time'] =
+          // "2025-04-23T14:30:00Z";
           safetyViolationDetailsController.turnArounttimeController.text;
       request.fields['source_of_observation_id'] =
           safetyViolationDetailsController.selectObservationId.toString();
@@ -104,7 +107,7 @@ class SafetyPreviewController extends GetxController {
       request.fields['user_id'] = userId.toString();
       request.fields['project_id'] = projectId.toString();
       // request.fields['user_name'] = userName.toString();
-      request.fields['location'] = "pune";
+      request.fields['location'] = locationController.locationString.value;
       for (int i = 0;
           i < selectInvolvedPersonController.combinedSelectedIdsFinal.length;
           i++) {
@@ -210,6 +213,8 @@ class SafetyPreviewController extends GetxController {
     safetyViolationDetailsController.detailsController.clear();
     safetyViolationDetailsController.loactionofBreachController.clear();
     safetyViolationDetailsController.turnArounttimeController.clear();
+    selectInvolvedPersonController.tabController
+        .animateTo(0); // or tabController.index = 0;
 
     // Reset selected IDs
     safetyViolationDetailsController.selectViolationId.value = 0;

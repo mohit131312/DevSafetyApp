@@ -91,18 +91,18 @@ class Data {
 }
 
 class SelectedToolboxTraining {
-  int id;
-  String nameOfTbTraining;
+  int? id;
+  String? nameOfTbTraining;
 
   SelectedToolboxTraining({
-    required this.id,
-    required this.nameOfTbTraining,
+    this.id,
+    this.nameOfTbTraining,
   });
 
   factory SelectedToolboxTraining.fromJson(Map<String, dynamic> json) =>
       SelectedToolboxTraining(
-        id: json["id"],
-        nameOfTbTraining: json["name_of_tb_training"],
+        id: json["id"] ?? 0,
+        nameOfTbTraining: json["name_of_tb_training"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -333,7 +333,7 @@ class WorkPermit {
   dynamic makerSignaturePhotoAfter;
   dynamic makerComment;
   String? status;
-  // DateTime createdAt;
+  DateTime createdAt;
   // DateTime updatedAt;
   // dynamic deletedAt;
   // int undertaking1;
@@ -355,7 +355,7 @@ class WorkPermit {
     this.makerSignaturePhotoAfter,
     this.makerComment,
     this.status,
-    // required this.createdAt,
+    required this.createdAt,
     // required this.updatedAt,
     // required this.deletedAt,
     // required this.undertaking1,
@@ -382,7 +382,9 @@ class WorkPermit {
         makerSignaturePhotoAfter: json["maker_signature_photo_after"],
         makerComment: json["maker_comment"],
         status: json["status"] ?? "",
-        // createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : DateTime.now(),
         // updatedAt: DateTime.parse(json["updated_at"]),
         // deletedAt: json["deleted_at"],
         // undertaking1: json["undertaking_1"],

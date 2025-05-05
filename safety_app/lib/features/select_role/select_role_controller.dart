@@ -57,8 +57,11 @@ class SelectRoleController extends GetxController {
     log(" Stored userphoto ID: ${userimg.value}");
   }
 
-  void selectRole(int index) async {
+  Future<void> selectRole(int index) async {
     if (index >= 0 && index < roleArray.length) {
+      await ApiClient.gs.remove('selected_index');
+      await ApiClient.gs.remove('role_id');
+      await ApiClient.gs.remove('role_name');
       selectedIndex.value = index;
       roleId.value = roleArray[index].id;
       userDesg.value = roleArray[index].roleName;
