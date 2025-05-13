@@ -14,12 +14,12 @@ import 'package:get/get.dart';
 class ToolboxReviewerClosed extends StatelessWidget {
   final int userId;
   final int projectId;
-  final int tbtID;
+  final String tbtuniqueId;
   ToolboxReviewerClosed({
     super.key,
     required this.userId,
     required this.projectId,
-    required this.tbtID,
+    required this.tbtuniqueId,
   });
 
   ToolboxTrainingController toolboxTrainingController =
@@ -66,7 +66,7 @@ class ToolboxReviewerClosed extends StatelessWidget {
                       ),
                       AppTextWidget(
                         text:
-                            'toolbox training $tbtID has been checked successfully.',
+                            'toolbox training $tbtuniqueId has been checked successfully.',
                         fontSize: AppTextSize.textSizeSmalle,
                         fontWeight: FontWeight.w500,
                         color: AppColors.searchfeild,

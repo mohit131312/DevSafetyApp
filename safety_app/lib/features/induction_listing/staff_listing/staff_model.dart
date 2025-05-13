@@ -152,7 +152,7 @@ class InductionTraining {
   // int inductedById;
   // String inductedByName;
   // String location;
-  // DateTime createdAt;
+  DateTime? createdAt;
   // DateTime updatedAt;
   // int reasonOfVisit;
   // dynamic deletedAt;
@@ -177,7 +177,7 @@ class InductionTraining {
     // required this.inductedById,
     // required this.inductedByName,
     // required this.location,
-    // required this.createdAt,
+    required this.createdAt,
     // required this.updatedAt,
     // required this.reasonOfVisit,
     // required this.deletedAt,
@@ -204,7 +204,9 @@ class InductionTraining {
         // inductedById: json["inducted_by_id"],
         // inductedByName: json["inducted_by_name"],
         // location: json["location"],
-        // createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at_ind"] != null
+            ? DateTime.parse(json["created_at_ind"])
+            : null,
         // updatedAt: DateTime.parse(json["updated_at"]),
         // reasonOfVisit: json["reason_of_visit"],
         // deletedAt: json["deleted_at"],

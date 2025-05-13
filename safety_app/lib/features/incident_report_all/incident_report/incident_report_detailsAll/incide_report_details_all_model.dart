@@ -1096,8 +1096,8 @@ class SafetyIncidentReport {
         location: json["location"] ?? "",
         signaturePhoto: json["signature_photo"] ?? "",
         // deletedAt: json["deleted_at"],
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
+        createdAt: json["created_at_ind"] != null
+            ? DateTime.parse(json["created_at_ind"])
             : null,
         // updatedAt: DateTime.parse(json["updated_at"]),
         // createdBy: json["created_by"],

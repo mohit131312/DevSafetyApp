@@ -885,8 +885,8 @@ class ViolationDebitNote {
         signaturePhoto: json["signature_photo"] ?? "",
         createdBy: json["created_by"] ?? 0,
         // deletedAt: json["deleted_at"],
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
+        createdAt: json["created_at_ind"] != null
+            ? DateTime.parse(json["created_at_ind"])
             : null,
         // updatedAt: DateTime.parse(json["updated_at"]),
         assignerComment: json["assigner_comment"] ?? "",

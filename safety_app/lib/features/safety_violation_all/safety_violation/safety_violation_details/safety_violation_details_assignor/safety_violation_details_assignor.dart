@@ -22,6 +22,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int safetyId;
+  final String uniqueId;
   SafetyViolationDetailsAssignor({
     super.key,
     required this.userId,
@@ -30,6 +31,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
     required this.userDesg,
     required this.projectId,
     required this.safetyId,
+    required this.uniqueId,
   });
 
   final SafetyViolationDetailsAssignorCont safetyViolationDetailsAssignorCont =
@@ -84,10 +86,10 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                             context, safetyId, 2);
                     if (safetyViolationDetailsAssignorCont.apiStatus == true) {
                       Get.to(SafetySubmitClosedScreen(
-                        userId: userId,
-                        projectId: projectId,
-                        safetyId: safetyId,
-                      ));
+                          userId: userId,
+                          projectId: projectId,
+                          safetyId: safetyId,
+                          uniqueId: uniqueId));
                     }
                   },
                   child: Container(
@@ -768,7 +770,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Labour',
+                                                  text: 'Labour',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -883,7 +885,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Staff',
+                                            text: 'Staff',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1005,7 +1007,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Contractor',
+                                            text: 'Contractor',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,

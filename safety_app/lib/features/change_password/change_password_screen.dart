@@ -21,6 +21,78 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final ChangePasswordController controller =
       Get.put(ChangePasswordController());
+  void showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (
+        BuildContext context,
+      ) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: Colors.white,
+          title: AppTextWidget(
+            text: 'Are You Sure?',
+            fontSize: AppTextSize.textSizeMediumm,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+          content: AppTextWidget(
+              text: 'Are you sure you want to change password?',
+              fontSize: AppTextSize.textSizeSmall,
+              fontWeight: FontWeight.w500,
+              color: AppColors.searchfeild),
+          actions: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'No',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    await controller.submit(context, widget.userId);
+                    print("API Status: ${controller.apiStatus.value}");
+                    if (controller.apiStatus.value == true) {
+                      Get.back();
+                      Get.back();
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: AppColors.buttoncolor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'Yes',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,10 +359,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           child: AppElevatedButton(
               text: 'Submit',
               onPressed: () async {
-                await controller.submit(context, widget.userId);
-                print("API Status: ${controller.apiStatus.value}");
-                if (controller.apiStatus.value == true) {
-                  Get.back();
+                if (controller.formKey.currentState?.validate() ?? false) {
+                  showConfirmationDialog();
                 }
               }),
         ),

@@ -23,6 +23,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int incidentId;
+  final String uniqueId;
   IncidentReportDetailsAssignor({
     super.key,
     required this.userId,
@@ -31,6 +32,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
     required this.userDesg,
     required this.projectId,
     required this.incidentId,
+    required this.uniqueId,
   });
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -87,10 +89,10 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                     if (incidentReportDetailsAssignorCotroller.apiStatus ==
                         true) {
                       Get.to(IncidentReportSubmitClosed(
-                        userId: userId,
-                        projectId: projectId,
-                        incidentId: incidentId,
-                      ));
+                          userId: userId,
+                          projectId: projectId,
+                          incidentId: incidentId,
+                          uniqueId: uniqueId));
                     }
                   },
                   child: Container(
@@ -793,7 +795,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Labour',
+                                                  text: 'Labour',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -908,7 +910,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Staff',
+                                            text: 'Staff',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1030,7 +1032,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Contractor',
+                                            text: 'Contractor',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,

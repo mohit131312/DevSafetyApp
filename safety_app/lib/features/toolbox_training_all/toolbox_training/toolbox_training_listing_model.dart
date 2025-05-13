@@ -55,52 +55,55 @@ class ToolboxDetails {
   final int? status;
   // final String reviewerUpdatedAt;
   final DateTime? createdAt;
+  final String? tooluniqueId;
   // final DateTime updatedAt;
   // final dynamic deletedAt;
   // final int workPermitId;
 
-  ToolboxDetails({
-    required this.id,
-    required this.projectId,
-    required this.details,
-    required this.nameOfTbTraining,
-    this.toolboxCategoryId,
-    // required this.makerId,
-    // required this.reviwerId,
-    // required this.makerComment,
-    // required this.reviwerComment,
-    // required this.location,
-    // required this.makerSignaturePhoto,
-    // required this.makerPhotoSignatureAfter,
-    // required this.reviwerPhotoSignatureAfter,
-    this.status,
-    // required this.reviewerUpdatedAt,
-    this.createdAt,
-    // required this.updatedAt,
-    // required this.deletedAt,
-    // required this.workPermitId,
-  });
+  ToolboxDetails(
+      {required this.id,
+      required this.projectId,
+      required this.details,
+      required this.nameOfTbTraining,
+      this.toolboxCategoryId,
+      // required this.makerId,
+      // required this.reviwerId,
+      // required this.makerComment,
+      // required this.reviwerComment,
+      // required this.location,
+      // required this.makerSignaturePhoto,
+      // required this.makerPhotoSignatureAfter,
+      // required this.reviwerPhotoSignatureAfter,
+      this.status,
+      // required this.reviewerUpdatedAt,
+      this.createdAt,
+      this.tooluniqueId
+      // required this.updatedAt,
+      // required this.deletedAt,
+      // required this.workPermitId,
+      });
 
   factory ToolboxDetails.fromJson(Map<String, dynamic> json) => ToolboxDetails(
-        id: json["id"],
-        projectId: json["project_id"],
-        details: json["details"],
-        nameOfTbTraining: json["name_of_tb_training"],
-        toolboxCategoryId: json["toolbox_category_id"] ?? 0,
-        // makerId: json["maker_id"],
-        // reviwerId: json["reviwer_id"],
-        // makerComment: json["maker_comment"],
-        // reviwerComment: json["reviwer_comment"],
-        // location: json["location"],
-        // makerSignaturePhoto: json["maker_signature_photo"],
-        // makerPhotoSignatureAfter: json["maker_photo_signature_after"],
-        // reviwerPhotoSignatureAfter: json["reviwer_photo_signature_after"],
-        status: json["status"] ?? 4,
-        // reviewerUpdatedAt: json["reviewer_updated_at"],
-        createdAt: DateTime.parse(json["created_at"]),
-        // updatedAt: DateTime.parse(json["updated_at"]),
-        // deletedAt: json["deleted_at"],
-        // workPermitId: json["work_permit_id"],
+      id: json["id"],
+      projectId: json["project_id"],
+      details: json["details"],
+      nameOfTbTraining: json["name_of_tb_training"],
+      toolboxCategoryId: json["toolbox_category_id"] ?? 0,
+      // makerId: json["maker_id"],
+      // reviwerId: json["reviwer_id"],
+      // makerComment: json["maker_comment"],
+      // reviwerComment: json["reviwer_comment"],
+      // location: json["location"],
+      // makerSignaturePhoto: json["maker_signature_photo"],
+      // makerPhotoSignatureAfter: json["maker_photo_signature_after"],
+      // reviwerPhotoSignatureAfter: json["reviwer_photo_signature_after"],
+      status: json["status"] ?? 4,
+      // reviewerUpdatedAt: json["reviewer_updated_at"],
+      createdAt: DateTime.parse(json["created_at"]),
+      tooluniqueId: json['toolbox_unique_id'] ?? ""
+      // updatedAt: DateTime.parse(json["updated_at"]),
+      // deletedAt: json["deleted_at"],
+      // workPermitId: json["work_permit_id"],
       );
 
   Map<String, dynamic> toJson() => {

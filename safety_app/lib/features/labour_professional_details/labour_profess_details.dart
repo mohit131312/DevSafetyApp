@@ -266,7 +266,7 @@ class LabourProfessDetails extends StatelessWidget {
                                 : labourProfessDetailsController
                                     .selectedyoe.value
                                     .toString(),
-                        hintText: 'Enter year count',
+                        hintText: 'Select Year of Experience',
                         onChanged: (value) {
                           final parsed = int.tryParse(value ?? '');
                           if (parsed != null) {
@@ -277,7 +277,7 @@ class LabourProfessDetails extends StatelessWidget {
                         validator: (value) {
                           if (value == null ||
                               value.toString().trim().isEmpty) {
-                            return 'Please select a count';
+                            return 'Please select a year of experience';
                           }
                           return null;
                         },

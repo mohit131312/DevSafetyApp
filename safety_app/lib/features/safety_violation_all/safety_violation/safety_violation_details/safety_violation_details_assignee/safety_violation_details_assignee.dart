@@ -24,15 +24,16 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int safetyId;
-  SafetyViolationDetailsAssignee({
-    super.key,
-    required this.userId,
-    required this.userName,
-    required this.userImg,
-    required this.userDesg,
-    required this.projectId,
-    required this.safetyId,
-  });
+  final String uniqueId;
+  SafetyViolationDetailsAssignee(
+      {super.key,
+      required this.userId,
+      required this.userName,
+      required this.userImg,
+      required this.userDesg,
+      required this.projectId,
+      required this.safetyId,
+      required this.uniqueId});
 
   final SafetyViolationDetailsAssigneeCont safetyViolationDetailsAssigneeCont =
       Get.put(SafetyViolationDetailsAssigneeCont());
@@ -88,10 +89,10 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                             context, safetyId, assigneeId, 1);
                     if (safetyViolationDetailsAssigneeCont.apiStatus == true) {
                       Get.to(SafetyResolvedScreen(
-                        userId: userId,
-                        projectId: projectId,
-                        safetyId: safetyId,
-                      ));
+                          userId: userId,
+                          projectId: projectId,
+                          safetyId: safetyId,
+                          uniqueId: uniqueId));
                     }
                   },
                   child: Container(
@@ -772,7 +773,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Labour',
+                                                  text: 'Labour',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -887,7 +888,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Staff',
+                                            text: 'Staff',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1009,7 +1010,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Contractor',
+                                            text: 'Contractor',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1498,7 +1499,140 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       safetyViolationDetailsAssigneeCont.userFound.value
-                          ? SizedBox()
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  AppTextWidget(
+                                      text: 'Photos',
+                                      fontSize: AppTextSize.textSizeSmall,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.primaryText),
+                                  SizedBox(
+                                    height: SizeConfig.heightMultiplier * 1.5,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Ensure items align properly
+
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          child: GridView.builder(
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemCount:
+                                                  safetyViolationDetailsAssigneeCont
+                                                      .asgineeAddPhotos.length,
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount:
+                                                    4, // Ensures one row (horizontal scroll)
+
+                                                childAspectRatio:
+                                                    1, // Keeps items square
+                                                mainAxisSpacing: 12,
+                                                crossAxisSpacing:
+                                                    12, // Spacing between images
+                                              ),
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                return Stack(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: SizeConfig
+                                                              .imageSizeMultiplier *
+                                                          20,
+                                                      width: SizeConfig
+                                                              .imageSizeMultiplier *
+                                                          20,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                12), // Clip image to match container
+
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            if (safetyViolationDetailsAssigneeCont
+                                                                .asgineeAddPhotos
+                                                                .isNotEmpty) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return Dialog(
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    child:
+                                                                        InteractiveViewer(
+                                                                      panEnabled:
+                                                                          true,
+                                                                      minScale:
+                                                                          0.5,
+                                                                      maxScale:
+                                                                          3.0,
+                                                                      child:
+                                                                          ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        child: Image
+                                                                            .network(
+                                                                          "$baseUrl${safetyViolationDetailsAssigneeCont.asgineeAddPhotos[index].photoPath.toString()}",
+                                                                          fit: BoxFit
+                                                                              .contain,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            }
+                                                          },
+                                                          child: SizedBox(
+                                                            height: SizeConfig
+                                                                    .imageSizeMultiplier *
+                                                                16,
+                                                            width: SizeConfig
+                                                                    .imageSizeMultiplier *
+                                                                16,
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              child: (safetyViolationDetailsAssigneeCont
+                                                                      .asgineeAddPhotos[
+                                                                          index]
+                                                                      .photoPath!
+                                                                      .isNotEmpty
+                                                                  // ignore: unnecessary_null_comparison
+                                                                  )
+                                                                  ? Image
+                                                                      .network(
+                                                                      "$baseUrl${safetyViolationDetailsAssigneeCont.asgineeAddPhotos[index].photoPath.toString()}",
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    )
+                                                                  : Image.asset(
+                                                                      ""),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: SizeConfig.heightMultiplier * 3.5,
+                                  ),
+                                ])
                           : Column(
                               children: [
                                 Obx(

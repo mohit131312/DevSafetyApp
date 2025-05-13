@@ -57,6 +57,7 @@ class EmergencyContactScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
         child: ClipRRect(

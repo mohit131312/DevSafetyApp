@@ -10,7 +10,9 @@ import 'package:flutter_app/utils/validation_invalid.dart';
 import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart'; // Import the package
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+import '../../utils/validation_popup.dart'; // Import the package
 
 class LoginController extends GetxController {
   var username = ''.obs;
@@ -82,6 +84,13 @@ class LoginController extends GetxController {
               context: Get.context!,
               builder: (BuildContext context) {
                 return CustomValidationPopupInvalid(message: validationmsg);
+              },
+            );
+          }else if (validationmsg == "User not found") {
+            await showDialog(
+              context: Get.context!,
+              builder: (BuildContext context) {
+                return CustomValidationPopup(message: validationmsg);
               },
             );
           } else {

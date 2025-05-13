@@ -449,7 +449,10 @@ class StaffPreviewScreen extends StatelessWidget {
                                                     1,
                                               ),
                                               AppTextWidget(
-                                                  text: '784598547845',
+                                                  text:
+                                                      staffDocumentationController
+                                                          .adharnoController
+                                                          .text,
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w400,

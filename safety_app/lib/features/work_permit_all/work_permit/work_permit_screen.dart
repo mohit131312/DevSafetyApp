@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
-import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_all_details/work_permit_all_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_all_details/work_permit_all_details.dart';
@@ -192,7 +191,7 @@ class WorkPermitScreen extends StatelessWidget {
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerHeight: 0,
-                  tabAlignment: TabAlignment.start,
+                  tabAlignment: TabAlignment.center,
                   tabs: [
                     SizedBox(
                       width: SizeConfig.widthMultiplier * 20,
@@ -207,6 +206,7 @@ class WorkPermitScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
+                      width: SizeConfig.widthMultiplier * 20,
                       child: const Tab(
                         text: 'Checker',
                       ),
@@ -244,13 +244,26 @@ class WorkPermitScreen extends StatelessWidget {
                               ));
                             },
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  title: AppTextWidget(
-                                    text: work.nameOfWorkpermit,
-                                    fontSize: AppTextSize.textSizeSmall,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryText,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: work.uniqueId!,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: work.nameOfWorkpermit,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                    ],
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
@@ -366,11 +379,23 @@ class WorkPermitScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   ListTile(
-                                    title: AppTextWidget(
-                                      text: work.nameOfWorkpermit,
-                                      fontSize: AppTextSize.textSizeSmall,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primaryText,
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        AppTextWidget(
+                                          text: work.uniqueId!,
+                                          fontSize: AppTextSize.textSizeSmalle,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primaryText,
+                                        ),
+                                        AppTextWidget(
+                                          text: work.nameOfWorkpermit,
+                                          fontSize: AppTextSize.textSizeSmalle,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primaryText,
+                                        ),
+                                      ],
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment:
@@ -490,11 +515,23 @@ class WorkPermitScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   ListTile(
-                                    title: AppTextWidget(
-                                      text: work.nameOfWorkpermit,
-                                      fontSize: AppTextSize.textSizeSmall,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primaryText,
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        AppTextWidget(
+                                          text: work.uniqueId!,
+                                          fontSize: AppTextSize.textSizeSmalle,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primaryText,
+                                        ),
+                                        AppTextWidget(
+                                          text: work.nameOfWorkpermit,
+                                          fontSize: AppTextSize.textSizeSmalle,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primaryText,
+                                        ),
+                                      ],
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment:
@@ -595,10 +632,6 @@ class WorkPermitScreen extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.065,
                     child: FloatingActionButton(
                       onPressed: () async {
-                        final LocationController locationController =
-                            Get.find();
-                        locationController.fetchLocation();
-
                         workPermitController.clearWorkPermitData();
 
                         workPermitPreviewController.clearAllData();

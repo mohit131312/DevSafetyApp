@@ -9,6 +9,7 @@ import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
+import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:http/http.dart' as http;
 
@@ -225,7 +226,7 @@ class ToolboxTrainingMakerController extends GetxController {
               await showDialog(
                 context: Get.context!,
                 builder: (BuildContext context) {
-                  return CustomValidationPopup(message: validationmsg);
+                  return ValidationPopChang(message: validationmsg);
                 },
               );
               Get.back();

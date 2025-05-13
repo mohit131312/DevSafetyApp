@@ -333,7 +333,9 @@ class WorkPermit {
   dynamic makerSignaturePhotoAfter;
   dynamic makerComment;
   String? status;
+  String? uniqueId;
   DateTime createdAt;
+
   // DateTime updatedAt;
   // dynamic deletedAt;
   // int undertaking1;
@@ -355,6 +357,7 @@ class WorkPermit {
     this.makerSignaturePhotoAfter,
     this.makerComment,
     this.status,
+    this.uniqueId,
     required this.createdAt,
     // required this.updatedAt,
     // required this.deletedAt,
@@ -382,8 +385,9 @@ class WorkPermit {
         makerSignaturePhotoAfter: json["maker_signature_photo_after"],
         makerComment: json["maker_comment"],
         status: json["status"] ?? "",
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
+        uniqueId: json['workpermit_unique_id'] ?? "",
+        createdAt: json["created_at_ind"] != null
+            ? DateTime.parse(json["created_at_ind"])
             : DateTime.now(),
         // updatedAt: DateTime.parse(json["updated_at"]),
         // deletedAt: json["deleted_at"],

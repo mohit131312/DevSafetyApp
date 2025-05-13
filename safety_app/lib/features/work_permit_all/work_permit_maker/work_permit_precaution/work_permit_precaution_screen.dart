@@ -653,11 +653,7 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
               SizedBox(
                 height: SizeConfig.heightMultiplier * 1.5,
               ),
-              AppTextWidget(
-                  text: 'Set the checkers in sequence?',
-                  fontSize: AppTextSize.textSizeSmall,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.searchfeild),
+
               SizedBox(
                 height: SizeConfig.heightMultiplier * 6,
               ),

@@ -1884,14 +1884,14 @@ class StaffListingScreen extends StatelessWidget {
                     AppTextWidget(
                       text: staffListingController
                                   // ignore: unnecessary_null_comparison
-                                  .staffDetailsList[0]
+                                  .staffInductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt !=
                               null
                           ? DateFormat('dd-MM-yyyy hh:mm a')
                               .format(DateTime.parse(staffListingController
                                   // ignore: unnecessary_null_comparison
-                                  .staffDetailsList[0]
+                                  .staffInductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt
                                   .toString()))

@@ -118,6 +118,102 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  void showConfirmationDialog(
+    BuildContext context,
+  ) {
+    showDialog(
+      context: context,
+      builder: (
+        BuildContext context,
+      ) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: Colors.white,
+          title: AppTextWidget(
+            text: 'Are You Sure?',
+            fontSize: AppTextSize.textSizeMediumm,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+          content: AppTextWidget(
+              text: 'Are you sure you want to edit profile details?',
+              fontSize: AppTextSize.textSizeSmall,
+              fontWeight: FontWeight.w500,
+              color: AppColors.searchfeild),
+          actions: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'No',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    log('Before---------------$updatedData');
+                    _saveProfileChanges();
+                    log('after---------------$updatedData');
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            CustomLoadingPopup());
+                    await editProfileController.getEditProfileDetails(
+                        updatedData, context);
+                    Get.back();
+
+                    if (editProfileController.validationmsg ==
+                        'Profile updated successfully') {
+                      Get.back();
+                      Get.back();
+                      Get.back();
+                    }
+                    // if (labourPreviewController.validationmsg ==
+                    //     'Induction training data saved.') {
+                    //   Get.to(() => LabourSubmit(
+                    //         categoryId: categoryId,
+                    //         userId: userId,
+                    //         userName: userName,
+                    //         userImg: userImg,
+                    //         userDesg: userDesg,
+                    //         projectId: projectId,
+                    //       ));
+                    // }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: AppColors.buttoncolor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'Yes',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -336,23 +432,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onPressed: () async {
                                 if (_formKey.currentState?.validate() ??
                                     false) {
-                                  log('Before---------------$updatedData');
-                                  _saveProfileChanges();
-                                  log('after---------------$updatedData');
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          CustomLoadingPopup());
-                                  await editProfileController
-                                      .getEditProfileDetails(
-                                          updatedData, context);
-                                  Get.back();
-
-                                  if (editProfileController.validationmsg ==
-                                      'Profile updated successfully') {
-                                    Get.back();
-                                    Get.back();
-                                  }
+                                  showConfirmationDialog(context);
                                 }
                               }),
                           SizedBox(height: SizeConfig.heightMultiplier * 2),

@@ -21,6 +21,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int toolBox;
+  final String uniqueId;
 
   ToolboxTrainingMakerScreen(
       {super.key,
@@ -29,7 +30,8 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
       required this.userImg,
       required this.userDesg,
       required this.projectId,
-      required this.toolBox});
+      required this.toolBox,
+      required this.uniqueId});
 
   //-----------------------------------------------------------------------
   final ToolboxTrainingMakerController toolboxTrainingMakerController =
@@ -237,8 +239,8 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                                         ),
                                         AppTextWidget(
                                             text: toolboxTrainingMakerController
-                                                .safetyToolboxMakerTraining[0]
-                                                .toolboxCategoryId
+                                                .toolboxMakerCategoryList[0]
+                                                .categoryName
                                                 .toString(),
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
@@ -1404,6 +1406,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                             userId: userId,
                             projectId: projectId,
                             tbtID: toolBox,
+                            uniqueId: uniqueId,
                           ));
                     }
 

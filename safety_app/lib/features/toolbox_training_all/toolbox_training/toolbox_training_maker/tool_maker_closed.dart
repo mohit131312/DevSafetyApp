@@ -15,12 +15,13 @@ class ToolMakerClosed extends StatelessWidget {
   final int userId;
   final int projectId;
   final int tbtID;
-  ToolMakerClosed({
-    super.key,
-    required this.userId,
-    required this.projectId,
-    required this.tbtID,
-  });
+  final String uniqueId;
+  ToolMakerClosed(
+      {super.key,
+      required this.userId,
+      required this.projectId,
+      required this.tbtID,
+      required this.uniqueId});
 
   ToolboxTrainingController toolboxTrainingController =
       Get.put(ToolboxTrainingController());
@@ -66,7 +67,7 @@ class ToolMakerClosed extends StatelessWidget {
                       ),
                       AppTextWidget(
                         text:
-                            'toolbox training $tbtID has been closed successfully.',
+                            'toolbox training $uniqueId has been closed successfully.',
                         fontSize: AppTextSize.textSizeSmalle,
                         fontWeight: FontWeight.w500,
                         color: AppColors.searchfeild,

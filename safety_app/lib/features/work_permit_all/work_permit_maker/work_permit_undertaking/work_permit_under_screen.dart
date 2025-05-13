@@ -22,10 +22,10 @@ class WorkPermitUnderScreen extends StatelessWidget {
 
   WorkPermitUnderScreen({
     super.key,
-    required this.userImg,
-    required this.userDesg,
     required this.userId,
     required this.userName,
+    required this.userImg,
+    required this.userDesg,
     required this.projectId,
   });
   final WorkPermitUnderController workPermitUnderController = Get.find();

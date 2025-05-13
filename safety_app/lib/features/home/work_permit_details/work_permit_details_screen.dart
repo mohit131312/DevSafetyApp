@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/home/work_permit_details/work_permit_details_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
@@ -30,6 +31,7 @@ class WorkPermitDetailsScreen extends StatelessWidget {
   });
   final WorkPermitDetailsController workPermitAllController =
       Get.put(WorkPermitDetailsController());
+  final LocationController locationController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -824,10 +826,22 @@ class WorkPermitDetailsScreen extends StatelessWidget {
                     height: SizeConfig.heightMultiplier * 1,
                   ),
                   AppTextWidget(
-                      text: '06 Oct 2024 11:14 AM',
-                      fontSize: AppTextSize.textSizeSmall,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryText),
+                    text: workPermitAllController
+                                .workPermitsHomeDetails
+                                // ignore: unnecessary_null_comparison
+                                [0]
+                                // ignore: unnecessary_null_comparison
+                                .createdAt !=
+                            null
+                        ? DateFormat('dd-MM-yyyy hh:mm a').format(
+                            DateTime.parse(workPermitAllController
+                                .workPermitsHomeDetails[0].createdAt
+                                .toString()))
+                        : "",
+                    fontSize: AppTextSize.textSizeSmall,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.primaryText,
+                  ),
                   SizedBox(
                     height: SizeConfig.heightMultiplier * 2,
                   ),
@@ -839,12 +853,17 @@ class WorkPermitDetailsScreen extends StatelessWidget {
                   SizedBox(
                     height: SizeConfig.heightMultiplier * 1,
                   ),
-                  AppTextWidget(
+                  Obx(() {
+                    final city = locationController.cityName.value;
+
+                    return AppTextWidget(
                       text:
-                          'Sade Satra Nali, Pune, Hadapsar, 411028, Maharashtra, Pune',
+                          city.isNotEmpty ? 'City: $city' : 'Fetching city...',
                       fontSize: AppTextSize.textSizeSmall,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryText),
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.primaryText,
+                    );
+                  }),
                 ],
               ),
             ),

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
-import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incedent_report_preview/incedent_report_preview_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_attestation/incident_attestation_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_details/incident_details_screen.dart';
@@ -71,7 +70,6 @@ class IncidentReportScreen extends StatelessWidget {
   final IncidentReportDetailsAssignorCotroller
       incidentReportDetailsAssignorCotroller =
       Get.put(IncidentReportDetailsAssignorCotroller());
-  final LocationController locationController = Get.find();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -199,7 +197,7 @@ class IncidentReportScreen extends StatelessWidget {
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerHeight: 0,
-                  tabAlignment: TabAlignment.start,
+                  tabAlignment: TabAlignment.center,
                   tabs: [
                     SizedBox(
                       width: SizeConfig.widthMultiplier * 20,
@@ -214,6 +212,7 @@ class IncidentReportScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
+                      width: SizeConfig.widthMultiplier * 20,
                       child: const Tab(
                         text: 'Assignee',
                       ),
@@ -254,8 +253,8 @@ class IncidentReportScreen extends StatelessWidget {
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: incident.id.toString(),
-                                    fontSize: AppTextSize.textSizeSmall,
+                                    text: incident.incidentUiniqueId.toString(),
+                                    fontSize: AppTextSize.textSizeSmalle,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
                                   ),
@@ -388,20 +387,21 @@ class IncidentReportScreen extends StatelessWidget {
                                       projectId, userId, 2, incident.id);
 
                               Get.to(IncidentReportDetailsAssignor(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                incidentId: incident.id,
-                              ));
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  incidentId: incident.id,
+                                  uniqueId:
+                                      incident.incidentUiniqueId.toString()));
                             },
                             child: Column(
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: incident.id.toString(),
-                                    fontSize: AppTextSize.textSizeSmall,
+                                    text: incident.incidentUiniqueId.toString(),
+                                    fontSize: AppTextSize.textSizeSmalle,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
                                   ),
@@ -533,20 +533,21 @@ class IncidentReportScreen extends StatelessWidget {
                                       projectId, userId, 3, incident.id);
 
                               Get.to(IncidentReportDetailsAssignee(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                incidentId: incident.id,
-                              ));
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  incidentId: incident.id,
+                                  uniqueId:
+                                      incident.incidentUiniqueId.toString()));
                             },
                             child: Column(
                               children: [
                                 ListTile(
                                   title: AppTextWidget(
-                                    text: incident.id.toString(),
-                                    fontSize: AppTextSize.textSizeSmall,
+                                    text: incident.incidentUiniqueId.toString(),
+                                    fontSize: AppTextSize.textSizeSmalle,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primaryText,
                                   ),
@@ -674,8 +675,6 @@ class IncidentReportScreen extends StatelessWidget {
                     height: SizeConfig.heightMultiplier * 6.5,
                     child: FloatingActionButton(
                       onPressed: () async {
-                        locationController.fetchLocation();
-
                         incidentDetailsController.resetData();
                         incidentReportController.resetAllLists();
                         incedentReportPreviewController.clearData();

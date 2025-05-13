@@ -6,6 +6,7 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_attestaion/safety_attestaion_screen.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_details_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/select_assignee/select_safety_assignee.dart';
@@ -49,6 +50,8 @@ class SafetyViolationDetails extends StatelessWidget {
 
   final SelectSafetyAssigneeController selectSafetyAssigneeController =
       Get.find();
+  final LocationController locationController = Get.find();
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -971,7 +974,7 @@ class SafetyViolationDetails extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Labour',
+                                      text: 'Selected Labour',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -1073,7 +1076,7 @@ class SafetyViolationDetails extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Staff',
+                                      text: 'Selected Staff',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -1175,7 +1178,7 @@ class SafetyViolationDetails extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Contractor',
+                                      text: 'Selected Contractor',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -1765,6 +1768,7 @@ class SafetyViolationDetails extends StatelessWidget {
                             .selectedContractorIdsFinal.isNotEmpty ||
                         selectInvolvedPersonController
                             .selectedLabourIdsFinal.isNotEmpty)) {
+                  locationController.fetchLocation();
                   Get.to(SafetyAttestaionScreen(
                     userId: userId,
                     userName: userName,

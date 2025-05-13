@@ -437,6 +437,10 @@ class SafetyPreviewScreen extends StatelessWidget {
                                               fontWeight: FontWeight.w400,
                                               color: Colors.red,
                                             ),
+                                      SizedBox(
+                                        height:
+                                            SizeConfig.heightMultiplier * 1.5,
+                                      ),
                                       AppTextWidget(
                                           text: 'Source of Observation',
                                           fontSize: AppTextSize.textSizeSmall,
@@ -465,6 +469,9 @@ class SafetyPreviewScreen extends StatelessWidget {
                                                 color: Colors.red,
                                               );
                                       }),
+                                      SizedBox(
+                                        height: SizeConfig.heightMultiplier * 2,
+                                      ),
                                       AppTextWidget(
                                           text: 'Photos',
                                           fontSize: AppTextSize.textSizeSmall,
@@ -690,7 +697,7 @@ class SafetyPreviewScreen extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Labour',
+                                                  text: 'Labour',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -810,7 +817,7 @@ class SafetyPreviewScreen extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Staff',
+                                                  text: 'Staff',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -932,7 +939,7 @@ class SafetyPreviewScreen extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Contractor',
+                                                  text: 'Contractor',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,

@@ -378,7 +378,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                     AppTextFormfeild(
                       controller: contractorDetailsController.idproofController,
                       focusNode: contractorDetailsController.idproofFocusNode,
-                      hintText: 'Contact Number',
+                      hintText: 'ID Proof Number',
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {

@@ -5,6 +5,7 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
@@ -40,6 +41,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
   final SelectReviewerController selectReviewerController = Get.find();
   final ToolboxAddTraineeController toolboxAddTraineeController = Get.find();
   final SelectTraineeController selectTraineeController = Get.find();
+  final LocationController locationController = Get.find();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -798,6 +800,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                 if (formKey.currentState!.validate() &&
                     isValidAssignee &&
                     isValidInstruction) {
+                  locationController.fetchLocation();
                   Get.to(ToolboxAddTraineeScreen(
                       userId: userId,
                       userName: userName,

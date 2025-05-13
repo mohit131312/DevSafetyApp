@@ -948,13 +948,12 @@ class WorkPermitPreviewScreen extends StatelessWidget {
                         Container(
                           width: SizeConfig.imageSizeMultiplier * 15,
                           height: SizeConfig.imageSizeMultiplier * 15,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image:
-                                  AssetImage('assets/icons/person_labour.png'),
-                              fit: BoxFit.cover,
-                            ),
+                          child: CircleAvatar(
+                            radius: 22,
+                            backgroundImage: userImg.isNotEmpty
+                                ? NetworkImage("$baseUrl${userImg}")
+                                : AssetImage("assets/images/default_avatar.png")
+                                    as ImageProvider,
                           ),
                         ),
                         SizedBox(
@@ -964,12 +963,12 @@ class WorkPermitPreviewScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppTextWidget(
-                                text: 'Ravi Kumar',
+                                text: userName,
                                 fontSize: AppTextSize.textSizeSmallm,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primaryText),
                             AppTextWidget(
-                                text: 'SAFETY OFFICER',
+                                text: userDesg,
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.searchfeild),

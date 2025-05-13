@@ -10,6 +10,7 @@ import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
+import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -197,7 +198,7 @@ class ContractorPreviewController extends GetxController {
               await showDialog(
                 context: Get.context!,
                 builder: (BuildContext context) {
-                  return CustomValidationPopup(message: validationmsg);
+                  return ValidationPopChang(message: validationmsg);
                 },
               );
               Get.back();

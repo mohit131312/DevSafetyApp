@@ -4,12 +4,15 @@ import 'package:flutter_app/features/login/login_screen.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:get/get.dart';
 
+import '../features/login/login_controller.dart';
+
 String baseUrl = "http://192.168.1.72/Kumar/KumarProperties/storage/app/";
 String baseUrl2 = "http://192.168.1.72/Kumar/KumarProperties/";
 
 bool logStatus = true;
-void logout() {
-  print("Before ${ApiClient.gs.read("login")}");
+void logout() {final LoginController loginController = Get.put(LoginController());
+
+print("Before ${ApiClient.gs.read("login")}");
   ApiClient.gs.write('token', "");
   ApiClient.gs.write('user_id', "");
   ApiClient.gs.write('username', "");
@@ -19,7 +22,10 @@ void logout() {
   ApiClient.gs.remove('SelectRoleMap');
   logStatus = false;
   ApiClient.gs.erase();
-
+  loginController.username.value = '';
+  loginController.password.value = '';
+  loginController.passwordController.clear();
+  loginController.usernameController.clear();
   log("token is ${ApiClient.gs.read('token')}");
   log("login is ${ApiClient.gs.read('login')}");
   Get.offAll(() => LoginScreen());

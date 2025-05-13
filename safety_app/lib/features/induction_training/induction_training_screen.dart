@@ -437,7 +437,7 @@ class InductionTrainingScreen extends StatelessWidget {
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerHeight: 0,
-                tabAlignment: TabAlignment.start,
+                tabAlignment: TabAlignment.center,
                 tabs: [
                   SizedBox(
                     width: SizeConfig.widthMultiplier * 20,
@@ -452,6 +452,7 @@ class InductionTrainingScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
+                    width: SizeConfig.widthMultiplier * 26,
                     child: const Tab(
                       text: AppTexts.bulkInduction,
                     ),

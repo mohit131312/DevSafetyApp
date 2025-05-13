@@ -63,7 +63,7 @@ class SafetyViolationModel {
   // final dynamic assignerPhotoSignatureAfter;
   // final int projectId;
   // final DateTime turnAroundTime;
-  // final String violationUniqueId;
+  final String? violationUniqueId;
 
   SafetyViolationModel({
     required this.id,
@@ -86,7 +86,7 @@ class SafetyViolationModel {
     // required this.assignerPhotoSignatureAfter,
     // required this.projectId,
     // required this.turnAroundTime,
-    // required this.violationUniqueId,
+    required this.violationUniqueId,
   });
 
   factory SafetyViolationModel.fromJson(Map<String, dynamic> json) =>
@@ -111,7 +111,7 @@ class SafetyViolationModel {
         // assignerPhotoSignatureAfter: json["assigner_photo_signature_after"],
         // projectId: json["project_id"],
         // turnAroundTime: DateTime.parse(json["turn_around_time"]),
-        // violationUniqueId: json["violation_unique_id"],
+        violationUniqueId: json["violation_unique_id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

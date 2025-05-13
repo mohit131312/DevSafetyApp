@@ -227,8 +227,8 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                       AppTextWidget(
                                           text:
                                               toolboxTrainingAllListdetController
-                                                  .safetyToolboxTraining[0]
-                                                  .toolboxCategoryId
+                                                  .toolboxCategoryList[0]
+                                                  .categoryName
                                                   .toString(),
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w400,

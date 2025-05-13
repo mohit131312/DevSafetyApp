@@ -60,6 +60,7 @@ class IncidentReportList {
   // final dynamic signaturePhotoAfter;
   // final dynamic assignerComment;
   final int? status;
+  final String? incidentUiniqueId;
   final String? severityColor;
   final String? colorName;
 
@@ -83,6 +84,7 @@ class IncidentReportList {
       // required this.signaturePhotoAfter,
       // required this.assignerComment,
       this.status,
+      this.incidentUiniqueId,
       this.severityColor,
       this.colorName});
 
@@ -109,6 +111,7 @@ class IncidentReportList {
         // signaturePhotoAfter: json["signature_photo_after"],
         // assignerComment: json["assigner_comment"],
         status: json["status"] ?? 0,
+        incidentUiniqueId: json["incident_unique_id"] ?? "",
         severityColor: json["severity_color"] ?? "",
         colorName: json["Color_name"] ?? "",
       );

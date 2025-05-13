@@ -5,6 +5,7 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/assign_checker/assign_checker_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_controller.dart';
@@ -1480,6 +1481,8 @@ class NewWorkPermitScreen extends StatelessWidget {
                   if (formKey.currentState!.validate() &&
                       newWorkPermitController.validateBuildingSelection() &&
                       newWorkPermitController.workDuration.value.isNotEmpty) {
+                    final LocationController locationController = Get.find();
+                    locationController.fetchLocation();
                     Get.to(WorkPermitPrecautionScreen(
                         userId: userId,
                         userName: userName,

@@ -53,6 +53,7 @@ class WorkPermitListingAll {
   // dynamic makerComment;
   String? status;
   DateTime? createdAt;
+  String? uniqueId;
   // DateTime updatedAt;
   // dynamic deletedAt;
   // int undertaking1;
@@ -75,6 +76,7 @@ class WorkPermitListingAll {
     // required this.makerComment,
     this.status,
     this.createdAt,
+    this.uniqueId,
     // required this.updatedAt,
     // required this.deletedAt,
     // required this.undertaking1,
@@ -85,29 +87,30 @@ class WorkPermitListingAll {
 
   factory WorkPermitListingAll.fromJson(Map<String, dynamic> json) =>
       WorkPermitListingAll(
-        id: json["id"],
-        nameOfWorkpermit: json["name_of_workpermit"],
-        // subActivityId: json["sub_activity_id"],
-        description: json["description"] ?? "",
-        toolboxTrainingId: json["toolbox_training_id"] ?? 0,
-        projectId: json["project_id"] ?? 0,
-        // fromDateTime: DateTime.parse(json["from_date_time"]),
-        // toDateTime: DateTime.parse(json["to_date_time"]),
-        // makerSignaturePhoto: json["maker_signature_photo"],
-        makerId: json["maker_id"] ?? 0,
-        // makerSignaturePhotoAfter: json["maker_signature_photo_after"],
-        // makerComment: json["maker_comment"],
-        status: json["status"] ?? "",
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
-            : null,
-        // updatedAt: DateTime.parse(json["updated_at"]),
-        // deletedAt: json["deleted_at"],
-        // undertaking1: json["undertaking_1"],
-        // undertaking2: json["undertaking_2"],
-        // undertaking3: json["undertaking_3"],
-        // location: json["location"],
-      );
+          id: json["id"],
+          nameOfWorkpermit: json["name_of_workpermit"],
+          // subActivityId: json["sub_activity_id"],
+          description: json["description"] ?? "",
+          toolboxTrainingId: json["toolbox_training_id"] ?? 0,
+          projectId: json["project_id"] ?? 0,
+          // fromDateTime: DateTime.parse(json["from_date_time"]),
+          // toDateTime: DateTime.parse(json["to_date_time"]),
+          // makerSignaturePhoto: json["maker_signature_photo"],
+          makerId: json["maker_id"] ?? 0,
+          // makerSignaturePhotoAfter: json["maker_signature_photo_after"],
+          // makerComment: json["maker_comment"],
+          status: json["status"] ?? "",
+          createdAt: json["created_at"] != null
+              ? DateTime.parse(json["created_at"])
+              : null,
+          uniqueId: json["workpermit_unique_id"] ?? ""
+          // updatedAt: DateTime.parse(json["updated_at"]),
+          // deletedAt: json["deleted_at"],
+          // undertaking1: json["undertaking_1"],
+          // undertaking2: json["undertaking_2"],
+          // undertaking3: json["undertaking_3"],
+          // location: json["location"],
+          );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -124,6 +127,7 @@ class WorkPermitListingAll {
         // "maker_comment": makerComment,
         "status": status,
         "created_at": createdAt!.toIso8601String(),
+        'workpermit_unique_id': uniqueId ?? ""
         // "updated_at": updatedAt.toIso8601String(),
         // "deleted_at": deletedAt,
         // "undertaking_1": undertaking1,
@@ -132,6 +136,3 @@ class WorkPermitListingAll {
         // "location": location,
       };
 }
-
-
-

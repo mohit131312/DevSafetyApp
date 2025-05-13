@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +10,8 @@ class LocationController extends GetxController {
   RxString cityName = ''.obs;
   RxBool isLoading = false.obs;
   var locationString = ''.obs;
+  RxString locationError = ''.obs; // Error state
+
   @override
   void onInit() {
     super.onInit();
@@ -16,11 +20,19 @@ class LocationController extends GetxController {
 
   Future<void> fetchLocation() async {
     isLoading.value = true;
+    locationError.value = ''; // Clear previous error
 
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        Get.snackbar('Error', 'Location services are disabled.');
+        locationError.value =
+            'Location services are disabled. Please enable them.';
+        await showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return CustomValidationPopup(message: locationError.value);
+          },
+        );
         return;
       }
 
@@ -28,20 +40,33 @@ class LocationController extends GetxController {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          Get.snackbar('Error', 'Location permissions are denied.');
+          locationError.value = 'Location permission denied.';
+          await showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              return CustomValidationPopup(message: locationError.value);
+            },
+          );
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        Get.snackbar('Error', 'Location permissions are permanently denied.');
+        locationError.value =
+            'Location permission permanently denied. Enable it from settings.';
+        await showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return CustomValidationPopup(message: locationError.value);
+          },
+        );
         return;
       }
 
       Position position = await Geolocator.getCurrentPosition();
       final newLocation = LatLng(position.latitude, position.longitude);
       print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
-      locationString.value = '${position.latitude},${position.longitude}';
+      // locationString.value = '${position.latitude},${position.longitude}';
 
       // Print the comma-separated latitude and longitude string
       print(locationString);
@@ -49,6 +74,8 @@ class LocationController extends GetxController {
       if (currentLocation.value != newLocation) {
         currentLocation.value = newLocation;
         await _getCityName(newLocation);
+        locationString.value =
+            '${cityName.value}, ${position.latitude}, ${position.longitude}';
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to get location: $e');
@@ -89,5 +116,9 @@ class LocationController extends GetxController {
       print('Failed to get city name: $e');
       cityName.value = 'Unknown';
     }
+  }
+
+  Future<void> openSettingsIfNeeded() async {
+    await Geolocator.openLocationSettings();
   }
 }

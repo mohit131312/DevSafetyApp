@@ -1288,14 +1288,14 @@ class ContractorListingScreen extends StatelessWidget {
                     AppTextWidget(
                       text: contractorListingController
                                   // ignore: unnecessary_null_comparison
-                                  .contractorDetailsList[0]
+                                  .contractorInductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt !=
                               null
                           ? DateFormat('dd-MM-yyyy hh:mm a')
                               .format(DateTime.parse(contractorListingController
                                   // ignore: unnecessary_null_comparison
-                                  .contractorDetailsList[0]
+                                  .contractorInductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt
                                   .toString()))

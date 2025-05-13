@@ -678,7 +678,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                                 MainAxisAlignment.start,
                                             children: [
                                               AppTextWidget(
-                                                text: 'Select Labour',
+                                                text: 'Labour',
                                                 fontSize:
                                                     AppTextSize.textSizeSmall,
                                                 fontWeight: FontWeight.w500,
@@ -789,7 +789,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         AppTextWidget(
-                                          text: 'Select Staff',
+                                          text: 'Staff',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.primaryText,
@@ -907,7 +907,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         AppTextWidget(
-                                          text: 'Select Contractor',
+                                          text: 'Contractor',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.primaryText,

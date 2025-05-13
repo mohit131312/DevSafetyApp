@@ -14,12 +14,14 @@ class SafetySubmitClosedScreen extends StatelessWidget {
   final int userId;
   final int projectId;
   final int safetyId;
+  final String uniqueId;
 
   SafetySubmitClosedScreen({
     super.key,
     required this.userId,
     required this.projectId,
     required this.safetyId,
+    required this.uniqueId,
   });
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class SafetySubmitClosedScreen extends StatelessWidget {
                   ),
                   AppTextWidget(
                     text:
-                        'safety violation $safetyId has been closed successfully.',
+                        'safety violation $uniqueId has been closed successfully.',
                     fontSize: AppTextSize.textSizeSmalle,
                     fontWeight: FontWeight.w500,
                     color: AppColors.searchfeild,

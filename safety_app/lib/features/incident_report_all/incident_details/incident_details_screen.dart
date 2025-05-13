@@ -6,6 +6,7 @@ import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
+import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_details/incident_details_controller.dart';
 import 'package:flutter_app/features/incident_report_all/incident_more_details/incident_more_details_screen.dart';
 import 'package:flutter_app/features/incident_report_all/incident_report/incident_report_controller.dart';
@@ -49,6 +50,7 @@ class IncidentDetailsScreen extends StatelessWidget {
       Get.find();
 
   final SelectAssigneController selectAssigneController = Get.find();
+  final LocationController locationController = Get.find();
 
 //---------
 
@@ -517,7 +519,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == null ||
                                   value.toString().trim().isEmpty) {
-                                return 'Please select a type';
+                                return 'Please select a Building';
                               }
                               return null;
                             },
@@ -579,7 +581,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == null ||
                                   value.toString().trim().isEmpty) {
-                                return 'Please select a type';
+                                return 'Please select a Area of work';
                               }
                               return null;
                             },
@@ -643,7 +645,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == null ||
                                   value.toString().trim().isEmpty) {
-                                return 'Please select a type';
+                                return 'Please select Involve contractor firm';
                               }
                               return null;
                             },
@@ -744,7 +746,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == null ||
                                   value.toString().trim().isEmpty) {
-                                return 'Please select a type';
+                                return 'Please select a Severity';
                               }
                               return null;
                             },
@@ -780,7 +782,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Labour',
+                                      text: 'Selected Labour',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -882,7 +884,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Staff',
+                                      text: 'Selected Staff',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -985,7 +987,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AppTextWidget(
-                                      text: 'Select Contractor',
+                                      text: 'Selected Contractor',
                                       fontSize: AppTextSize.textSizeSmall,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primaryText,
@@ -1560,6 +1562,7 @@ class IncidentDetailsScreen extends StatelessWidget {
                             .selectedIncidentContractorIdsFinal.isNotEmpty ||
                         selectInjuredController
                             .selectedIncidentLabourIdsFinal.isNotEmpty)) {
+                  locationController.fetchLocation();
                   Get.to(IncidentMoreDetailsScreen(
                       userId: userId,
                       userName: userName,

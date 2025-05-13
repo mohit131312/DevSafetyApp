@@ -224,6 +224,7 @@ class SafetyToolboxTraining {
   String? reviwerPhotoSignatureAfter;
   int? status;
   // dynamic reviewerUpdatedAt;
+  String? toolboxUniqueId;
   DateTime? createdAt;
   // DateTime updatedAt;
   // dynamic deletedAt;
@@ -245,6 +246,7 @@ class SafetyToolboxTraining {
     required this.reviwerPhotoSignatureAfter,
     required this.status,
     // required this.reviewerUpdatedAt,
+    this.toolboxUniqueId,
     this.createdAt,
     // required this.updatedAt,
     // required this.deletedAt,
@@ -268,8 +270,9 @@ class SafetyToolboxTraining {
         reviwerPhotoSignatureAfter: json["reviwer_photo_signature_after"] ?? "",
         status: json["status"] ?? "",
         // reviewerUpdatedAt: json["reviewer_updated_at"],
-        createdAt: json["created_at"] != null
-            ? DateTime.parse(json["created_at"])
+        toolboxUniqueId: json["toolbox_unique_id"] ?? "",
+        createdAt: json["created_at_ind"] != null
+            ? DateTime.parse(json["created_at_ind"])
             : DateTime(1970, 1, 1),
         // updatedAt: DateTime.parse(json["updated_at"]),
         // deletedAt: json["deleted_at"],

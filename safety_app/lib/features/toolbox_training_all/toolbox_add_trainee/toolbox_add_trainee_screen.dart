@@ -502,7 +502,10 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                                 itemCount: selectedList.length,
                                 itemBuilder: (context, index) {
                                   final labour = selectedList[index];
-
+                                  if (index == 0) {
+                                    toolboxAddTraineeController
+                                        .toggleSignature(labour.id);
+                                  }
                                   return Column(
                                     children: [
                                       ListTile(
@@ -653,6 +656,46 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                                                         ),
                                                       ),
                                                       SizedBox(height: 10),
+                                                      // Show success message below the ListTile
+                                                      Obx(() {
+                                                        final message =
+                                                            toolboxAddTraineeController
+                                                                    .signatureSaveMessages[
+                                                                labour.id
+                                                                    .toString()];
+                                                        return message !=
+                                                                    null &&
+                                                                message
+                                                                    .isNotEmpty
+                                                            ? Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        top: 8,
+                                                                        left:
+                                                                            5),
+                                                                child: Text(
+                                                                  message,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: message ==
+                                                                            "Signature cannot be empty"
+                                                                        ? const Color
+                                                                            .fromARGB(
+                                                                            255,
+                                                                            159,
+                                                                            40,
+                                                                            31)
+                                                                        : Colors
+                                                                            .green,
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : SizedBox.shrink();
+                                                      }),
+
                                                       Row(
                                                         children: [
                                                           Obx(
@@ -665,7 +708,7 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                                                                           .traineeSignBehalf[
                                                                       labour
                                                                           .id] ??
-                                                                  false, // ✅ Uses new traineeSignBehalf state
+                                                                  false,
                                                               onChanged:
                                                                   (value) {
                                                                 toolboxAddTraineeController
@@ -694,7 +737,9 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                                                       GestureDetector(
                                                         onTap: () async {
                                                           await toolboxAddTraineeController
-                                                              .updateCombinedList();
+                                                              .updateCombinedList(
+                                                                  true,
+                                                                  labour.id);
                                                         },
                                                         child: Container(
                                                           padding: EdgeInsets
@@ -739,213 +784,6 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                           : SizedBox();
                     },
                   ),
-                  // Obx(() => selectTraineeController
-                  //         .selectedIncidentStaffIdsFinal.isNotEmpty
-                  //     ? SizedBox(
-                  //         height: SizeConfig.heightMultiplier * 4,
-                  //       )
-                  //     : SizedBox()),
-                  // Obx(
-                  //   () => selectTraineeController
-                  //           .selectedIncidentStaffIdsFinal.isNotEmpty
-                  //       ? Row(
-                  //           mainAxisAlignment: MainAxisAlignment.start,
-                  //           children: [
-                  //             AppTextWidget(
-                  //               text: 'Select Staff',
-                  //               fontSize: AppTextSize.textSizeSmall,
-                  //               fontWeight: FontWeight.w500,
-                  //               color: AppColors.primaryText,
-                  //             ),
-                  //           ],
-                  //         )
-                  //       : SizedBox(),
-                  // ),
-
-                  // Obx(() => selectTraineeController
-                  //         .selectedIncidentStaffIdsFinal.isNotEmpty
-                  //     ? SizedBox(
-                  //         height: SizeConfig.heightMultiplier * 1,
-                  //       )
-                  //     : SizedBox()),
-                  // Obx(
-                  //   () {
-                  //     final selectedList =
-                  //         selectTraineeController.addInvolveIncidentStaffPerson;
-
-                  //     return selectTraineeController
-                  //             .selectedIncidentStaffIdsFinal.isNotEmpty
-                  //         ? Container(
-                  //             padding: EdgeInsets.only(left: 8, right: 8, top: 8),
-                  //             decoration: BoxDecoration(
-                  //                 border: Border.all(
-                  //                     width: 0.7,
-                  //                     color: AppColors.searchfeildcolor),
-                  //                 borderRadius: BorderRadius.circular(8)),
-                  //             height: selectTraineeController
-                  //                         .selectedIncidentStaffIdsFinal.length >
-                  //                     1
-                  //                 ? SizeConfig.heightMultiplier * 24
-                  //                 : SizeConfig.heightMultiplier * 11,
-                  //             child: Scrollbar(
-                  //               child: ListView.builder(
-                  //                 controller: toolboxAddTraineeController
-                  //                     .scrollStaffController,
-                  //                 itemCount: selectedList.length,
-                  //                 itemBuilder: (context, index) {
-                  //                   final staff = selectedList[index];
-
-                  //                   return ListTile(
-                  //                     contentPadding:
-                  //                         EdgeInsets.only(left: 0, right: 20),
-                  //                     leading: CircleAvatar(
-                  //                       radius: 22,
-                  //                       backgroundImage: NetworkImage(
-                  //                           "$baseUrl${staff.userPhoto}"),
-                  //                     ),
-                  //                     title: AppTextWidget(
-                  //                       text: staff.staffName.toString(),
-                  //                       fontSize: AppTextSize.textSizeSmall,
-                  //                       fontWeight: FontWeight.w600,
-                  //                       color: AppColors.primaryText,
-                  //                     ),
-                  //                     subtitle: AppTextWidget(
-                  //                       text: staff.contactNumber.toString(),
-                  //                       fontSize: AppTextSize.textSizeSmalle,
-                  //                       fontWeight: FontWeight.w400,
-                  //                       color: AppColors.secondaryText,
-                  //                     ),
-                  //                     trailing: GestureDetector(
-                  //                       onTap: () {
-                  //                         selectTraineeController
-                  //                             .removeIncidentStaffData(index);
-                  //                       },
-                  //                       child: Icon(
-                  //                         Icons.close,
-                  //                         color: Colors.red,
-                  //                       ),
-                  //                     ),
-                  //                   );
-                  //                 },
-                  //               ),
-                  //             ),
-                  //           )
-                  //         : SizedBox();
-                  //   },
-                  // ),
-                  // Obx(() => selectTraineeController
-                  //         .selectedIncidentContractorIdsFinal.isNotEmpty
-                  //     ? SizedBox(
-                  //         height: SizeConfig.heightMultiplier * 4,
-                  //       )
-                  //     : SizedBox()),
-
-                  // //---------------------------------------------------------
-
-                  // Obx(
-                  //   () => selectTraineeController
-                  //           .selectedIncidentContractorIdsFinal.isNotEmpty
-                  //       ? Row(
-                  //           mainAxisAlignment: MainAxisAlignment.start,
-                  //           children: [
-                  //             AppTextWidget(
-                  //               text: 'Select Contractor',
-                  //               fontSize: AppTextSize.textSizeSmall,
-                  //               fontWeight: FontWeight.w500,
-                  //               color: AppColors.primaryText,
-                  //             ),
-                  //           ],
-                  //         )
-                  //       : SizedBox(),
-                  // ),
-
-                  // Obx(() => selectTraineeController
-                  //         .selectedIncidentContractorIdsFinal.isNotEmpty
-                  //     ? SizedBox(
-                  //         height: SizeConfig.heightMultiplier * 1,
-                  //       )
-                  //     : SizedBox()),
-                  // Obx(
-                  //   () {
-                  //     final selectedList = selectTraineeController
-                  //         .addInvolveIncidentContractorPerson;
-
-                  //     return selectTraineeController
-                  //             .selectedIncidentContractorIdsFinal.isNotEmpty
-                  //         ? Container(
-                  //             padding: EdgeInsets.only(left: 8, right: 8, top: 8),
-                  //             decoration: BoxDecoration(
-                  //                 border: Border.all(
-                  //                     width: 0.7,
-                  //                     color: AppColors.searchfeildcolor),
-                  //                 borderRadius: BorderRadius.circular(8)),
-                  //             height: selectTraineeController
-                  //                         .selectedIncidentContractorIdsFinal
-                  //                         .length >
-                  //                     1
-                  //                 ? SizeConfig.heightMultiplier * 24
-                  //                 : SizeConfig.heightMultiplier * 11,
-                  //             child: Scrollbar(
-                  //               child: ListView.builder(
-                  //                 controller: toolboxAddTraineeController
-                  //                     .scrollContractorController,
-                  //                 itemCount: selectedList.length,
-                  //                 itemBuilder: (context, index) {
-                  //                   final contractor = selectedList[index];
-
-                  //                   return ListTile(
-                  //                     contentPadding:
-                  //                         EdgeInsets.only(left: 0, right: 20),
-                  //                     leading: CircleAvatar(
-                  //                       radius: 22,
-                  //                       backgroundImage: NetworkImage(
-                  //                           "$baseUrl${contractor.documentPath}"),
-                  //                     ),
-                  //                     title: AppTextWidget(
-                  //                       text:
-                  //                           contractor.contractorName.toString(),
-                  //                       fontSize: AppTextSize.textSizeSmall,
-                  //                       fontWeight: FontWeight.w600,
-                  //                       color: AppColors.primaryText,
-                  //                     ),
-                  //                     subtitle: AppTextWidget(
-                  //                       text: contractor.contractorPhoneNo
-                  //                           .toString(),
-                  //                       fontSize: AppTextSize.textSizeSmalle,
-                  //                       fontWeight: FontWeight.w400,
-                  //                       color: AppColors.secondaryText,
-                  //                     ),
-                  //                     trailing: GestureDetector(
-                  //                       onTap: () {
-                  //                         selectTraineeController
-                  //                             .removeIncidentContractorData(
-                  //                                 index);
-                  //                       },
-                  //                       child: Icon(
-                  //                         Icons.close,
-                  //                         color: Colors.red,
-                  //                       ),
-                  //                     ),
-                  //                   );
-                  //                 },
-                  //               ),
-                  //             ),
-                  //           )
-                  //         : SizedBox();
-                  //   },
-                  // ),
-
-                  // Obx(() {
-                  //   return (selectTraineeController
-                  //               .selectedIncidentStaffIdsFinal.isNotEmpty &&
-                  //           selectTraineeController
-                  //               .selectedIncidentContractorIdsFinal.isNotEmpty &&
-                  //           selectTraineeController
-                  //               .selectedIncidentLabourIdsFinal.isNotEmpty)
-                  //       ? SizedBox(height: SizeConfig.heightMultiplier * 2)
-                  //       : SizedBox();
-                  // }),
-
                   Obx(() =>
                       toolboxAddTraineeController.trainnerError.value.isNotEmpty
                           ? Padding(
@@ -959,7 +797,6 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                               ),
                             )
                           : SizedBox.shrink()),
-
                   SizedBox(height: SizeConfig.heightMultiplier * 1),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -1025,7 +862,8 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                 onTap: () async {
                   log("----------${selectTraineeController.addIncidentInvolvePerson.length}");
                   log("----------${toolboxAddTraineeController.signatureControllers.length}");
-                  await toolboxAddTraineeController.updateCombinedList();
+                  await toolboxAddTraineeController.updateCombinedList(
+                      false, 0);
                   toolboxAddTraineeController.validateTraineeImage();
                   toolboxAddTraineeController.validateIncidentSelection();
                   if (toolboxAddTraineeController

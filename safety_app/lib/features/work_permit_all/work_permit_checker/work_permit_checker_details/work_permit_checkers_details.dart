@@ -91,13 +91,19 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         Get.to(WorkpermitCheckerApproveScreen(
                           userId: userId,
                           projectId: projectId,
-                          wpId: wpId,
+                          uniqueId: workPermitCheckerDetailsController
+                                  .workPermitsCheckerDetails[0].uniqueId
+                                  ?.toString() ??
+                              '0',
                         ));
                       } else if (status == 2) {
                         Get.to(WorkpermitCheckerRejectScreen(
                           userId: userId,
                           projectId: projectId,
-                          wpId: wpId,
+                          uniqueId: workPermitCheckerDetailsController
+                                  .workPermitsCheckerDetails[0].uniqueId
+                                  ?.toString() ??
+                              '0',
                         ));
                       }
                     }

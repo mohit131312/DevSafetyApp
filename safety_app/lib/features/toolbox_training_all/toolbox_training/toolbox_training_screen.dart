@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
-import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/select_reviewer/select_reviewer_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_add_trainee/toolbox_add_trainee_controller.dart';
@@ -65,7 +64,6 @@ class ToolboxTrainingScreen extends StatelessWidget {
   final ToolboxTrainingReviewerController toolboxTrainingReviewerController =
       Get.put(ToolboxTrainingReviewerController());
   final TextEditingController searchController = TextEditingController();
-  final LocationController locationController = Get.find();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -193,7 +191,7 @@ class ToolboxTrainingScreen extends StatelessWidget {
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerHeight: 0,
-                  tabAlignment: TabAlignment.start,
+                  tabAlignment: TabAlignment.center,
                   tabs: [
                     SizedBox(
                       width: SizeConfig.widthMultiplier * 20,
@@ -256,11 +254,23 @@ class ToolboxTrainingScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  title: AppTextWidget(
-                                    text: tool.nameOfTbTraining,
-                                    fontSize: AppTextSize.textSizeSmall,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryText,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: tool.tooluniqueId!,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: tool.nameOfTbTraining,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                    ],
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
@@ -343,17 +353,30 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                 userDesg: userDesg,
                                 projectId: projectId,
                                 toolBox: tool.id,
+                                uniqueId: tool.tooluniqueId!,
                               ));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  title: AppTextWidget(
-                                    text: tool.nameOfTbTraining,
-                                    fontSize: AppTextSize.textSizeSmall,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryText,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: tool.tooluniqueId!,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: tool.nameOfTbTraining,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                    ],
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
@@ -436,17 +459,30 @@ class ToolboxTrainingScreen extends StatelessWidget {
                                 userDesg: userDesg,
                                 projectId: projectId,
                                 toolBox: tool.id,
+                                uniqueId: tool.tooluniqueId!,
                               ));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  title: AppTextWidget(
-                                    text: tool.nameOfTbTraining,
-                                    fontSize: AppTextSize.textSizeSmall,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryText,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppTextWidget(
+                                        text: tool.tooluniqueId!,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                      AppTextWidget(
+                                        text: tool.nameOfTbTraining,
+                                        fontSize: AppTextSize.textSizeSmalle,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryText,
+                                      ),
+                                    ],
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
@@ -518,9 +554,6 @@ class ToolboxTrainingScreen extends StatelessWidget {
                     height: SizeConfig.heightMultiplier * 6.5,
                     child: FloatingActionButton(
                       onPressed: () async {
-                        locationController.fetchLocation();
-                        toolboxTrainingController.clearToolboxData();
-
                         toolboxPreviewCotroller.resetAllData();
                         toolboxTDetailsController.resetTdetailsAllData();
                         toolboxAddTraineeController.clearAllData();

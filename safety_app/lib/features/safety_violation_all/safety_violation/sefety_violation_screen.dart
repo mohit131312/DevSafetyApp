@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
-import 'package:flutter_app/features/home/location_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_attestaion/safety_attestaion_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_preview/safety_preview_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_all/safety_violation_details_all.dart';
@@ -66,7 +65,6 @@ class SefetyViolationScreen extends StatelessWidget {
       Get.put(SafetyViolationDetailsAssigneeCont());
   final SafetyViolationDetailsAssignorCont safetyViolationDetailsAssignorCont =
       Get.put(SafetyViolationDetailsAssignorCont());
-  final LocationController locationController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +193,7 @@ class SefetyViolationScreen extends StatelessWidget {
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerHeight: 0,
-                tabAlignment: TabAlignment.start,
+                tabAlignment: TabAlignment.center,
                 tabs: [
                   SizedBox(
                     width: SizeConfig.widthMultiplier * 20,
@@ -210,6 +208,7 @@ class SefetyViolationScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
+                    width: SizeConfig.widthMultiplier * 20,
                     child: const Tab(
                       text: 'Assignee',
                     ),
@@ -250,8 +249,8 @@ class SefetyViolationScreen extends StatelessWidget {
                             children: [
                               ListTile(
                                 title: AppTextWidget(
-                                  text: safety.id.toString(),
-                                  fontSize: AppTextSize.textSizeSmall,
+                                  text: safety.violationUniqueId.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.primaryText,
                                 ),
@@ -293,7 +292,7 @@ class SefetyViolationScreen extends StatelessWidget {
                                                 ? 'Open'
                                                 : safety.status.toString() ==
                                                         "1"
-                                                    ? 'Accepted'
+                                                    ? 'Resolved'
                                                     : safety.status
                                                                 .toString() ==
                                                             "2"
@@ -355,20 +354,20 @@ class SefetyViolationScreen extends StatelessWidget {
                                     projectId, userId, 2, safety.id);
 
                             Get.to(SafetyViolationDetailsAssignor(
-                              userId: userId,
-                              userName: userName,
-                              userImg: userImg,
-                              userDesg: userDesg,
-                              projectId: projectId,
-                              safetyId: safety.id,
-                            ));
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                                safetyId: safety.id,
+                                uniqueId: safety.violationUniqueId.toString()));
                           },
                           child: Column(
                             children: [
                               ListTile(
                                 title: AppTextWidget(
-                                  text: safety.id.toString(),
-                                  fontSize: AppTextSize.textSizeSmall,
+                                  text: safety.violationUniqueId.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.primaryText,
                                 ),
@@ -410,7 +409,7 @@ class SefetyViolationScreen extends StatelessWidget {
                                                 ? 'Open'
                                                 : safety.status.toString() ==
                                                         "1"
-                                                    ? 'Accepted'
+                                                    ? 'Resolved'
                                                     : safety.status
                                                                 .toString() ==
                                                             "2"
@@ -478,14 +477,15 @@ class SefetyViolationScreen extends StatelessWidget {
                               userDesg: userDesg,
                               projectId: projectId,
                               safetyId: safety.id,
+                              uniqueId: safety.violationUniqueId.toString(),
                             ));
                           },
                           child: Column(
                             children: [
                               ListTile(
                                 title: AppTextWidget(
-                                  text: safety.id.toString(),
-                                  fontSize: AppTextSize.textSizeSmall,
+                                  text: safety.violationUniqueId.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.primaryText,
                                 ),
@@ -527,7 +527,7 @@ class SefetyViolationScreen extends StatelessWidget {
                                                 ? 'Open'
                                                 : safety.status.toString() ==
                                                         "1"
-                                                    ? 'Accepted'
+                                                    ? 'Resolved'
                                                     : safety.status
                                                                 .toString() ==
                                                             "2"
@@ -586,7 +586,6 @@ class SefetyViolationScreen extends StatelessWidget {
                   height: SizeConfig.heightMultiplier * 6.5,
                   child: FloatingActionButton(
                     onPressed: () async {
-                      locationController.fetchLocation();
                       safetyViolationDetailsController.resetAllSafetyData();
                       safetyPreviewController.clearAllFields();
                       safetyViolationDetailsController.resetData();

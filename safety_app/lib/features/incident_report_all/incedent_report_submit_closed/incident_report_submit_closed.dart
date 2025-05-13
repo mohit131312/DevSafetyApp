@@ -14,12 +14,14 @@ class IncidentReportSubmitClosed extends StatelessWidget {
   final int userId;
   final int projectId;
   final int incidentId;
+  final String uniqueId;
 
   IncidentReportSubmitClosed(
       {super.key,
       required this.userId,
       required this.projectId,
-      required this.incidentId});
+      required this.incidentId,
+      required this.uniqueId});
   final IncidentReportDetailsAssignorCotroller
       incidentReportDetailsAssignorCotroller =
       Get.put(IncidentReportDetailsAssignorCotroller());
@@ -64,7 +66,7 @@ class IncidentReportSubmitClosed extends StatelessWidget {
                     ),
                     AppTextWidget(
                       text:
-                          'Incident report $incidentId has been Closed successfully.',
+                          'Incident report $uniqueId has been Closed successfully.',
                       fontSize: AppTextSize.textSizeSmalle,
                       fontWeight: FontWeight.w500,
                       color: AppColors.searchfeild,

@@ -14,11 +14,13 @@ class IncidentReportResolved extends StatelessWidget {
   final int userId;
   final int projectId;
   final int incidentId;
+  final String uniqueId;
   IncidentReportResolved({
     super.key,
     required this.userId,
     required this.projectId,
     required this.incidentId,
+    required this.uniqueId,
   });
   final IncidentReportDetailsAssigneeController
       incidentReportDetailsAssigneeController =
@@ -53,7 +55,7 @@ class IncidentReportResolved extends StatelessWidget {
                       height: SizeConfig.heightMultiplier * 7,
                     ),
                     AppTextWidget(
-                      text: 'Resolved Successfully!',
+                      text: 'Accepted Successfully!',
                       fontSize: AppTextSize.textSizeMediumm,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -64,7 +66,7 @@ class IncidentReportResolved extends StatelessWidget {
                     ),
                     AppTextWidget(
                       text:
-                          'Incident report $incidentId has been resolved successfully.',
+                          'Incident report $uniqueId has been Accepted successfully.',
                       fontSize: AppTextSize.textSizeSmalle,
                       fontWeight: FontWeight.w500,
                       color: AppColors.searchfeild,

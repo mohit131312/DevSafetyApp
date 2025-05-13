@@ -149,7 +149,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                     AppTextFormfeild(
                       controller:
                           incidentMoreDetailsController.rootcauseController,
-                      hintText: 'Location of Incident',
+                      hintText: 'Root Cause',
                       focusNode:
                           incidentMoreDetailsController.rootcauseFocusNode,
                       onFieldSubmitted: (_) {
@@ -160,7 +160,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Location of Incident cannot be empty';
+                          return 'Root Cause cannot be empty';
                         }
                         return null;
                       },

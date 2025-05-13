@@ -25,6 +25,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int incidentId;
+  final String uniqueId;
   IncidentReportDetailsAssignee({
     super.key,
     required this.userId,
@@ -33,6 +34,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
     required this.userDesg,
     required this.projectId,
     required this.incidentId,
+    required this.uniqueId,
   });
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -94,6 +96,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                         userId: userId,
                         projectId: projectId,
                         incidentId: incidentId,
+                        uniqueId: uniqueId,
                       ));
                     }
                   },
@@ -797,7 +800,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 AppTextWidget(
-                                                  text: 'Select Labour',
+                                                  text: 'Labour',
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w500,
@@ -912,7 +915,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Staff',
+                                            text: 'Staff',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1034,7 +1037,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                             MainAxisAlignment.start,
                                         children: [
                                           AppTextWidget(
-                                            text: 'Select Contractor',
+                                            text: 'Contractor',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w500,
                                             color: AppColors.primaryText,
@@ -1684,7 +1687,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                   color: AppColors.searchfeildcolor,
                 ),
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 3,
+                  height: SizeConfig.heightMultiplier * 1,
                 ),
                 //////////-------------------------------
 
@@ -1713,7 +1716,140 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       incidentReportDetailsAssigneeController.userFound.value
-                          ? SizedBox()
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  AppTextWidget(
+                                      text: 'Photos',
+                                      fontSize: AppTextSize.textSizeSmall,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.primaryText),
+                                  SizedBox(
+                                    height: SizeConfig.heightMultiplier * 1.5,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Ensure items align properly
+
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          child: GridView.builder(
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemCount:
+                                                  incidentReportDetailsAssigneeController
+                                                      .asgineeAddPhotos.length,
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount:
+                                                    4, // Ensures one row (horizontal scroll)
+
+                                                childAspectRatio:
+                                                    1, // Keeps items square
+                                                mainAxisSpacing: 12,
+                                                crossAxisSpacing:
+                                                    12, // Spacing between images
+                                              ),
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                return Stack(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: SizeConfig
+                                                              .imageSizeMultiplier *
+                                                          20,
+                                                      width: SizeConfig
+                                                              .imageSizeMultiplier *
+                                                          20,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                12), // Clip image to match container
+
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            if (incidentReportDetailsAssigneeController
+                                                                .asgineeAddPhotos
+                                                                .isNotEmpty) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return Dialog(
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    child:
+                                                                        InteractiveViewer(
+                                                                      panEnabled:
+                                                                          true,
+                                                                      minScale:
+                                                                          0.5,
+                                                                      maxScale:
+                                                                          3.0,
+                                                                      child:
+                                                                          ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        child: Image
+                                                                            .network(
+                                                                          "$baseUrl${incidentReportDetailsAssigneeController.asgineeAddPhotos[index].photoPath.toString()}",
+                                                                          fit: BoxFit
+                                                                              .contain,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            }
+                                                          },
+                                                          child: SizedBox(
+                                                            height: SizeConfig
+                                                                    .imageSizeMultiplier *
+                                                                16,
+                                                            width: SizeConfig
+                                                                    .imageSizeMultiplier *
+                                                                16,
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              child: (incidentReportDetailsAssigneeController
+                                                                      .asgineeAddPhotos[
+                                                                          index]
+                                                                      .photoPath!
+                                                                      .isNotEmpty
+                                                                  // ignore: unnecessary_null_comparison
+                                                                  )
+                                                                  ? Image
+                                                                      .network(
+                                                                      "$baseUrl${incidentReportDetailsAssigneeController.asgineeAddPhotos[index].photoPath.toString()}",
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    )
+                                                                  : Image.asset(
+                                                                      ""),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: SizeConfig.heightMultiplier * 3.5,
+                                  ),
+                                ])
                           : Column(
                               children: [
                                 Obx(

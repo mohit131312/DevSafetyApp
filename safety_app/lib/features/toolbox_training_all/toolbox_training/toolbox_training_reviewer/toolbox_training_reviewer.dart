@@ -21,6 +21,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int toolBox;
+  final String uniqueId;
 
   ToolboxTrainingReviewer(
       {super.key,
@@ -29,7 +30,8 @@ class ToolboxTrainingReviewer extends StatelessWidget {
       required this.userImg,
       required this.userDesg,
       required this.projectId,
-      required this.toolBox});
+      required this.toolBox,
+      required this.uniqueId});
 
   //-----------------------------------------------------------------------
   final ToolboxTrainingReviewerController toolboxTrainingReviewerController =
@@ -237,14 +239,14 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                                               SizeConfig.heightMultiplier * 1,
                                         ),
                                         AppTextWidget(
-                                            text: toolboxTrainingReviewerController
-                                                .safetyToolboxReviwerTraining[0]
-                                                .toolboxCategoryId
-                                                .toString(),
+                                            text:
+                                                toolboxTrainingReviewerController
+                                                    .toolboxMakerCategoryList[0]
+                                                    .categoryName
+                                                    .toString(),
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.primaryText),
-
                                         SizedBox(
                                           height:
                                               SizeConfig.heightMultiplier * 1.5,
@@ -1320,10 +1322,9 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                         .safetySaveReviewerComment(context, toolBox);
                     if (toolboxTrainingReviewerController.apiStatus == true) {
                       Get.to(() => ToolboxReviewerClosed(
-                            userId: userId,
-                            projectId: projectId,
-                            tbtID: toolBox,
-                          ));
+                          userId: userId,
+                          projectId: projectId,
+                          tbtuniqueId: uniqueId));
                     }
 
                     //      Get.to(WorkSubmitClosedScreen());

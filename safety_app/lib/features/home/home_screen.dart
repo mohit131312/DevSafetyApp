@@ -435,8 +435,9 @@ class HomeScreen extends StatelessWidget {
                       height: 2.5,
                       width: SizeConfig.widthMultiplier * 10,
                       child: LinearProgressIndicator(
-                        value: 0.50,
+                        value: 1,
                         backgroundColor: AppColors.searchfeildcolor,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
                         valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.buttoncolor),
                       ),

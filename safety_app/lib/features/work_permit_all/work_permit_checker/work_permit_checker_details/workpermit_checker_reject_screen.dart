@@ -13,14 +13,14 @@ import 'package:get/get.dart';
 class WorkpermitCheckerRejectScreen extends StatelessWidget {
   final int userId;
   final int projectId;
-  final int wpId;
+  final String uniqueId;
   final WorkPermitController workPermitController =
       Get.put(WorkPermitController());
   WorkpermitCheckerRejectScreen({
     super.key,
     required this.userId,
     required this.projectId,
-    required this.wpId,
+    required this.uniqueId,
   });
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class WorkpermitCheckerRejectScreen extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       AppTextWidget(
-                        text: 'Work permit $wpId has been rejected..',
+                        text: 'Work permit $uniqueId has been rejected..',
                         fontSize: AppTextSize.textSizeSmalle,
                         fontWeight: FontWeight.w500,
                         color: AppColors.searchfeild,

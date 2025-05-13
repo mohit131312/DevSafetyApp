@@ -1890,14 +1890,14 @@ class LabourListingScreen extends StatelessWidget {
                     AppTextWidget(
                       text: labourListingController
                                   // ignore: unnecessary_null_comparison
-                                  .labourDetailsList[0]
+                                  .inductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt !=
                               null
                           ? DateFormat('dd-MM-yyyy hh:mm a')
                               .format(DateTime.parse(labourListingController
                                   // ignore: unnecessary_null_comparison
-                                  .labourDetailsList[0]
+                                  .inductionTrainingsList[0]
                                   // ignore: unnecessary_null_comparison
                                   .createdAt
                                   .toString()))

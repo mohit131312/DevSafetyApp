@@ -149,7 +149,8 @@ class ToolboxAddTraineeController extends GetxController {
     update();
   }
 
-  Future<void> updateCombinedList() async {
+  var signatureSaveMessages = <String, String>{}.obs;
+  Future<void> updateCombinedList(status, id) async {
     combinedIncidentIdsFinal.clear();
     for (var e in selectTraineeController.selectedIncidentLabourIdsFinal) {
       int userId = e["id"];
@@ -159,16 +160,32 @@ class ToolboxAddTraineeController extends GetxController {
         continue;
       }
 
-      // ✅ Save Signature and get path
+      //
       String? signaturePath = await saveSignature(userId);
       String traineesSignBehalf = traineeSignBehalf[userId] == true ? "1" : "0";
 
       combinedIncidentIdsFinal.add({
-        "user_type": "1", // Labour user type
+        "user_type": "1",
         "trainees_id": userId.toString(),
         "trainees_sign_behalf": traineesSignBehalf,
         "trainees_signature_photo": signaturePath ?? "",
       });
+      if (status && userId == id) {
+        if (signaturePath != null && signaturePath.isNotEmpty) {
+          // If signature is not empty, show success
+          signatureSaveMessages[userId.toString()] =
+              "Signature saved successfully.";
+        } else {
+          // If signature is empty, show the error message for that specific user
+          signatureSaveMessages[userId.toString()] =
+              "Signature cannot be empty";
+        }
+
+        // Clear the message after 3 seconds
+        Future.delayed(Duration(seconds: 3), () {
+          signatureSaveMessages.remove(userId.toString());
+        });
+      }
     }
 
     log("✅ Updated Combined List: ${combinedIncidentIdsFinal.toList()}");

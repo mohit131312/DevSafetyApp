@@ -13,13 +13,14 @@ class SafetyResolvedScreen extends StatelessWidget {
   final int userId;
   final int projectId;
   final int safetyId;
+  final String uniqueId;
 
-  SafetyResolvedScreen({
-    super.key,
-    required this.userId,
-    required this.projectId,
-    required this.safetyId,
-  });
+  SafetyResolvedScreen(
+      {super.key,
+      required this.userId,
+      required this.projectId,
+      required this.safetyId,
+      required this.uniqueId});
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -61,7 +62,7 @@ class SafetyResolvedScreen extends StatelessWidget {
                       ),
                       AppTextWidget(
                         text:
-                            'safety violation $safetyId has been Resolved successfully.',
+                            'safety violation $uniqueId has been Resolved successfully.',
                         fontSize: AppTextSize.textSizeSmalle,
                         fontWeight: FontWeight.w500,
                         color: AppColors.searchfeild,
