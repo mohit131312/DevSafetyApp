@@ -20,8 +20,10 @@ import 'package:flutter_app/features/safety_violation_all/select_involved_person
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -72,7 +74,7 @@ class SefetyViolationScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -115,59 +117,56 @@ class SefetyViolationScreen extends StatelessWidget {
                 horizontal: SizeConfig.widthMultiplier * 4,
                 vertical: SizeConfig.heightMultiplier * 2,
               ),
-              child: SizedBox(
-                height: SizeConfig.heightMultiplier * 6.5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 6.4,
-                      width: SizeConfig.widthMultiplier * 92,
-                      child: Obx(() {
-                        TextEditingController activeController;
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: SizeConfig.heightMultiplier * 6,
+                    width: SizeConfig.widthMultiplier * 92,
+                    child: Obx(() {
+                      switch (sefetyViolationController.selectedOption.value) {
+                        case 0:
+                          sefetyViolationController.activeController =
+                              sefetyViolationController
+                                  .searchSafetyAllController;
+                          break;
+                        case 1:
+                          sefetyViolationController.activeController =
+                              sefetyViolationController
+                                  .searchSafetyAssignorController;
+                          break;
+                        case 2:
+                          sefetyViolationController.activeController =
+                              sefetyViolationController
+                                  .searchSafetyAssigneeController;
+                          break;
+                        default:
+                          sefetyViolationController.activeController =
+                              TextEditingController(); // fallback
+                      }
 
-                        switch (
-                            sefetyViolationController.selectedOption.value) {
-                          case 0:
-                            activeController = sefetyViolationController
-                                .searchSafetyAllController;
-                            break;
-                          case 1:
-                            activeController = sefetyViolationController
-                                .searchSafetyAssignorController;
-                            break;
-                          case 2:
-                            activeController = sefetyViolationController
-                                .searchSafetyAssigneeController;
-                            break;
-                          default:
-                            activeController =
-                                TextEditingController(); // fallback
-                        }
-
-                        return AppTextFormfeild(
-                          controller: activeController,
-                          hintText: 'Search By Name..',
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          prefixIcon: Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Image.asset(
-                              'assets/icons/Search.png',
-                              fit: BoxFit.contain,
-                            ),
+                      return AppTextFormfeild(
+                        controller: sefetyViolationController.activeController,
+                        hintText: 'Search By Name..',
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        prefixIcon: Container(
+                          padding: EdgeInsets.all(10.0),
+                          child: Image.asset(
+                            'assets/icons/Search.png',
+                            fit: BoxFit.contain,
                           ),
-                          onChanged: (value) {
-                            sefetyViolationController.handleSearchByTab(
-                              sefetyViolationController.selectedOption.value,
-                              value,
-                            );
-                          },
-                        );
-                      }),
-                    ),
-                  ],
-                ),
+                        ),
+                        onChanged: (value) {
+                          sefetyViolationController.handleSearchByTab(
+                            sefetyViolationController.selectedOption.value,
+                            value,
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
             Container(
@@ -231,136 +230,30 @@ class SefetyViolationScreen extends StatelessWidget {
                         return GestureDetector(
                           onTap: () async {
                             log('----------------------------${sefetyViolationController.selectedOption.value}');
-                            safetyViolationDetailsCotroller.resetData();
-                            await safetyViolationDetailsCotroller
-                                .getSafetyViolationAllDetails(
-                                    projectId, userId, 1, safety.id);
+                            if (await CheckInternet.checkInternet()) {
+                              safetyViolationDetailsCotroller.resetData();
+                              await safetyViolationDetailsCotroller
+                                  .getSafetyViolationAllDetails(
+                                      projectId, userId, 1, safety.id);
 
-                            Get.to(SafetyViolationDetailsAll(
-                              userId: userId,
-                              userName: userName,
-                              userImg: userImg,
-                              userDesg: userDesg,
-                              projectId: projectId,
-                              safetyId: safety.id,
-                            ));
-                          },
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: AppTextWidget(
-                                  text: safety.violationUniqueId.toString(),
-                                  fontSize: AppTextSize.textSizeSmalle,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryText,
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppTextWidget(
-                                      text: safety.details,
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                    AppTextWidget(
-                                      // ignore: unnecessary_null_comparison
-                                      text: (safety.createdAt != null)
-                                          ? DateFormat('dd MMMM yyyy').format(
-                                              safety.createdAt is String
-                                                  ? DateTime.parse(safety
-                                                      .createdAt as String)
-                                                  : safety.createdAt)
-                                          : '',
-                                      fontSize: AppTextSize.textSizeExtraSmall,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.secondaryText,
-                                    ),
-                                  ],
-                                ),
-                                trailing: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 12, right: 12, top: 8, bottom: 3),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          AppTextWidget(
-                                            text: safety.status.toString() ==
-                                                    "0"
-                                                ? 'Open'
-                                                : safety.status.toString() ==
-                                                        "1"
-                                                    ? 'Resolved'
-                                                    : safety.status
-                                                                .toString() ==
-                                                            "2"
-                                                        ? 'Closed'
-                                                        : "",
-                                            fontSize:
-                                                AppTextSize.textSizeExtraSmall,
-                                            fontWeight: FontWeight.w500,
-                                            color: safety.status.toString() ==
-                                                    "0"
-                                                ? AppColors
-                                                    .buttoncolor // Open → Orange
-                                                : safety.status.toString() ==
-                                                        "1"
-                                                    ? Colors
-                                                        .green // Accepted → Green
-                                                    : safety.status
-                                                                .toString() ==
-                                                            "2"
-                                                        ? Colors
-                                                            .grey // Closed → Grey
-                                                        : Colors.black,
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Divider(
-                                color: AppColors.textfeildcolor,
-                                thickness: 1.5,
-                                height: 2,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                  Obx(() {
-                    final filteredList =
-                        sefetyViolationController.safetyViolationAssignor;
-                    return ListView.builder(
-                      itemCount: filteredList.length,
-                      itemBuilder: (context, index) {
-                        final safety = filteredList[index];
-
-                        return GestureDetector(
-                          onTap: () async {
-                            log('----------------------------${sefetyViolationController.selectedOption.value}');
-                            safetyViolationDetailsAssignorCont.clearAllData();
-
-                            await safetyViolationDetailsAssignorCont
-                                .getSafetyViolationAssginorDetails(
-                                    projectId, userId, 2, safety.id);
-
-                            Get.to(SafetyViolationDetailsAssignor(
+                              Get.to(SafetyViolationDetailsAll(
                                 userId: userId,
                                 userName: userName,
                                 userImg: userImg,
                                 userDesg: userDesg,
                                 projectId: projectId,
                                 safetyId: safety.id,
-                                uniqueId: safety.violationUniqueId.toString()));
+                              ));
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
                           },
                           child: Column(
                             children: [
@@ -455,7 +348,7 @@ class SefetyViolationScreen extends StatelessWidget {
                   }),
                   Obx(() {
                     final filteredList =
-                        sefetyViolationController.safetyViolationAssignee;
+                        sefetyViolationController.filteredSafetyAssignorList;
                     return ListView.builder(
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
@@ -464,21 +357,161 @@ class SefetyViolationScreen extends StatelessWidget {
                         return GestureDetector(
                           onTap: () async {
                             log('----------------------------${sefetyViolationController.selectedOption.value}');
-                            safetyViolationDetailsAssigneeCont
-                                .resetSafetyAssigneeData();
-                            await safetyViolationDetailsAssigneeCont
-                                .getSafetyViolationAssigneeDetails(
-                                    projectId, userId, 3, safety.id);
+                            if (await CheckInternet.checkInternet()) {
+                              safetyViolationDetailsAssignorCont.clearAllData();
 
-                            Get.to(SafetyViolationDetailsAssignee(
-                              userId: userId,
-                              userName: userName,
-                              userImg: userImg,
-                              userDesg: userDesg,
-                              projectId: projectId,
-                              safetyId: safety.id,
-                              uniqueId: safety.violationUniqueId.toString(),
-                            ));
+                              await safetyViolationDetailsAssignorCont
+                                  .getSafetyViolationAssginorDetails(
+                                      projectId, userId, 2, safety.id);
+
+                              Get.to(SafetyViolationDetailsAssignor(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  safetyId: safety.id,
+                                  uniqueId:
+                                      safety.violationUniqueId.toString()));
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: AppTextWidget(
+                                  text: safety.violationUniqueId.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryText,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppTextWidget(
+                                      text: safety.details,
+                                      fontSize: AppTextSize.textSizeExtraSmall,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.secondaryText,
+                                    ),
+                                    AppTextWidget(
+                                      // ignore: unnecessary_null_comparison
+                                      text: (safety.createdAt != null)
+                                          ? DateFormat('dd MMMM yyyy').format(
+                                              safety.createdAt is String
+                                                  ? DateTime.parse(safety
+                                                      .createdAt as String)
+                                                  : safety.createdAt)
+                                          : '',
+                                      fontSize: AppTextSize.textSizeExtraSmall,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.secondaryText,
+                                    ),
+                                  ],
+                                ),
+                                trailing: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 12, right: 12, top: 8, bottom: 3),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          AppTextWidget(
+                                            text: safety.status.toString() ==
+                                                    "0"
+                                                ? 'Open'
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? 'Resolved'
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? 'Closed'
+                                                        : "",
+                                            fontSize:
+                                                AppTextSize.textSizeExtraSmall,
+                                            fontWeight: FontWeight.w500,
+                                            color: safety.status.toString() ==
+                                                    "0"
+                                                ? AppColors
+                                                    .buttoncolor // Open → Orange
+                                                : safety.status.toString() ==
+                                                        "1"
+                                                    ? Colors
+                                                        .green // Accepted → Green
+                                                    : safety.status
+                                                                .toString() ==
+                                                            "2"
+                                                        ? Colors
+                                                            .grey // Closed → Grey
+                                                        : Colors.black,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: AppColors.textfeildcolor,
+                                thickness: 1.5,
+                                height: 2,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                  Obx(() {
+                    final filteredList =
+                        sefetyViolationController.filteredSafetyAssigneeList;
+                    return ListView.builder(
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        final safety = filteredList[index];
+
+                        return GestureDetector(
+                          onTap: () async {
+                            log('----------------------------${sefetyViolationController.selectedOption.value}');
+                            if (await CheckInternet.checkInternet()) {
+                              safetyViolationDetailsAssigneeCont
+                                  .resetSafetyAssigneeData();
+                              await safetyViolationDetailsAssigneeCont
+                                  .getSafetyViolationAssigneeDetails(
+                                      projectId, userId, 3, safety.id);
+
+                              Get.to(SafetyViolationDetailsAssignee(
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                                safetyId: safety.id,
+                                uniqueId: safety.violationUniqueId.toString(),
+                              ));
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
                           },
                           child: Column(
                             children: [
@@ -586,23 +619,35 @@ class SefetyViolationScreen extends StatelessWidget {
                   height: SizeConfig.heightMultiplier * 6.5,
                   child: FloatingActionButton(
                     onPressed: () async {
-                      safetyViolationDetailsController.resetAllSafetyData();
-                      safetyPreviewController.clearAllFields();
-                      safetyViolationDetailsController.resetData();
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              CustomLoadingPopup());
-                      await safetyViolationDetailsController
-                          .getSafetyViolationData(projectId);
-                      Get.back();
-                      Get.to(SafetyViolationDetails(
-                        userId: userId,
-                        userName: userName,
-                        userImg: userImg,
-                        userDesg: userDesg,
-                        projectId: projectId,
-                      ));
+                      if (await CheckInternet.checkInternet()) {
+                        safetyViolationDetailsController.resetAllSafetyData();
+                        safetyPreviewController.clearAllFields();
+                        safetyViolationDetailsController.resetData();
+
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                CustomLoadingPopup());
+                        await safetyViolationDetailsController
+                            .getSafetyViolationData(projectId);
+                        Get.back();
+                        Get.to(SafetyViolationDetails(
+                          userId: userId,
+                          userName: userName,
+                          userImg: userImg,
+                          userDesg: userDesg,
+                          projectId: projectId,
+                        ));
+                      } else {
+                        await showDialog(
+                          context: Get.context!,
+                          builder: (BuildContext context) {
+                            return CustomValidationPopup(
+                                message:
+                                    "Please check your internet connection.");
+                          },
+                        );
+                      }
                     },
                     backgroundColor: AppColors.buttoncolor,
                     elevation: 0,

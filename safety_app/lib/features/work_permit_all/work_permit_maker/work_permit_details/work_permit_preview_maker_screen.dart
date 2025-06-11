@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -8,8 +9,10 @@ import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_subm
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -84,6 +87,10 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                             userId: userId,
                             projectId: projectId,
                             wpId: wpId,
+                            uniqueId: workPermitPreviewMakerController
+                                    .workPermitsMakerDetails[0].uniqueId
+                                    ?.toString() ??
+                                '0',
                           ));
                     }
 
@@ -120,7 +127,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -500,8 +507,16 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                                                             const EdgeInsets
                                                                 .symmetric(
                                                                 vertical: 2.0),
-                                                        child: Text(
-                                                            "Floor: ${floor['floor_name']}"),
+                                                        child: floor['floor_name'] !=
+                                                                    null &&
+                                                                floor['floor_name']
+                                                                    .toString()
+                                                                    .trim()
+                                                                    .isNotEmpty
+                                                            ? Text(
+                                                                "Floor: ${floor['floor_name']}")
+                                                            : SizedBox
+                                                                .shrink(), // returns nothing (empty widget)
                                                       );
                                                     }).toList(),
                                                     SizedBox(height: 12),
@@ -818,24 +833,24 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 1,
                       ),
                       AppTextFormfeild(
-                        enabled: false,
-                        controller: workPermitPreviewMakerController
-                            .workPermitRemarksControllerenable,
-                        hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter a comment';
-                        //   }
-                        //   return null;
-                        // },
-                        onChanged: (value) {},
-                      ),
+                          enabled: false,
+                          controller: workPermitPreviewMakerController
+                              .workPermitRemarksControllerenable,
+                          hintText: 'Comments',
+                          // focusNode: newWorkPermitController.dow,
+                          // onFieldSubmitted: (_) {
+                          //   newWorkPermitController.dow.unfocus();
+                          // },
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return 'Please enter a comment';
+                          //   }
+                          //   return null;
+                          // },
+                          onChanged: (value) {},
+                          fillColor: AppColors.textfeildcolor),
                       SizedBox(
                         height: SizeConfig.heightMultiplier * 2,
                       ),
@@ -860,7 +875,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: 'Maker Comments',
+                            text: 'Doer Comments',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -876,10 +891,21 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                         controller: workPermitPreviewMakerController
                             .workPermitRemarksController,
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode: workPermitPreviewMakerController
+                            .workPermitmakerFocusNode,
+                        onFieldSubmitted: (_) {
+                          workPermitPreviewMakerController
+                              .workPermitmakerFocusNode
+                              .unfocus();
+                        },
+                        fillColor:
+                            workPermitPreviewMakerController.userFound.value
+                                ? AppColors.textfeildcolor
+                                : Colors.white,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z\s]')),
+                        ],
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -896,7 +922,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: "Maker Signature",
+                            text: "Doer Signature",
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -917,8 +943,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 20, bottom: 20),
-                              height: 305,
+                                  left: 12, right: 12, top: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.textfeildcolor,
                                 borderRadius: BorderRadius.circular(12),
@@ -958,7 +983,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 4,
+                                    height: SizeConfig.heightMultiplier * 2,
                                   ),
                                   Obx(() {
                                     if (workPermitPreviewMakerController
@@ -984,14 +1009,31 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                                               "No signature available");
                                     } else {
                                       // Show signature pad
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Signature(
-                                          height: 206,
-                                          controller:
+                                      return Listener(
+                                        key: workPermitPreviewMakerController
+                                            .signatureSectionKey,
+                                        onPointerDown: (_) {
+                                          Future.delayed(
+                                              Duration(milliseconds: 50), () {
+                                            if (workPermitPreviewMakerController
+                                                .signatureattestationController
+                                                .isNotEmpty) {
                                               workPermitPreviewMakerController
-                                                  .signatureattestationController,
-                                          backgroundColor: Colors.white,
+                                                  .signatureattestationError
+                                                  .value = '';
+                                            }
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Signature(
+                                            height: 206,
+                                            controller:
+                                                workPermitPreviewMakerController
+                                                    .signatureattestationController,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                       );
                                     }
@@ -1036,7 +1078,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                        text: "Maker",
+                        text: "Doer",
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText,
@@ -1149,11 +1191,17 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
             () => AppElevatedButton(
                 text: workPermitPreviewMakerController.userFound.value
                     ? 'Close'
-                    : 'Submit',
+                    : 'Close the Work Permit',
                 onPressed: () async {
                   if (workPermitPreviewMakerController.userFound.value) {
                     Get.back();
                   } else {
+                    validateAndFocusFirstInvalidField();
+                    if (workPermitPreviewMakerController
+                        .signatureattestationController.isEmpty) {
+                      workPermitPreviewMakerController.signatureattestationError
+                          .value = "Please fill in the signature.";
+                    }
                     if (formKey.currentState!.validate()) {
                       await workPermitPreviewMakerController
                           .saveSafetyattestationSignature();
@@ -1168,9 +1216,20 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                       if (workPermitPreviewMakerController
                               .signatureattestationController.isNotEmpty &&
                           workPermitPreviewMakerController
-                              .workPermitRemarksController.text.isNotEmpty) {}
-                      // ignore: use_build_context_synchronously
-                      showConfirmationDialogClosed(context);
+                              .workPermitRemarksController.text.isNotEmpty) {
+                        if (await CheckInternet.checkInternet()) {
+                          showConfirmationDialogClosed(context);
+                        } else {
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
+                        }
+                      }
                       //   Get.to(WorkPermitPrecautionScreen());
                     }
                   }
@@ -1179,6 +1238,34 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (workPermitPreviewMakerController.workPermitRemarksController.text
+        .trim()
+        .isEmpty) {
+      workPermitPreviewMakerController.workPermitmakerFocusNode.requestFocus();
+      return;
+    }
+    if (workPermitPreviewMakerController
+        .signatureattestationController.isEmpty) {
+      scrollToWidget(workPermitPreviewMakerController.signatureSectionKey);
+      return;
+    }
   }
 
   Widget buildCategoryWidgetContainer() {

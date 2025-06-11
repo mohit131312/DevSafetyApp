@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -16,9 +17,11 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class ToolboxTDetailsScreen extends StatelessWidget {
@@ -44,14 +47,91 @@ class ToolboxTDetailsScreen extends StatelessWidget {
   final LocationController locationController = Get.find();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  void showConfirmationDialog(
+    BuildContext context,
+  ) {
+    showDialog(
+      context: context,
+      builder: (
+        BuildContext context,
+      ) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: Colors.white,
+          title: AppTextWidget(
+            text: 'Are You Sure?',
+            fontSize: AppTextSize.textSizeMediumm,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+          content: AppTextWidget(
+              text:
+                  'You will lose your data if you leave now. Are you sure you want to leave?',
+              fontSize: AppTextSize.textSizeSmall,
+              fontWeight: FontWeight.w500,
+              color: AppColors.searchfeild),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'Cancel',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    Get.back();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: AppColors.buttoncolor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: AppTextWidget(
+                        text: 'Yes',
+                        fontSize: AppTextSize.textSizeSmallm,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: SafeArea(
-        top: false,
-        bottom: true,
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: WillPopScope(
+        onWillPop: () async {
+          showConfirmationDialog(
+            context,
+          );
+          return false; // Prevent back navigation until user confirms
+        },
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -159,6 +239,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                     SizedBox(height: SizeConfig.heightMultiplier * 1),
                     Obx(
                       () => AppSearchDropdown(
+                        key: toolboxTDetailsController.categoryKey,
                         items: toolboxTrainingController.toolboxCategoryList
                             .map(
                               (cat) => cat.categoryName,
@@ -169,6 +250,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                                 .selectCategory.value.isNotEmpty
                             ? toolboxTDetailsController.selectCategory.value
                             : null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         hintText: 'Select Category',
                         onChanged: (value) async {
                           toolboxTDetailsController.selectCategory.value =
@@ -181,20 +263,33 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                           if (selectedCat != null) {
                             toolboxTDetailsController.selectCategoryId.value =
                                 selectedCat.id;
-                            toolboxTDetailsController.selectedInstructionIds
-                                .clear();
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    CustomLoadingPopup());
-                            await toolboxTDetailsController.getInstructionData(
-                              toolboxTDetailsController.selectCategoryId.value,
-                              projectId,
-                              userId,
-                            );
-                            Get.back();
-                            log(' Selected toolboxTDetailsController.selectCategory.value: ${toolboxTDetailsController.selectCategory.value}');
-                            log(' Selected toolboxTDetailsController.selectCategoryId.value: ${toolboxTDetailsController.selectCategoryId.value}');
+                            if (await CheckInternet.checkInternet()) {
+                              toolboxTDetailsController.selectedInstructionIds
+                                  .clear();
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomLoadingPopup());
+                              await toolboxTDetailsController
+                                  .getInstructionData(
+                                toolboxTDetailsController
+                                    .selectCategoryId.value,
+                                projectId,
+                                userId,
+                              );
+                              Get.back();
+                              log(' Selected toolboxTDetailsController.selectCategory.value: ${toolboxTDetailsController.selectCategory.value}');
+                              log(' Selected toolboxTDetailsController.selectCategoryId.value: ${toolboxTDetailsController.selectCategoryId.value}');
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
                           } else {}
                         },
                         validator: (value) {
@@ -287,6 +382,10 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                         }
                         return null;
                       },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\s]')),
+                      ],
                       onChanged: (value) {},
                     ),
 
@@ -323,6 +422,10 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                         }
                         return null;
                       },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\s]')),
+                      ],
                       onChanged: (value) {},
                     ),
                     SizedBox(height: SizeConfig.heightMultiplier * 2),
@@ -506,6 +609,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                                 height: SizeConfig.heightMultiplier * 2,
                               ),
                               ElevatedButton(
+                                key: toolboxTDetailsController.reviewerKey,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
@@ -569,13 +673,17 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                             ],
                           ),
 
-                    SizedBox(height: SizeConfig.heightMultiplier * 3),
+                    SizedBox(
+                        key: toolboxTDetailsController.instructionKey,
+                        height: SizeConfig.heightMultiplier * 3),
 
                     Obx(() {
                       final filteredInstructionList =
                           toolboxTDetailsController.filteredInstruction;
 
-                      if (filteredInstructionList.isEmpty) {
+                      if (filteredInstructionList.isEmpty &&
+                          toolboxTDetailsController
+                              .instructionController.text.isEmpty) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -704,72 +812,97 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: SizeConfig.heightMultiplier * 1.8),
+                          Obx(() => toolboxTDetailsController
+                                  .filteredInstruction.isEmpty
+                              ? AppTextWidget(
+                                  text: "No data Found",
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.secondaryText,
+                                )
+                              : SizedBox()),
                           Obx(
                             () {
                               final filteredInstructionList =
                                   toolboxTDetailsController.filteredInstruction;
 
                               return SizedBox(
-                                height: 250,
-                                child: SingleChildScrollView(
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: filteredInstructionList.length,
-                                    itemBuilder: (context, index) {
-                                      final inst =
-                                          filteredInstructionList[index];
+                                height: 220,
+                                child: ScrollbarTheme(
+                                  data: ScrollbarThemeData(
+                                    thumbVisibility:
+                                        WidgetStateProperty.all(true),
+                                    thickness: WidgetStateProperty.all(3),
+                                    radius: const Radius.circular(8),
+                                    trackVisibility:
+                                        WidgetStateProperty.all(true),
+                                    thumbColor: WidgetStateProperty.all(
+                                        AppColors.buttoncolor),
+                                    trackColor: WidgetStateProperty.all(
+                                        const Color.fromARGB(26, 101, 99, 99)),
+                                    trackBorderColor: WidgetStateProperty.all(
+                                        Colors.transparent),
+                                  ),
+                                  child: Scrollbar(
+                                    interactive: true,
+                                    child: ListView.builder(
+                                      itemCount: filteredInstructionList.length,
+                                      itemBuilder: (context, index) {
+                                        final inst =
+                                            filteredInstructionList[index];
 
-                                      return ListTile(
-                                        dense: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16.0,
-                                        ),
-                                        leading: SizedBox(
-                                            child: Obx(
-                                          () => Checkbox(
-                                            side: BorderSide(
-                                                color: AppColors.searchfeild,
-                                                width: 1),
-                                            value: toolboxTDetailsController
-                                                .selectedInstructionIds
-                                                .contains(inst.id),
-                                            onChanged: (value) {
-                                              toolboxTDetailsController
-                                                  .toggleInstructionSelection(
-                                                      inst.id);
-                                            },
-                                            activeColor: AppColors.buttoncolor,
+                                        return ListTile(
+                                          dense: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0,
                                           ),
-                                        )),
-                                        title: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            //${index + 1}.
-                                            AppTextWidget(
-                                              text: "${index + 1}.  ",
-                                              fontSize: AppTextSize
-                                                  .textSizeExtraSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText,
+                                          leading: SizedBox(
+                                              child: Obx(
+                                            () => Checkbox(
+                                              side: BorderSide(
+                                                  color: AppColors.searchfeild,
+                                                  width: 1),
+                                              value: toolboxTDetailsController
+                                                  .selectedInstructionIds
+                                                  .contains(inst.id),
+                                              onChanged: (value) {
+                                                toolboxTDetailsController
+                                                    .toggleInstructionSelection(
+                                                        inst.id);
+                                              },
+                                              activeColor:
+                                                  AppColors.buttoncolor,
                                             ),
-                                            Expanded(
-                                              child: AppTextWidget(
-                                                text: filteredInstructionList[
-                                                        index]
-                                                    .toolboxDetails
-                                                    .toString(),
+                                          )),
+                                          title: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              //${index + 1}.
+                                              AppTextWidget(
+                                                text: "${index + 1}.  ",
                                                 fontSize: AppTextSize
                                                     .textSizeExtraSmall,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.primaryText,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                              Expanded(
+                                                child: AppTextWidget(
+                                                  text: filteredInstructionList[
+                                                          index]
+                                                      .toolboxDetails
+                                                      .toString(),
+                                                  fontSize: AppTextSize
+                                                      .textSizeExtraSmall,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: AppColors.primaryText,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
@@ -796,7 +929,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                     selectReviewerController.validateAssignee();
                 bool isValidInstruction =
                     toolboxTDetailsController.validateInstructionSelection();
-
+                validateAndFocusFirstInvalidField();
                 if (formKey.currentState!.validate() &&
                     isValidAssignee &&
                     isValidInstruction) {
@@ -815,5 +948,49 @@ class ToolboxTDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (toolboxTDetailsController.selectCategory.value.isEmpty) {
+      scrollToWidget(toolboxTDetailsController.categoryKey);
+      return;
+    }
+    if (toolboxTDetailsController.tbtController.text.trim().isEmpty) {
+      toolboxTDetailsController.tbtFocusNode.requestFocus();
+      return;
+    }
+    if (toolboxTDetailsController.detailsController.text.trim().isEmpty) {
+      toolboxTDetailsController.detailsFocusNode.requestFocus();
+      return;
+    }
+
+    if (toolboxTDetailsController.selectCategory.value.isEmpty) {
+      scrollToWidget(toolboxTDetailsController.categoryKey);
+      return;
+    }
+    if (selectReviewerController.addInvolveassigneeDataPerson.isEmpty &&
+        selectReviewerController.assigneeError.isNotEmpty) {
+      scrollToWidget(toolboxTDetailsController.reviewerKey);
+      return;
+    }
+    if (toolboxTDetailsController.selectedInstructionIds.isEmpty &&
+        toolboxTDetailsController.instructionError.isNotEmpty) {
+      scrollToWidget(toolboxTDetailsController.instructionKey);
+      return;
+    }
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
   }
 }

@@ -7,6 +7,8 @@ class LabourProfessDetailsController extends GetxController {
     selectedSkillLevel.value = value;
   }
 
+  var skillerror = "".obs;
+
   List<String> yoenumbers = List.generate(51, (index) => index.toString());
 
   var selectedtrade = ''.obs;

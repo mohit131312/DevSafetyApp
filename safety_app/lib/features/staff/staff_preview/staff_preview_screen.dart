@@ -15,8 +15,10 @@ import 'package:flutter_app/features/staff/staff_undertaking/staff_undertaking_c
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -79,6 +81,7 @@ class StaffPreviewScreen extends StatelessWidget {
               color: AppColors.searchfeild),
           actions: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -143,7 +146,7 @@ class StaffPreviewScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -675,8 +678,7 @@ class StaffPreviewScreen extends StatelessWidget {
                                               ),
                                               AppTextWidget(
                                                   text: addStaffController
-                                                      .econtactrelationController
-                                                      .text,
+                                                      .selectedRelation.value,
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
                                                   fontWeight: FontWeight.w400,
@@ -1542,9 +1544,19 @@ class StaffPreviewScreen extends StatelessWidget {
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
-                  showConfirmationDialog(
-                      context, categoryId, userName, userId, projectId);
+                onTap: () async {
+                  if (await CheckInternet.checkInternet()) {
+                    showConfirmationDialog(
+                        context, categoryId, userName, userId, projectId);
+                  } else {
+                    await showDialog(
+                      context: Get.context!,
+                      builder: (BuildContext context) {
+                        return CustomValidationPopup(
+                            message: "Please check your internet connection.");
+                      },
+                    );
+                  }
                 },
                 child: AppMediumButton(
                   label: "Submit",

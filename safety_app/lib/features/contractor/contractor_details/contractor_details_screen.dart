@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_medium_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -42,6 +43,9 @@ class ContractorDetailsScreen extends StatelessWidget {
   final AddContractorController addContractorController = Get.find();
   final InductionTrainingController inductionTrainingController = Get.find();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> doctypekey = GlobalKey<FormState>();
+  final GlobalKey<FormState> validitykey = GlobalKey<FormState>();
+  final GlobalKey<FormState> docphotokey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class ContractorDetailsScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -192,6 +196,10 @@ class ContractorDetailsScreen extends StatelessWidget {
                           }
                           return null;
                         },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z\s]')),
+                        ],
                         onChanged: (value) {},
                       ),
                     ),
@@ -237,6 +245,10 @@ class ContractorDetailsScreen extends StatelessWidget {
                           }
                           return null;
                         },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                         onFieldSubmitted: (_) {
                           contractorDetailsController.contactnoFocusNode
                               .unfocus();
@@ -321,6 +333,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                     ),
                     Obx(
                       () => AppSearchDropdown(
+                        key: doctypekey,
                         items: inductionTrainingController.idProofList
                             .map(
                               (idproof) => idproof.listDetails,
@@ -331,6 +344,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                             ? contractorDetailsController.selectedDoctType.value
                             : null,
                         hintText: 'Select document type',
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         onChanged: (value) {
                           contractorDetailsController.selectedDoctType.value =
                               value ?? '';
@@ -420,6 +434,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                       height: SizeConfig.heightMultiplier * 1,
                     ),
                     GestureDetector(
+                      key: validitykey,
                       onTap: () {
                         //  if (!addLabourController.userFound.value) {
                         showDatePicker(context, contractorDetailsController);
@@ -428,13 +443,16 @@ class ContractorDetailsScreen extends StatelessWidget {
                       child: Container(
                         child: AbsorbPointer(
                           child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             controller: contractorDetailsController
                                 .validityController, // onChanged: (value) {
                             //   addLabourController.selectedDate.value =
                             //       (value) as DateTime?;
                             // },
+
                             style: GoogleFonts.inter(
-                              fontSize: AppTextSize.textSizeSmallm,
+                              fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w400,
                               color: AppColors.primaryText,
                             ),
@@ -473,7 +491,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                                   onTap: () => showDatePicker(
                                       context, contractorDetailsController),
                                   child: Image.asset(
-                                    'assets/icons/calendar.png',
+                                    'assets/images/calender.png',
                                     height: SizeConfig.imageSizeMultiplier * 3,
                                     width: SizeConfig.imageSizeMultiplier * 3,
                                   ),
@@ -494,18 +512,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Obx(() => contractorDetailsController
-                            .validityError.isNotEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 4, left: 13),
-                            child: Text(
-                              contractorDetailsController.validityError.value,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 174, 75, 68),
-                                  fontSize: 12),
-                            ),
-                          )
-                        : SizedBox.shrink()),
+
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2.5,
                     ),
@@ -534,6 +541,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                           () => contractorDetailsController.docImgCount.value ==
                                   0
                               ? Container(
+                                  key: docphotokey,
                                   alignment: Alignment.center,
                                   width: SizeConfig.widthMultiplier * 92,
                                   padding: EdgeInsets.only(
@@ -747,20 +755,11 @@ class ContractorDetailsScreen extends StatelessWidget {
                             SizedBox(
                               height: SizeConfig.heightMultiplier * 2,
                             ),
-                            Row(
-                              children: [
-                                AppTextWidget(
-                                  text: AppTexts.name,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.primaryText,
-                                ),
-                                AppTextWidget(
-                                    text: AppTexts.star,
-                                    fontSize: AppTextSize.textSizeExtraSmall,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.starcolor),
-                              ],
+                            AppTextWidget(
+                              text: AppTexts.name,
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
                             ),
                             SizedBox(
                               height: SizeConfig.heightMultiplier * 1,
@@ -779,39 +778,37 @@ class ContractorDetailsScreen extends StatelessWidget {
                               keyboardType: TextInputType.name,
                               textInputAction: TextInputAction.next,
                               enabled: !addContractorController.userFound.value,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z\s]')),
+                              ],
                               // readOnly: addContractorController.userFound.value,
-                              validator: (value) {
-                                String contactNumber =
-                                    contractorDetailsController
-                                        .secondarycontactController.text
-                                        .trim();
+                              // validator: (value) {
+                              //   // String contactNumber =
+                              //   //     contractorDetailsController
+                              //   //         .secondarycontactController.text
+                              //   //         .trim();
 
-                                if (value == null || value.trim().isEmpty) {
-                                  if (contactNumber.isNotEmpty) {
-                                    return 'Full name is required when contact number is provided';
-                                  }
-                                }
-                                return null;
-                              },
+                              //   // if (value == null || value.trim().isEmpty) {
+                              //   //   if (contactNumber.isNotEmpty) {
+                              //   //     return 'Full name is required when contact number is provided';
+                              //   //   }
+                              //   // }
+                              //   if (value == null || value.trim().isEmpty) {
+                              //     return 'Secondary Full name is required ';
+                              //   }
+                              //   return null;
+                              // },
                               onChanged: (value) {},
                             ),
                             SizedBox(
                               height: SizeConfig.heightMultiplier * 2,
                             ),
-                            Row(
-                              children: [
-                                AppTextWidget(
-                                  text: AppTexts.contactno,
-                                  fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.primaryText,
-                                ),
-                                AppTextWidget(
-                                    text: AppTexts.star,
-                                    fontSize: AppTextSize.textSizeExtraSmall,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.starcolor),
-                              ],
+                            AppTextWidget(
+                              text: AppTexts.contactno,
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
                             ),
                             SizedBox(
                               height: SizeConfig.heightMultiplier * 1,
@@ -826,20 +823,30 @@ class ContractorDetailsScreen extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               enabled: !addContractorController.userFound.value,
                               // readOnly: addContractorController.userFound.value,
-                              validator: (value) {
-                                String fullName = contractorDetailsController
-                                    .secondarynameController.text
-                                    .trim();
-                                if (value == null || value.trim().isEmpty) {
-                                  if (fullName.isNotEmpty) {
-                                    return 'Contact number is required when name is provided';
-                                  }
-                                } else if (!RegExp(r'^\d{10}$')
-                                    .hasMatch(value)) {
-                                  return 'Enter a valid 10-digit number';
-                                }
-                                return null;
-                              },
+                              // validator: (value) {
+                              //   // String fullName = contractorDetailsController
+                              //   //     .secondarynameController.text
+                              //   //     .trim();
+                              //   // if (value == null || value.trim().isEmpty) {
+                              //   //   if (fullName.isNotEmpty) {
+                              //   //     return 'Contact number is required when name is provided';
+                              //   //   }
+                              //   // } else if (!RegExp(r'^\d{10}$')
+                              //   //     .hasMatch(value)) {
+                              //   //   return 'Enter a valid 10-digit number';
+                              //   // }
+                              //   if (value == null || value.trim().isEmpty) {
+                              //     return 'Secondary contact no is required ';
+                              //   }
+                              //   if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                              //     return 'Enter a valid 10-digit number';
+                              //   }
+                              //   return null;
+                              // },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                              ],
                               onFieldSubmitted: (_) {
                                 contractorDetailsController
                                     .secondarycontactnoFocusNode
@@ -882,26 +889,21 @@ class ContractorDetailsScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
                 onTap: () {
+                  validateAndFocusFirstInvalidField();
                   if (contractorDetailsController.docImgCount == 0) {
                     contractorDetailsController.documentError.value =
                         "Please select a document photo";
                   } else {
                     contractorDetailsController.documentError.value = "";
                   }
-                  if (contractorDetailsController
-                      .validityController.text.isEmpty) {
-                    contractorDetailsController.validityError.value =
-                        "Validity is required";
-                    return;
-                  } else {
-                    contractorDetailsController.validityError.value = "";
-                  }
+
+                  if (!formKey.currentState!.validate()) {}
                   if (formKey.currentState!.validate() &&
                       contractorDetailsController.docImgCount != 0) {
                     // ID Proof Validation
@@ -928,7 +930,7 @@ class ContractorDetailsScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],
@@ -936,6 +938,66 @@ class ContractorDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (contractorDetailsController.nameController.text.trim().isEmpty) {
+      contractorDetailsController.nameControllerFocusNode.requestFocus();
+      return;
+    }
+    if (contractorDetailsController.contactnoController.text.trim().isEmpty) {
+      contractorDetailsController.contactnoFocusNode.requestFocus();
+      return;
+    }
+    if (contractorDetailsController.emailidController.text.trim().isEmpty) {
+      contractorDetailsController.emailidFocusNode.requestFocus();
+      return;
+    }
+
+    if (contractorDetailsController.selectedDoctType.value.isEmpty) {
+      scrollToWidget(doctypekey);
+      return;
+    }
+
+    if (contractorDetailsController.idproofController.text.trim().isEmpty) {
+      contractorDetailsController.idproofFocusNode.requestFocus();
+      return;
+    }
+    if (contractorDetailsController.validityController.text.trim().isEmpty) {
+      scrollToWidget(validitykey);
+      return;
+    }
+    if (contractorDetailsController.docImgCount == 0) {
+      scrollToWidget(docphotokey);
+      return;
+    }
+    // if (contractorDetailsController.secondarynameController.text
+    //     .trim()
+    //     .isEmpty) {
+    //   contractorDetailsController.secondarynameFoucsNode.requestFocus();
+    //   return;
+    // }
+
+    // if (contractorDetailsController.secondarycontactController.text
+    //     .trim()
+    //     .isEmpty) {
+    //   contractorDetailsController.secondarycontactnoFocusNode.requestFocus();
+    //   return;
+    // }
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
   }
 
   void showDatePicker(BuildContext context,

@@ -1,9 +1,70 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/new_work_permit/new_work_permit_controller.dart';
 import 'package:get/get.dart';
 
 import '../new_work_permit/new_work_permit_model.dart';
 
 class WorkPermitPrecautionController extends GetxController {
+  final Map<int, GlobalKey> categoryKeys =
+      {}; // Map to store GlobalKeys for categories
+  GlobalKey assigneekey = GlobalKey();
+  // Initialize a GlobalKey for a category
+  void initCategoryKey(int categoryId) {
+    categoryKeys.putIfAbsent(categoryId, () => GlobalKey());
+  }
+
+  // Scroll to a widget using its GlobalKey
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2, // Aligns the widget 20% from the top of the viewport
+        );
+      });
+    }
+  }
+
+  // Combined validation method
+  void validateAndFocusFirstInvalidField(List<int> requiredCategories) {
+    // Validate work permit selection
+    workPermitErrorMap.clear();
+    bool allValid = true;
+    if (requiredCategories.isNotEmpty) {
+      for (int categoryId in requiredCategories) {
+        // Check if this category has any selectable items in the original list
+        bool hasItems = newWorkPermitController.workPermitRequiredList
+            .any((item) => item.categoriesId == categoryId);
+
+        // Only validate if the category has items available
+        if (hasItems) {
+          bool isSelected = selectedWorkPermitData.containsKey(categoryId) &&
+              selectedWorkPermitData[categoryId]!.isNotEmpty;
+
+          if (!isSelected) {
+            workPermitErrorMap[categoryId] =
+                "Please select at least one option for this category.";
+            allValid = false;
+          }
+        }
+      }
+    }
+    if (!allValid) {
+      // Scroll to the first category with an error
+      if (workPermitErrorMap.isNotEmpty) {
+        final firstErrorCategoryId = workPermitErrorMap.keys.first;
+        final key = categoryKeys[firstErrorCategoryId];
+        if (key != null) {
+          scrollToWidget(key);
+          return;
+        }
+      }
+    }
+  }
+
   var selectedWorkPermitData = <int, Set<int>>{}.obs;
   var filteredListfinal = <WorkPermitDetail>[].obs;
   final NewWorkPermitController newWorkPermitController = Get.find();

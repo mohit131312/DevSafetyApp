@@ -41,7 +41,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -57,7 +57,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
           title: Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: AppTextWidget(
-              text: AppTexts.preview,
+              text: "Safety Violation",
               fontSize: AppTextSize.textSizeMedium,
               fontWeight: FontWeight.w400,
               color: AppColors.primary,
@@ -1436,6 +1436,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                         }
                         return null;
                       },
+                      fillColor: AppColors.textfeildcolor,
                       onChanged: (value) {},
                     ),
                     SizedBox(
@@ -1531,6 +1532,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                       // onFieldSubmitted: (_) {
                       //   newWorkPermitController.dow.unfocus();
                       // },
+                      fillColor: AppColors.textfeildcolor,
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.next,
                       // validator: (value) {

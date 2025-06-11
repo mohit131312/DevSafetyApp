@@ -41,7 +41,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -57,7 +57,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
           title: Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: AppTextWidget(
-              text: AppTexts.preview,
+              text: "Incident Report",
               fontSize: AppTextSize.textSizeMedium,
               fontWeight: FontWeight.w400,
               color: AppColors.primary,
@@ -1669,7 +1669,9 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                         }
                         return null;
                       },
+
                       onChanged: (value) {},
+                      fillColor: AppColors.textfeildcolor,
                     ),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
@@ -1773,6 +1775,7 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                       //   }
                       //   return null;
                       // },
+                      fillColor: AppColors.textfeildcolor,
                       onChanged: (value) {},
                     ),
                   ],

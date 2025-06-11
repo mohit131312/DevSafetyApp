@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/app_color.dart';
 import 'package:get/get.dart';
 
 class WorkPermitDateController extends GetxController {
@@ -19,6 +20,19 @@ class WorkPermitDateController extends GetxController {
       initialDate: selectedStartDate.value ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.buttoncolor,
+              onPrimary: Colors.white,
+              onSurface: const Color.fromARGB(255, 28, 27, 27),
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -48,6 +62,19 @@ class WorkPermitDateController extends GetxController {
       firstDate:
           selectedStartDate.value!, // Prevent selecting before start date
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.buttoncolor,
+              onPrimary: Colors.white,
+              onSurface: const Color.fromARGB(255, 28, 27, 27),
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {

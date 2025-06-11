@@ -20,8 +20,10 @@ import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_perm
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -71,7 +73,7 @@ class WorkPermitScreen extends StatelessWidget {
         length: 3,
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -202,7 +204,7 @@ class WorkPermitScreen extends StatelessWidget {
                     SizedBox(
                       width: SizeConfig.widthMultiplier * 20,
                       child: const Tab(
-                        text: 'Maker',
+                        text: 'Doer',
                       ),
                     ),
                     SizedBox(
@@ -229,19 +231,29 @@ class WorkPermitScreen extends StatelessWidget {
                           return GestureDetector(
                             onTap: () async {
                               log('----------------------------${workPermitController.selectedOption.value}');
-
-                              workPermitAllController.resetData();
-                              await workPermitAllController
-                                  .getWorkPermitAllDetails(
-                                      projectId, userId, 1, work.id);
-                              Get.to(WorkPermitAllDetails(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                wpId: work.id,
-                              ));
+                              if (await CheckInternet.checkInternet()) {
+                                workPermitAllController.resetData();
+                                await workPermitAllController
+                                    .getWorkPermitAllDetails(
+                                        projectId, userId, 1, work.id);
+                                Get.to(WorkPermitAllDetails(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  wpId: work.id,
+                                ));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,19 +374,29 @@ class WorkPermitScreen extends StatelessWidget {
                             return GestureDetector(
                               onTap: () async {
                                 log('----------------------------${workPermitController.selectedOption.value}');
-
-                                workPermitDetailsController.clearwpComment();
-                                await workPermitDetailsController
-                                    .getWorkPermitMakerDetails(
-                                        projectId, userId, 2, work.id);
-                                Get.to(WorkPermitPreviewMakerScreen(
-                                  userId: userId,
-                                  userName: userName,
-                                  userImg: userImg,
-                                  userDesg: userDesg,
-                                  projectId: projectId,
-                                  wpId: work.id,
-                                ));
+                                if (await CheckInternet.checkInternet()) {
+                                  workPermitDetailsController.clearwpComment();
+                                  await workPermitDetailsController
+                                      .getWorkPermitMakerDetails(
+                                          projectId, userId, 2, work.id);
+                                  Get.to(WorkPermitPreviewMakerScreen(
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                    wpId: work.id,
+                                  ));
+                                } else {
+                                  await showDialog(
+                                    context: Get.context!,
+                                    builder: (BuildContext context) {
+                                      return CustomValidationPopup(
+                                          message:
+                                              "Please check your internet connection.");
+                                    },
+                                  );
+                                }
                               },
                               child: Column(
                                 children: [
@@ -497,20 +519,31 @@ class WorkPermitScreen extends StatelessWidget {
 
                             return GestureDetector(
                               onTap: () async {
-                                workPermitCheckerDetailsController
-                                    .clearwpCheckerComment();
-                                await workPermitCheckerDetailsController
-                                    .getWorkPermitCheckerDetails(
-                                        projectId, userId, 3, work.id);
+                                if (await CheckInternet.checkInternet()) {
+                                  workPermitCheckerDetailsController
+                                      .clearwpCheckerComment();
+                                  await workPermitCheckerDetailsController
+                                      .getWorkPermitCheckerDetails(
+                                          projectId, userId, 3, work.id);
 
-                                Get.to(WorkPermitCheckersDetails(
-                                  userId: userId,
-                                  userName: userName,
-                                  userImg: userImg,
-                                  userDesg: userDesg,
-                                  projectId: projectId,
-                                  wpId: work.id,
-                                ));
+                                  Get.to(WorkPermitCheckersDetails(
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                    wpId: work.id,
+                                  ));
+                                } else {
+                                  await showDialog(
+                                    context: Get.context!,
+                                    builder: (BuildContext context) {
+                                      return CustomValidationPopup(
+                                          message:
+                                              "Please check your internet connection.");
+                                    },
+                                  );
+                                }
                               },
                               child: Column(
                                 children: [
@@ -632,25 +665,37 @@ class WorkPermitScreen extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.065,
                     child: FloatingActionButton(
                       onPressed: () async {
-                        workPermitController.clearWorkPermitData();
+                        if (await CheckInternet.checkInternet()) {
+                          workPermitController.clearWorkPermitData();
 
-                        workPermitPreviewController.clearAllData();
-                        assignCheckerController.clearAssigneeData();
-                        newWorkPermitController.resetData();
-                        workPermitPrecautionController.resetData();
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                CustomLoadingPopup());
-                        await workPermitController.getWorkPermitData(projectId);
-                        Get.back();
+                          workPermitPreviewController.clearAllData();
+                          assignCheckerController.clearAssigneeData();
+                          newWorkPermitController.resetData();
+                          workPermitPrecautionController.resetData();
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CustomLoadingPopup());
+                          await workPermitController
+                              .getWorkPermitData(projectId);
+                          Get.back();
 
-                        Get.to(NewWorkPermitScreen(
-                            userId: userId,
-                            userName: userName,
-                            userImg: userImg,
-                            userDesg: userDesg,
-                            projectId: projectId));
+                          Get.to(NewWorkPermitScreen(
+                              userId: userId,
+                              userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              projectId: projectId));
+                        } else {
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
+                        }
                       },
                       backgroundColor: AppColors
                           .buttoncolor, // Replace with AppColors.buttoncolor

@@ -61,7 +61,10 @@ class ChangePasswordController extends GetxController {
 
   // Validate Confirm Password
   String? confirmPasswordValidator(String? value) {
-    if (!passwordRegex.hasMatch(value!)) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter confirm password";
+    }
+    if (!passwordRegex.hasMatch(value)) {
       return "Password cannot contain special characters";
     }
     return Validator.validateConfirmPassword(value, newPassword.value);

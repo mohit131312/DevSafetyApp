@@ -29,7 +29,7 @@ class ProjectLabourScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -76,7 +76,7 @@ class ProjectLabourScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 6.4,
+                  height: SizeConfig.heightMultiplier * 6,
                   width: SizeConfig.widthMultiplier * 92,
                   child: AppTextFormfeild(
                     controller: projectLabourController.searchController,

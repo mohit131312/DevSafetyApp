@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -8,8 +9,10 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -46,7 +49,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -906,7 +909,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                          text: 'Maker',
+                          text: 'Doer',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText),
@@ -975,12 +978,13 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                             !toolboxTrainingReviewerController.userFound.value,
                         controller: toolboxTrainingReviewerController
                             .reviewerController,
-
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode:
+                            toolboxTrainingReviewerController.reviwerFOcusNode,
+                        onFieldSubmitted: (_) {
+                          toolboxTrainingReviewerController.reviwerFOcusNode
+                              .unfocus();
+                        },
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -989,6 +993,14 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                           }
                           return null;
                         },
+                        fillColor:
+                            toolboxTrainingReviewerController.userFound.value
+                                ? AppColors.textfeildcolor
+                                : Colors.white,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z\s]')),
+                        ],
                         onChanged: (value) {},
                       ),
                       SizedBox(
@@ -1023,8 +1035,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.only(
-                                      left: 12, right: 12, top: 20, bottom: 20),
-                                  height: 305,
+                                      left: 12, right: 12, top: 10, bottom: 10),
                                   decoration: BoxDecoration(
                                     color: AppColors.textfeildcolor,
                                     borderRadius: BorderRadius.circular(12),
@@ -1065,7 +1076,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                                               ),
                                             ),
                                       SizedBox(
-                                        height: SizeConfig.heightMultiplier * 4,
+                                        height: SizeConfig.heightMultiplier * 2,
                                       ),
                                       Obx(() {
                                         if (toolboxTrainingReviewerController
@@ -1091,15 +1102,56 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                                                   "No signature available");
                                         } else {
                                           // Show signature pad
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Signature(
-                                              height: 206,
-                                              controller:
+                                          // return GestureDetector(
+                                          //   key:
+                                          //       toolboxTrainingReviewerController
+                                          //           .signkey,
+                                          //   onPanStart: (_) {
+                                          //     toolboxTrainingReviewerController
+                                          //         .signatureattestationError
+                                          //         .value = '';
+                                          //   },
+                                          //   child: ClipRRect(
+                                          //     borderRadius:
+                                          //         BorderRadius.circular(8),
+                                          //     child: Signature(
+                                          //       height: 206,
+                                          //       controller:
+                                          //           toolboxTrainingReviewerController
+                                          //               .signatureattestationController,
+                                          //       backgroundColor: Colors.white,
+                                          //     ),
+                                          //   ),
+                                          // );
+
+                                          // Show signature pad
+                                          return Listener(
+                                            key:
+                                                toolboxTrainingReviewerController
+                                                    .signkey,
+                                            onPointerDown: (_) {
+                                              Future.delayed(
+                                                  Duration(milliseconds: 50),
+                                                  () {
+                                                if (toolboxTrainingReviewerController
+                                                    .signatureattestationController
+                                                    .isNotEmpty) {
                                                   toolboxTrainingReviewerController
-                                                      .signatureattestationController,
-                                              backgroundColor: Colors.white,
+                                                      .signatureattestationError
+                                                      .value = '';
+                                                }
+                                              });
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Signature(
+                                                height: 206,
+                                                controller:
+                                                    toolboxTrainingReviewerController
+                                                        .signatureattestationController,
+                                                backgroundColor: Colors.white,
+                                              ),
                                             ),
                                           );
                                         }
@@ -1246,9 +1298,16 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                     ? 'Close'
                     : 'Submit',
                 onPressed: () async {
+                  validateAndFocusFirstInvalidField();
                   if (toolboxTrainingReviewerController.userFound.value) {
                     Get.back();
                   } else {
+                    if (toolboxTrainingReviewerController
+                        .signatureattestationController.isEmpty) {
+                      toolboxTrainingReviewerController
+                          .signatureattestationError
+                          .value = "Please fill in the signature.";
+                    }
                     if (formKey.currentState!.validate()) {
                       await toolboxTrainingReviewerController
                           .saveSafetyattestationSignature();
@@ -1263,9 +1322,10 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                       if (toolboxTrainingReviewerController
                               .signatureattestationController.isNotEmpty &&
                           toolboxTrainingReviewerController
-                              .reviewerController.text.isNotEmpty) {}
-                      // ignore: use_build_context_synchronously
-                      showConfirmationDialogClosed(context);
+                              .reviewerController.text.isNotEmpty) {
+                        // ignore: use_build_context_synchronously
+                        showConfirmationDialogClosed(context);
+                      }
                       //   Get.to(WorkPermitPrecautionScreen());
                     }
                   }
@@ -1274,6 +1334,34 @@ class ToolboxTrainingReviewer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (toolboxTrainingReviewerController.reviewerController.text
+        .trim()
+        .isEmpty) {
+      toolboxTrainingReviewerController.reviwerFOcusNode.requestFocus();
+      return;
+    }
+    if (toolboxTrainingReviewerController
+        .signatureattestationController.isEmpty) {
+      scrollToWidget(toolboxTrainingReviewerController.signkey);
+      return;
+    }
   }
 
   void showConfirmationDialogClosed(BuildContext context) {
@@ -1318,13 +1406,24 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    await toolboxTrainingReviewerController
-                        .safetySaveReviewerComment(context, toolBox);
-                    if (toolboxTrainingReviewerController.apiStatus == true) {
-                      Get.to(() => ToolboxReviewerClosed(
-                          userId: userId,
-                          projectId: projectId,
-                          tbtuniqueId: uniqueId));
+                    if (await CheckInternet.checkInternet()) {
+                      await toolboxTrainingReviewerController
+                          .safetySaveReviewerComment(context, toolBox);
+                      if (toolboxTrainingReviewerController.apiStatus == true) {
+                        Get.to(() => ToolboxReviewerClosed(
+                            userId: userId,
+                            projectId: projectId,
+                            tbtuniqueId: uniqueId));
+                      }
+                    } else {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        },
+                      );
                     }
 
                     //      Get.to(WorkSubmitClosedScreen());

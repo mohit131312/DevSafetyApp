@@ -41,7 +41,7 @@ class StaffListingScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -1942,7 +1942,7 @@ class StaffListingScreen extends StatelessWidget {
             horizontal: SizeConfig.widthMultiplier * 4,
           ),
           child: AppElevatedButton(
-              text: 'Closed',
+              text: 'Close',
               onPressed: () {
                 Get.back();
               }),

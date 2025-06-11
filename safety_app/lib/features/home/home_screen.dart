@@ -13,6 +13,7 @@ import 'package:flutter_app/features/induction_training/induction_training_scree
 import 'package:flutter_app/features/profile/profile_screen.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_controller.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/sefety_violation_screen.dart';
+import 'package:flutter_app/features/select_project/select_project_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_controller.dart';
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_screen.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
@@ -64,11 +65,22 @@ class HomeScreen extends StatelessWidget {
       Get.put(SefetyViolationController());
   final InductionTrainingController inductionTrainingController =
       Get.put(InductionTrainingController());
+  final SelectProjectController selectProjectController = Get.find();
   String getTodayDayDate() {
     final now = DateTime.now();
     final formatter =
         DateFormat('EEEE, MMMM d, yyyy'); // Example: Tuesday, April 30, 2025
     return formatter.format(now);
+  }
+
+  Future<void> _refreshData() async {
+    await selectProjectController.resetRolesData();
+    await selectProjectController.getRolesDetails(userId, roleId, projectId);
+
+    if (selectProjectController.roleStatus.value != 0) {
+      await homeScreenController.getWorkPermitAllListing(projectId);
+      await homeScreenController.getCardListing(projectId, userId);
+    }
   }
 
   @override
@@ -85,7 +97,7 @@ class HomeScreen extends StatelessWidget {
           ),
           scrolledUnderElevation: 0.0,
           automaticallyImplyLeading: false,
-          toolbarHeight: SizeConfig.heightMultiplier * 20,
+          toolbarHeight: SizeConfig.heightMultiplier * 17.5,
           backgroundColor: AppColors.buttoncolor,
           title: SizedBox(
             width: SizeConfig.widthMultiplier * 100,
@@ -104,11 +116,11 @@ class HomeScreen extends StatelessWidget {
                           color: AppColors.primary,
                         ),
                         SizedBox(
-                          height: SizeConfig.heightMultiplier * 1,
+                          height: SizeConfig.heightMultiplier * 0.5,
                         ),
                         AppTextWidget(
                           text: getTodayDayDate(),
-                          fontSize: AppTextSize.textSizeSmall,
+                          fontSize: AppTextSize.textSizeSmalle,
                           color: AppColors.primary,
                           fontWeight: FontWeight.w400,
                         )
@@ -117,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 3,
+                  height: SizeConfig.heightMultiplier * 2,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -133,11 +145,18 @@ class HomeScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppTextWidget(
-                          text: selectedproject,
-                          fontSize: AppTextSize.textSizeMediumm,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                        SizedBox(
+                          width: SizeConfig.widthMultiplier * 40,
+                          child: Text(
+                            selectedproject,
+                            style: TextStyle(
+                              fontSize: AppTextSize.textSizeMedium,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
@@ -146,35 +165,40 @@ class HomeScreen extends StatelessWidget {
                       final location = locationController.currentLocation.value;
                       final city = locationController.cityName.value;
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await locationController.fetchLocation();
-                            },
-                            child: Icon(
+                      return GestureDetector(
+                        onTap: () async {
+                          await locationController.fetchLocation();
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
                               Icons.location_on,
                               color: AppColors.primary,
                               size: 26.0,
                             ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          if (location != null)
                             SizedBox(
-                              width: SizeConfig.widthMultiplier * 35,
-                              child: AppTextWidget(
-                                text: city.isNotEmpty
-                                    ? 'City: $city'
-                                    : 'Fetching city...',
-                                fontSize: AppTextSize.textSizeSmalle,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.primary,
-                              ),
+                              height: 5,
                             ),
-                        ],
+                            if (location != null)
+                              SizedBox(
+                                width: SizeConfig.widthMultiplier * 32,
+                                child: Text(
+                                  city.isNotEmpty
+                                      ? '$city'
+                                      : 'Fetching city...',
+                                  style: TextStyle(
+                                    fontSize: AppTextSize.textSizeSmalle,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.primary,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                          ],
+                        ),
                       );
                     })
                   ],
@@ -183,18 +207,21 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.widthMultiplier * 4),
-            child: Column(
+        body: RefreshIndicator(
+          color: AppColors.buttoncolor,
+          backgroundColor: Colors.white,
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          displacement: 40.0, // Distance to pull before triggering refresh
+          onRefresh: _refreshData,
+          child: ListView(children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: SizeConfig.heightMultiplier * 3.5),
+                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
 
                 //------------------------
                 SizedBox(
-                  height: 102,
+                  height: SizeConfig.heightMultiplier * 14.5,
                   child: Obx(() {
                     if (homeScreenController.workCard.isEmpty) {
                       return const Center(
@@ -204,17 +231,81 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     }
+                    // Log entitlementIds and workCard for debugging
+                    log('Entitlement IDs: ${selectProjectController.entitlementIds}');
+                    log('Work Cards: ${homeScreenController.workCard}');
 
+                    // Filter workCard based on entitlementIds
+                    final filteredWorkCards =
+                        homeScreenController.workCard.where((card) {
+                      final title =
+                          card['title']?.toString().toLowerCase().trim() ?? '';
+                      log('Processing card title: $title'); // Debug title
+                      // Map title to entitlement_id
+                      int? entitlementId;
+                      switch (title) {
+                        case 'work permit':
+                          entitlementId = 6;
+                          break;
+                        case 'toolbox training':
+                          entitlementId = 5;
+                          break;
+                        case 'induction training':
+                          entitlementId = 3;
+                          break;
+                        case 'safety violation':
+                          entitlementId = 23;
+                          break;
+                        case 'incident report':
+                          entitlementId = 25;
+                          break;
+                        case 'project labour':
+                          entitlementId =
+                              null; // No entitlementId, hide unless specified
+                          break;
+                        default:
+                          log('Unknown title: $title, hiding card');
+                          return false; // Hide unknown titles
+                      }
+                      if (entitlementId == null) {
+                        log('No entitlementId for title: $title, hiding card');
+                        return false; // Hide cards with null entitlementId (e.g., Project Labour)
+                      }
+                      final isIncluded = selectProjectController.entitlementIds
+                          .contains(entitlementId);
+                      log('Entitlement ID: $entitlementId, Included: $isIncluded');
+                      return isIncluded;
+                    }).toList();
+
+                    // Log filtered results
+                    log('Filtered Work Cards: $filteredWorkCards');
+
+                    // Handle empty filtered list
+                    if (filteredWorkCards.isEmpty) {
+                      return const Center(
+                          child: Text(
+                        'No Cards available for this Role ..',
+                        style: TextStyle(
+                          fontSize: AppTextSize.textSizeSmalle,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.primaryText,
+                        ),
+                        textAlign: TextAlign.center,
+                      ));
+                    }
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: homeScreenController.workCard.length,
+                      // itemCount: homeScreenController.workCard.length,
+                      itemCount: filteredWorkCards.length,
                       itemBuilder: (context, index) {
-                        final card = homeScreenController.workCard[index];
+                        // final card = homeScreenController.workCard[index];
+                        final card = filteredWorkCards[index];
                         final title = card['title'] ?? 'Unknown';
                         final Map<String, dynamic> data = card['data'] ?? {};
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Container(
+                            margin: const EdgeInsets.only(left: 14.0),
                             width: 300,
                             height: 100,
                             decoration: BoxDecoration(
@@ -223,7 +314,7 @@ class HomeScreen extends StatelessWidget {
                                 colors: [Color(0xFF6E90B8), Color(0xFF004A94)],
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
-                                stops: [0.4, 0.4],
+                                stops: [0.25, 0.6],
                               ),
                             ),
                             child: Row(
@@ -249,14 +340,6 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: SizeConfig.widthMultiplier * 12,
-                                  height: SizeConfig.heightMultiplier * 12.7,
-                                  child: CustomPaint(
-                                    size: const Size(40, 100),
-                                    painter: ChevronPainter(),
                                   ),
                                 ),
                                 Expanded(
@@ -426,7 +509,7 @@ class HomeScreen extends StatelessWidget {
                   }),
                 ),
 
-                SizedBox(height: SizeConfig.heightMultiplier * 1.3),
+                SizedBox(height: SizeConfig.heightMultiplier * 2),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -445,44 +528,67 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 //-------------------------------
-                SizedBox(height: SizeConfig.heightMultiplier * 3),
-                GestureDetector(
-                  onTap: () {
-                    print("Selected Project: $projectId");
-                  },
-                  child: AppTextWidget(
-                      text: AppTexts.quickaction,
-                      fontSize: AppTextSize.textSizeSmallm,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryText),
-                ),
                 SizedBox(height: SizeConfig.heightMultiplier * 2),
-                QuickActionsGrid(
-                    userId: userId,
-                    userName: userName,
-                    projectId: projectId,
-                    userImg: userImg,
-                    userDesg: userDesg,
-                    selectedproject: selectedproject),
-                SizedBox(height: SizeConfig.heightMultiplier * 2),
-                AppTextWidget(
-                    text: AppTexts.todaywork,
-                    fontSize: AppTextSize.textSizeSmallm,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primaryText),
-                WorkPermitListItem(
-                  userId: userId,
-                  userName: userName,
-                  userImg: userImg,
-                  userDesg: userDesg,
-                  projectId: projectId,
-                ),
-                SizedBox(
-                  height: SizeConfig.heightMultiplier * 5,
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.widthMultiplier * 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          print("Selected Project: $projectId");
+                        },
+                        child: AppTextWidget(
+                            text: AppTexts.quickaction,
+                            fontSize: AppTextSize.textSizeSmallm,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText),
+                      ),
+                      SizedBox(height: SizeConfig.heightMultiplier * 2),
+                      QuickActionsGrid(
+                          userId: userId,
+                          userName: userName,
+                          projectId: projectId,
+                          userImg: userImg,
+                          userDesg: userDesg,
+                          selectedproject: selectedproject),
+                      SizedBox(height: SizeConfig.heightMultiplier * 2),
+                      Obx(() {
+                        if (selectProjectController.entitlementIds
+                            .contains(6)) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppTextWidget(
+                                text: AppTexts.todaywork,
+                                fontSize: AppTextSize.textSizeSmallm,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryText,
+                              ),
+                              WorkPermitListItem(
+                                userId: userId,
+                                userName: userName,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                                projectId: projectId,
+                              ),
+                            ],
+                          );
+                        } else {
+                          // If entitlementIds does not contain 6 → return empty SizedBox (hide)
+                          return SizedBox.shrink();
+                        }
+                      }),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 5,
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
-          ),
+          ]),
         ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: AppColors.appwhitecolor,
@@ -503,7 +609,8 @@ class HomeScreen extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: CustomBottomNavItem(
-                iconPath: 'assets/images/home_profileimg.png',
+                iconPath: "$baseUrl$userImg",
+                isNetwork: true,
                 height: SizeConfig.heightMultiplier * 3.5,
                 onTap: () async {
                   log('print $userId');
@@ -527,14 +634,32 @@ class HomeScreen extends StatelessWidget {
             fontWeight: FontWeight.w400,
             color: AppColors.fourtText,
           ),
-          selectedItemColor: AppColors.buttoncolor,
+          selectedItemColor: AppColors.fourtText,
           unselectedItemColor: AppColors.fourtText,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: buildFloatingActionButton(context));
+        floatingActionButton: Obx(() => buildFloatingActionButton(context)));
   }
 
   Widget buildFloatingActionButton(BuildContext context) {
+    log('FAB Entitlement IDs: ${selectProjectController.entitlementIds}');
+    log('FAB Items: $fabItems');
+
+    // Filter fabItems based on entitlementIds
+    final filteredFabItems = fabItems.where((item) {
+      final entitlementId = item['entitlement_id'];
+      if (entitlementId == null) {
+        log('No entitlement_id for FAB item: ${item['title']}, hiding item');
+        return false; // Hide items with null entitlement_id
+      }
+      final isIncluded =
+          selectProjectController.entitlementIds.contains(entitlementId);
+      log('FAB Item: ${item['title']}, Entitlement ID: $entitlementId, Included: $isIncluded');
+      return isIncluded;
+    }).toList();
+
+    // Log filtered results
+    log('Filtered FAB Items: $filteredFabItems');
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
@@ -553,6 +678,13 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.primary,
               ),
               onPressed: () {
+                if (filteredFabItems.isEmpty) {
+                  // Optionally show a message if no items are available
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No actions available')),
+                  );
+                  return;
+                }
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -605,176 +737,186 @@ class HomeScreen extends StatelessWidget {
                                       mainAxisSpacing: 4,
                                       childAspectRatio: 1,
                                     ),
-                                    itemCount: fabItems.length,
+                                    itemCount: filteredFabItems.length,
                                     itemBuilder: (context, index) {
-                                      final item = fabItems[index];
+                                      final item = filteredFabItems[index];
+                                      final originalIndex =
+                                          fabItems.indexOf(item);
                                       return GestureDetector(
                                         onTap: () async {
-                                          if (index == 0) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            await workPermitController
-                                                .getWorkPermitAllListing(
-                                                    projectId, userId, 1);
-                                            await workPermitController
-                                                .getWorkPermitMakerListing(
-                                                    projectId, userId, 2);
-                                            await workPermitController
-                                                .getWorkPermitCheckerListing(
-                                                    projectId, userId, 3);
+                                          switch (originalIndex) {
+                                            // if (index == 0) {
+                                            case 0:
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              await workPermitController
+                                                  .getWorkPermitAllListing(
+                                                      projectId, userId, 1);
+                                              await workPermitController
+                                                  .getWorkPermitMakerListing(
+                                                      projectId, userId, 2);
+                                              await workPermitController
+                                                  .getWorkPermitCheckerListing(
+                                                      projectId, userId, 3);
 
-                                            Navigator.pop(context);
-                                            if (logStatus == true) {
-                                              Get.to(() => WorkPermitScreen(
-                                                  userId: userId,
-                                                  userName: userName,
-                                                  userImg: userImg,
-                                                  userDesg: userDesg,
-                                                  projectId: projectId));
-                                              print(
-                                                  "Navigating to WorkPermitScreen with:");
-                                              print("User ID: $userId");
-                                              print("User Name: $userName");
-                                              print("Project ID: $projectId");
-                                            } else {
-                                              logout();
-                                            }
-                                          } else if (index == 1) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            await toolboxTrainingController
-                                                .getToolBoxListingAll(
-                                                    projectId, userId, 1);
-                                            await toolboxTrainingController
-                                                .getToolBoxListingMaker(
-                                                    projectId, userId, 2);
-                                            await toolboxTrainingController
-                                                .getToolBoxListingReviewer(
-                                                    projectId, userId, 3);
+                                              Navigator.pop(context);
+                                              if (logStatus == true) {
+                                                Get.to(() => WorkPermitScreen(
+                                                    userId: userId,
+                                                    userName: userName,
+                                                    userImg: userImg,
+                                                    userDesg: userDesg,
+                                                    projectId: projectId));
+                                                print(
+                                                    "Navigating to WorkPermitScreen with:");
+                                                print("User ID: $userId");
+                                                print("User Name: $userName");
+                                                print("Project ID: $projectId");
+                                              } else {
+                                                logout();
+                                              }
+                                              break;
 
-                                            Navigator.pop(context);
-                                            if (logStatus == true) {
-                                              Get.to(() =>
-                                                  ToolboxTrainingScreen(
+                                            case 1:
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              await toolboxTrainingController
+                                                  .getToolBoxListingAll(
+                                                      projectId, userId, 1);
+                                              await toolboxTrainingController
+                                                  .getToolBoxListingMaker(
+                                                      projectId, userId, 2);
+                                              await toolboxTrainingController
+                                                  .getToolBoxListingReviewer(
+                                                      projectId, userId, 3);
+
+                                              Navigator.pop(context);
+                                              if (logStatus == true) {
+                                                Get.to(() =>
+                                                    ToolboxTrainingScreen(
+                                                        userId: userId,
+                                                        userName: userName,
+                                                        userImg: userImg,
+                                                        userDesg: userDesg,
+                                                        projectId: projectId));
+                                                print(
+                                                    "Navigating to ToolboxTrainingScreen with:");
+                                                print("User ID: $userId");
+                                                print("User Name: $userName");
+                                                print("Project ID: $projectId");
+                                              } else {
+                                                logout();
+                                              }
+                                              break;
+                                            case 2:
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              await inductionTrainingController
+                                                  .getProjectDetails();
+                                              await inductionTrainingController
+                                                  .getInductionListing(
+                                                      projectId, userId);
+
+                                              Navigator.pop(context);
+                                              if (logStatus == true) {
+                                                Get.to(() =>
+                                                    InductionTrainingScreen(
                                                       userId: userId,
                                                       userName: userName,
                                                       userImg: userImg,
                                                       userDesg: userDesg,
-                                                      projectId: projectId));
-                                              print(
-                                                  "Navigating to ToolboxTrainingScreen with:");
-                                              print("User ID: $userId");
-                                              print("User Name: $userName");
-                                              print("Project ID: $projectId");
-                                            } else {
-                                              logout();
-                                            }
-                                          } else if (index == 2) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            await inductionTrainingController
-                                                .getProjectDetails();
-                                            await inductionTrainingController
-                                                .getInductionListing(
-                                                    projectId, userId);
+                                                      projectId: projectId,
+                                                    ));
+                                                print(
+                                                    "Navigating to InductionTrainingScreen with:");
+                                                print("User ID: $userId");
+                                                print("User Name: $userName");
+                                                print("Project ID: $projectId");
+                                              } else {
+                                                logout();
+                                              }
+                                              break;
+                                            case 3:
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              await sefetyViolationController
+                                                  .getSafetyViolationAllListing(
+                                                      projectId, userId, 1);
+                                              await sefetyViolationController
+                                                  .getSafetyViolationAssignorListing(
+                                                      projectId, userId, 2);
+                                              await sefetyViolationController
+                                                  .getSafetyViolationAssigneeListing(
+                                                      projectId, userId, 3);
 
-                                            Navigator.pop(context);
-                                            if (logStatus == true) {
-                                              Get.to(
-                                                  () => InductionTrainingScreen(
+                                              Navigator.pop(context);
+                                              if (logStatus == true) {
+                                                Get.to(
+                                                    () => SefetyViolationScreen(
+                                                          userId: userId,
+                                                          userName: userName,
+                                                          userImg: userImg,
+                                                          userDesg: userDesg,
+                                                          projectId: projectId,
+                                                        ));
+                                                print(
+                                                    "Navigating to SefetyViolationScreen with:");
+                                                print("User ID: $userId");
+                                                print("User Name: $userName");
+                                              } else {
+                                                logout();
+                                              }
+                                              break;
+                                            case 4:
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              Navigator.pop(context);
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CustomLoadingPopup());
+                                              await incidentReportController
+                                                  .getIncidentReportAllListing(
+                                                      projectId, userId, 1);
+                                              await incidentReportController
+                                                  .getIncidentReportAssignorListing(
+                                                      projectId, userId, 2);
+                                              await incidentReportController
+                                                  .getIncidentReportAssigneeListing(
+                                                      projectId, userId, 3);
+
+                                              Navigator.pop(context);
+                                              if (logStatus == true) {
+                                                Get.to(() =>
+                                                    IncidentReportScreen(
                                                         userId: userId,
                                                         userName: userName,
                                                         userImg: userImg,
                                                         userDesg: userDesg,
-                                                        projectId: projectId,
-                                                      ));
-                                              print(
-                                                  "Navigating to InductionTrainingScreen with:");
-                                              print("User ID: $userId");
-                                              print("User Name: $userName");
-                                              print("Project ID: $projectId");
-                                            } else {
-                                              logout();
-                                            }
-                                          } else if (index == 3) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            await sefetyViolationController
-                                                .getSafetyViolationAllListing(
-                                                    projectId, userId, 1);
-                                            await sefetyViolationController
-                                                .getSafetyViolationAssignorListing(
-                                                    projectId, userId, 2);
-                                            await sefetyViolationController
-                                                .getSafetyViolationAssigneeListing(
-                                                    projectId, userId, 3);
-
-                                            Navigator.pop(context);
-                                            if (logStatus == true) {
-                                              Get.to(
-                                                  () => SefetyViolationScreen(
-                                                        userId: userId,
-                                                        userName: userName,
-                                                        userImg: userImg,
-                                                        userDesg: userDesg,
-                                                        projectId: projectId,
-                                                      ));
-                                              print(
-                                                  "Navigating to SefetyViolationScreen with:");
-                                              print("User ID: $userId");
-                                              print("User Name: $userName");
-                                            } else {
-                                              logout();
-                                            }
-                                          } else if (index == 4) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            Navigator.pop(context);
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        CustomLoadingPopup());
-                                            await incidentReportController
-                                                .getIncidentReportAllListing(
-                                                    projectId, userId, 1);
-                                            await incidentReportController
-                                                .getIncidentReportAssignorListing(
-                                                    projectId, userId, 2);
-                                            await incidentReportController
-                                                .getIncidentReportAssigneeListing(
-                                                    projectId, userId, 3);
-
-                                            Navigator.pop(context);
-                                            if (logStatus == true) {
-                                              Get.to(() => IncidentReportScreen(
-                                                  userId: userId,
-                                                  userName: userName,
-                                                  userImg: userImg,
-                                                  userDesg: userDesg,
-                                                  projectId: projectId));
-                                              print(
-                                                  "Navigating to IncidentReportScreen with:");
-                                              print("User ID: $userId");
-                                              print("User Name: $userName");
-                                            } else {
-                                              logout();
-                                            }
+                                                        projectId: projectId));
+                                                print(
+                                                    "Navigating to IncidentReportScreen with:");
+                                                print("User ID: $userId");
+                                                print("User Name: $userName");
+                                              } else {
+                                                logout();
+                                              }
                                           }
                                         },
                                         child: Column(
@@ -819,31 +961,30 @@ class HomeScreen extends StatelessWidget {
   }
 
   final List<Map<String, dynamic>> fabItems = [
-    {'title': 'Create Work Permit', 'icon': 'assets/icons/Create_WP.png'},
-    {'title': 'Create TBT', 'icon': 'assets/icons/Create_TBT.png'},
-    {'title': 'Add Labour', 'icon': 'assets/icons/Add_Labour.png'},
-    {'title': 'Create Safety Violation', 'icon': 'assets/icons/Create_SA.png'},
-    {'title': 'Create Incident Report', 'icon': 'assets/icons/Create_IR.png'},
+    {
+      'title': 'Create Work Permit',
+      'icon': 'assets/icons/Create_WP.png',
+      'entitlement_id': 6
+    },
+    {
+      'title': 'Create TBT',
+      'icon': 'assets/icons/Create_TBT.png',
+      'entitlement_id': 5
+    },
+    {
+      'title': 'Add Labour',
+      'icon': 'assets/icons/Add_Labour.png',
+      'entitlement_id': 3
+    }, // Or 100 if assigned
+    {
+      'title': 'Create Safety Violation',
+      'icon': 'assets/icons/Create_SA.png',
+      'entitlement_id': 23
+    },
+    {
+      'title': 'Create Incident Report',
+      'icon': 'assets/icons/Create_IR.png',
+      'entitlement_id': 25
+    },
   ];
-}
-
-class ChevronPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = const Color(0xFF6E90B8);
-
-    Path path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width, size.height * 10);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width * 0.5, size.height);
-    path.lineTo(size.width, size.height * 0.5);
-    path.lineTo(size.width * 0.5, 0);
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

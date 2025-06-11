@@ -102,6 +102,10 @@ class WorkpermitCheckerRejectScreen extends StatelessWidget {
                       projectId,
                     );
 
+                    await homeScreenController.getWorkPermitAllListing(
+                      projectId,
+                    );
+
                     await homeScreenController.getCardListing(
                         projectId, userId);
                     Navigator.pop(context);

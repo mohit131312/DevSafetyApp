@@ -11,6 +11,7 @@ class IncidentReportController extends GetxController
   var searchQueryIncident = ''.obs;
   var incidentDetails = <Map<String, dynamic>>[].obs;
   var incidentfilteredDetails = <Map<String, dynamic>>[].obs;
+  TextEditingController activeController = TextEditingController();
 
   var selectedOption = 0.obs;
   late TabController tabController;
@@ -290,5 +291,19 @@ class IncidentReportController extends GetxController
     searchIncidentAssigneeController.clear();
 
     log("Incident data reset completed.");
+  }
+
+  void clearSearchData() {
+    // Clear text in all search controllers
+    searchIncidentAllController.clear();
+    searchIncidentAssignorController.clear();
+    searchIncidentAssigneeController.clear();
+    activeController.clear();
+    // Reset search query variables
+    searchQueryIncidentAll.value = '';
+    searchQueryIncidentAssignor.value = '';
+    searchQueryIncidentAssignee.value = '';
+    // Notify UI of changes
+    log('Search data cleared');
   }
 }

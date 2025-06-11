@@ -29,7 +29,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
   final IncidentMoreDetailsController incidentMoreDetailsController =
       Get.put(IncidentMoreDetailsController());
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>(); // ✅ Form key
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -174,6 +174,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                       height: SizeConfig.heightMultiplier * 1,
                     ),
                     Row(
+                      key: incidentMoreDetailsController.preventivekey,
                       children: [
                         AppTextWidget(
                           text: 'Preventive Measures',
@@ -249,9 +250,11 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: SizeConfig.heightMultiplier * 2.5),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.widthMultiplier * 4,
-                        vertical: SizeConfig.heightMultiplier * 3,
+                      padding: EdgeInsets.only(
+                        top: SizeConfig.widthMultiplier * 4,
+                        bottom: SizeConfig.widthMultiplier * 4,
+                        left: SizeConfig.heightMultiplier * 3,
+                        right: SizeConfig.heightMultiplier * 1,
                       ),
                       width: SizeConfig.widthMultiplier * 100,
                       decoration: BoxDecoration(
@@ -295,69 +298,79 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                           SizedBox(height: SizeConfig.heightMultiplier * 2),
                           SizedBox(
                             height: 200,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Obx(
-                                    () {
-                                      final filteredList =
-                                          incidentMoreDetailsController
-                                              .filteredIncidentMeasures;
+                            child: ScrollbarTheme(
+                              data: ScrollbarThemeData(
+                                thumbVisibility: WidgetStateProperty.all(true),
+                                thickness: WidgetStateProperty.all(3),
+                                radius: const Radius.circular(8),
+                                trackVisibility: WidgetStateProperty.all(true),
+                                thumbColor: WidgetStateProperty.all(
+                                    AppColors.buttoncolor),
+                                trackColor: WidgetStateProperty.all(
+                                    const Color.fromARGB(26, 101, 99, 99)),
+                                trackBorderColor:
+                                    WidgetStateProperty.all(Colors.transparent),
+                              ),
+                              child: Scrollbar(
+                                interactive: true,
+                                child: Obx(
+                                  () {
+                                    final filteredList =
+                                        incidentMoreDetailsController
+                                            .filteredIncidentMeasures;
 
-                                      return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: filteredList.length,
-                                          itemBuilder: (context, index) {
-                                            final measure = filteredList[index];
+                                    return ListView.builder(
+                                        itemCount: filteredList.length,
+                                        itemBuilder: (context, index) {
+                                          final measure = filteredList[index];
 
-                                            return ListTile(
-                                              dense: true,
-                                              contentPadding: EdgeInsets.only(
-                                                  left: 0,
-                                                  right: 20,
-                                                  top: 0,
-                                                  bottom: 0),
-                                              leading: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Transform.scale(
-                                                      scale: 1,
-                                                      child: Obx(
-                                                        () => Checkbox(
-                                                          activeColor: AppColors
-                                                              .buttoncolor,
-                                                          side: BorderSide(
-                                                            color: AppColors
-                                                                .secondaryText,
-                                                            width: 1.2,
-                                                          ),
-                                                          value: incidentMoreDetailsController
-                                                              .selectedMoreIncidentIds
-                                                              .contains(
-                                                                  measure.id),
-                                                          onChanged: (value) {
-                                                            incidentMoreDetailsController
-                                                                .toggleIncidentSelection(
-                                                                    measure.id);
-                                                          },
+                                          return ListTile(
+                                            dense: true,
+                                            contentPadding: EdgeInsets.only(
+                                                left: 0,
+                                                right: 20,
+                                                top: 0,
+                                                bottom: 0),
+                                            leading: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Transform.scale(
+                                                    scale: 1,
+                                                    child: Obx(
+                                                      () => Checkbox(
+                                                        activeColor: AppColors
+                                                            .buttoncolor,
+                                                        side: BorderSide(
+                                                          color: AppColors
+                                                              .secondaryText,
+                                                          width: 1.2,
                                                         ),
-                                                      )),
-                                                ],
-                                              ),
-                                              title: AppTextWidget(
-                                                text: measure.incidentDetails
-                                                    .toString(),
-                                                fontSize:
-                                                    AppTextSize.textSizeSmalle,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.secondaryText,
-                                              ),
-                                            );
-                                          });
-                                    },
-                                  ),
-                                )
-                              ],
+                                                        value: incidentMoreDetailsController
+                                                            .selectedMoreIncidentIds
+                                                            .contains(
+                                                                measure.id),
+                                                        onChanged: (value) {
+                                                          incidentMoreDetailsController
+                                                              .toggleIncidentSelection(
+                                                                  measure.id);
+                                                        },
+                                                      ),
+                                                    )),
+                                              ],
+                                            ),
+                                            title: AppTextWidget(
+                                              text: measure.incidentDetails
+                                                  .toString(),
+                                              fontSize:
+                                                  AppTextSize.textSizeSmalle,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.secondaryText,
+                                            ),
+                                          );
+                                        });
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -389,12 +402,13 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
                 onTap: () {
+                  validateAndFocusFirstInvalidField();
                   incidentMoreDetailsController
                       .updateSelectedIncidentMeasuresList(userId);
                   if (incidentMoreDetailsController
@@ -420,7 +434,7 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],
@@ -428,5 +442,30 @@ class IncidentMoreDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (incidentMoreDetailsController.rootcauseController.text.trim().isEmpty) {
+      incidentMoreDetailsController.rootcauseFocusNode.requestFocus();
+      return;
+    }
+    if (incidentMoreDetailsController.selectedMoreIncidentIds.isEmpty) {
+      scrollToWidget(incidentMoreDetailsController.preventivekey);
+      return;
+    }
   }
 }

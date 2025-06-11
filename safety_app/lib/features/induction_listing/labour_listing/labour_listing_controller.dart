@@ -120,4 +120,23 @@ class LabourListingController extends GetxController {
       print("Error: $e");
     }
   }
+
+  void resetData() {
+    labourDetailsList.clear();
+    tradeNameList.clear();
+    inductionTrainingsList.clear();
+    documentDetailsList.clear();
+    equipmentDetailsList.clear();
+    instructionDetailsList.clear();
+    reasonOfVisitList.clear();
+    contractorCompanyDetailsList.clear();
+    skillLevelList.clear();
+    statusApi = false;
+
+    // Optionally reset expansion state as well:
+    isPersonalDetailsExpanded.value = true;
+    isProfessionalDetailsExpanded.value = true;
+    isidproofDetailsExpanded.value = true;
+    isprecautionDetailsExpanded.value = true;
+  }
 }

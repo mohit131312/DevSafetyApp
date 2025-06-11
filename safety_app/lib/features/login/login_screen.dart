@@ -7,8 +7,10 @@ import 'package:flutter_app/features/select_role/select_role.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
-import 'package:flutter_app/utils/loader_screen.dart';
+import 'package:flutter_app/utils/check_internet.dart';
+import 'package:flutter_app/utils/login_loader.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -171,20 +173,59 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (loginController.formKey.currentState
                                           ?.validate() ??
                                       false) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CustomLoadingPopup());
+                                    if (await CheckInternet.checkInternet()) {
+                                      showDialog(
+                                          // ignore: use_build_context_synchronously
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              LoginLoader());
 
-                                    bool success =
-                                        await loginController.login();
+                                      bool success =
+                                          await loginController.login();
 
-                                    Get.back();
+                                      Get.back();
 
-                                    if (success) {
-                                      Get.offAll(() => SelectRole());
-                                      loginController.formKey.currentState
-                                          ?.reset();
+                                      if (success) {
+                                        Get.offAll(() => SelectRole());
+                                        // Get.snackbar(
+                                        //   'Welcome to Safety App',
+                                        //   "You have successfully logged in.",
+                                        //   snackPosition: SnackPosition.BOTTOM,
+                                        //   backgroundColor:
+                                        //       AppColors.buttoncolor,
+                                        //   colorText: Colors.white,
+                                        //   margin: const EdgeInsets.all(12),
+                                        //   duration: const Duration(seconds: 5),
+                                        // );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                              "You have successfully logged in.",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            backgroundColor:
+                                                AppColors.buttoncolor,
+                                            duration:
+                                                const Duration(seconds: 5),
+                                            margin: const EdgeInsets.all(12),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+
+                                        loginController.formKey.currentState
+                                            ?.reset();
+                                      }
+                                    } else {
+                                      await showDialog(
+                                        context: Get.context!,
+                                        builder: (BuildContext context) {
+                                          return CustomValidationPopup(
+                                              message:
+                                                  "Please check your internet connection.");
+                                        },
+                                      );
                                     }
                                   }
                                 },
@@ -193,56 +234,56 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(height: SizeConfig.heightMultiplier * 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AppTextWidget(
-                              text: AppTexts.bottomheading,
-                              fontSize: AppTextSize.textSizeExtraSmall,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.fourtText,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: SizeConfig.heightMultiplier * 1.5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: AppTextWidget(
-                                text: "Terms of Service",
-                                fontSize: AppTextSize.textSizeExtraSmall,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.defaultPrimary,
-                                textAlign: TextAlign.center,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: AppTextWidget(
-                                text: "Privacy Policy",
-                                fontSize: AppTextSize.textSizeExtraSmall,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.defaultPrimary,
-                                textAlign: TextAlign.center,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: AppTextWidget(
-                                text: "Content Policy",
-                                fontSize: AppTextSize.textSizeExtraSmall,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.defaultPrimary,
-                                textAlign: TextAlign.center,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     AppTextWidget(
+                        //       text: AppTexts.bottomheading,
+                        //       fontSize: AppTextSize.textSizeExtraSmall,
+                        //       fontWeight: FontWeight.w400,
+                        //       color: AppColors.fourtText,
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: SizeConfig.heightMultiplier * 1.5),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     GestureDetector(
+                        //       onTap: () {},
+                        //       child: AppTextWidget(
+                        //         text: "Terms of Service",
+                        //         fontSize: AppTextSize.textSizeExtraSmall,
+                        //         fontWeight: FontWeight.w400,
+                        //         color: AppColors.defaultPrimary,
+                        //         textAlign: TextAlign.center,
+                        //         decoration: TextDecoration.underline,
+                        //       ),
+                        //     ),
+                        //     GestureDetector(
+                        //       onTap: () {},
+                        //       child: AppTextWidget(
+                        //         text: "Privacy Policy",
+                        //         fontSize: AppTextSize.textSizeExtraSmall,
+                        //         fontWeight: FontWeight.w400,
+                        //         color: AppColors.defaultPrimary,
+                        //         textAlign: TextAlign.center,
+                        //         decoration: TextDecoration.underline,
+                        //       ),
+                        //     ),
+                        //     GestureDetector(
+                        //       onTap: () {},
+                        //       child: AppTextWidget(
+                        //         text: "Content Policy",
+                        //         fontSize: AppTextSize.textSizeExtraSmall,
+                        //         fontWeight: FontWeight.w400,
+                        //         color: AppColors.defaultPrimary,
+                        //         textAlign: TextAlign.center,
+                        //         decoration: TextDecoration.underline,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         SizedBox(
                           height: SizeConfig.heightMultiplier * 1.5,
                         )

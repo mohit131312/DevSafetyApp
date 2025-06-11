@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 class ToolboxTrainingController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
+  TextEditingController activeController = TextEditingController();
   var selectedOption = 0.obs;
 
   @override
@@ -251,5 +252,16 @@ class ToolboxTrainingController extends GetxController
     } else if (index == 2) {
       searchQuerylistingReviewer.value = query;
     }
+  }
+
+  void clearSearchData() {
+    searchtoolAllController.clear();
+    searchtoolMakerController.clear();
+    searchtoolReviwerController.clear();
+    activeController.clear();
+    searchQuerylistingall.value = '';
+    searchQuerylistingMaker.value = '';
+    searchQuerylistingReviewer.value = '';
+    log('Search data cleared');
   }
 }

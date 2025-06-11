@@ -11,7 +11,6 @@ import 'package:flutter_app/features/labour_undertaking/labour_undertaking_contr
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -203,7 +202,7 @@ class LabourPreviewController extends GetxController {
       request.fields['emergency_contact_number'] =
           addLabourController.econtactnumberController.text;
       request.fields['emergency_contact_relation'] =
-          addLabourController.econtactrelationController.text;
+          addLabourController.selectedRelation.value;
       request.fields['labour_id'] = addLabourController.labourId.toString();
       request.fields['reason_of_visit'] =
           addLabourController.selectedReasonId.toString();
@@ -237,8 +236,8 @@ class LabourPreviewController extends GetxController {
 
       log("Final Request Fields: ${jsonEncode(request.fields)}");
       log("Final Request Files: ${request.files.map((file) => file.filename).toList()}"); // ✅ Correct way to log files
-
-      await request.send().then((response) async {
+////  connection time increase
+      await request.send().timeout(Duration(minutes: 2)).then((response) async {
         log("Response Status Code: ${response.statusCode}");
 
         await http.Response.fromStream(response).then((onValue) async {
@@ -269,12 +268,12 @@ class LabourPreviewController extends GetxController {
               log("----------------------------------------------------------------------msg: ");
               Navigator.pop(Get.context!, true);
 
-              await showDialog(
-                context: Get.context!,
-                builder: (BuildContext context) {
-                  return ValidationPopChang(message: validationmsg);
-                },
-              );
+              // await showDialog(
+              //   context: Get.context!,
+              //   builder: (BuildContext context) {
+              //     return ValidationPopChang(message: validationmsg);
+              //   },
+              // );
               Get.back();
             }
           } catch (e) {

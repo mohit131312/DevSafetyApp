@@ -245,6 +245,8 @@ class InductionTrainingController extends GetxController {
       log('----------activityList${activityList.length}');
       log('----------subActivityList${subActivityList.length}');
       //-------------------------------------------------
+      log('Safety Equipment List: ${safetyEquipmentList.map((e) => e.toJson()).toList()}');
+      log('Instructions List: ${instructionsList.map((e) => e.toJson()).toList()}');
     } catch (e) {
       print("Error: $e");
     }

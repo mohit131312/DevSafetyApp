@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -14,11 +15,13 @@ class LabourDocumentationController extends GetxController {
 
   var labourAdharcard = <XFile>[];
   TextEditingController adharnoController = TextEditingController();
+  FocusNode adharnoFocus = FocusNode();
   TextEditingController idnoController = TextEditingController();
   TextEditingController validityController = TextEditingController();
 
   var validityText = ''.obs;
   var idnoText = ''.obs;
+  var validatiyoptional = "".obs;
   @override
   void onInit() {
     super.onInit();
@@ -109,27 +112,65 @@ class LabourDocumentationController extends GetxController {
     print('validity: ${validity.length}');
   }
 
+  // Future<void> pickotherImages(ImageSource source) async {
+  //   if (labourotherimg.length < maxPhotos2) {
+  //     final ImagePicker picker = ImagePicker();
+  //     if (source == ImageSource.gallery) {
+  //       // Pick multiple images from the gallery
+  //       final List<XFile> pickedFiles = await picker.pickMultiImage();
+  //       if (pickedFiles.isNotEmpty) {
+  //         labourotherimg.addAll(pickedFiles);
+  //         log('Picked from Gallery: ${pickedFiles.length} images');
+  //       }
+  //     } else {
+  //       // Capture a single image from the camera
+  //       //   XFile? capturedFile =
+  //       //       await picker.pickImage(source: ImageSource.camera);
+  //       //   if (capturedFile != null) {
+  //       //     labourotherimg.add(capturedFile);
+  //       //     log('Captured from Camera: 1 image');
+  //       //   }
+  //       // }
+
+  //       // otherImageCount.value = labourotherimg.length;
+  //       // log('-----------otherImageCount-------------${otherImageCount.value}');
+
+  //       //-----------------------------------
+
+  //       final XFile? croppedImage = await ImageHelper.pickAndCropImage(
+  //         source: ImageSource.camera,
+  //       );
+
+  //       if (croppedImage != null) {
+  //         labourotherimg.add(croppedImage);
+  //         log('Captured and cropped from Camera: 1 image');
+  //       } else {
+  //         log('Camera image picking/cropping cancelled or failed');
+  //       }
+  //     }
+
+  //     otherImageCount.value = labourotherimg.length;
+  //     log('-----------otherImageCount-------------${otherImageCount.value}');
+  //   }
+  // }
+
   Future<void> pickotherImages(ImageSource source) async {
     if (labourotherimg.length < maxPhotos2) {
-      final ImagePicker picker = ImagePicker();
-      if (source == ImageSource.gallery) {
-        // Pick multiple images from the gallery
-        final List<XFile> pickedFiles = await picker.pickMultiImage();
-        if (pickedFiles.isNotEmpty) {
-          labourotherimg.addAll(pickedFiles);
-          log('Picked from Gallery: ${pickedFiles.length} images');
-        }
+      final XFile? croppedImage = await ImageHelper.pickAndCropImage(
+        source: source,
+      );
+
+      if (croppedImage != null) {
+        labourotherimg.add(croppedImage);
+        log('Picked and cropped from ${source == ImageSource.camera ? "Camera" : "Gallery"}: 1 image');
       } else {
-        // Capture a single image from the camera
-        XFile? capturedFile =
-            await picker.pickImage(source: ImageSource.camera);
-        if (capturedFile != null) {
-          labourotherimg.add(capturedFile);
-          log('Captured from Camera: 1 image');
-        }
+        log('${source == ImageSource.camera ? "Camera" : "Gallery"} image picking/cropping cancelled or failed');
       }
 
       otherImageCount.value = labourotherimg.length;
+      if (otherImageCount.value > 0) {
+        photoError.value = "";
+      }
       log('-----------otherImageCount-------------${otherImageCount.value}');
     }
   }
@@ -203,6 +244,11 @@ class LabourDocumentationController extends GetxController {
   void updateDateValidity(DateTime newDate) {
     selectedDateValidity.value = newDate;
     validityController.text = DateFormat("yyyy-MM-dd").format(newDate);
+    if (validityController.text.isEmpty) {
+      validityError.value = "Validity is required";
+    } else {
+      validityError.value = "";
+    }
   }
 
   var shouldValidate = false.obs; // Controls validation state

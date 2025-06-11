@@ -6,7 +6,9 @@ import 'package:flutter_app/features/change_password/change_password_controller.
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -65,11 +67,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    await controller.submit(context, widget.userId);
-                    print("API Status: ${controller.apiStatus.value}");
-                    if (controller.apiStatus.value == true) {
-                      Get.back();
-                      Get.back();
+                    if (await CheckInternet.checkInternet()) {
+                      await controller.submit(context, widget.userId);
+                      print("API Status: ${controller.apiStatus.value}");
+                      if (controller.apiStatus.value == true) {
+                        Get.back();
+                        Get.back();
+                      }
+                    } else {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        },
+                      );
                     }
                   },
                   child: Container(

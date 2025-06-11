@@ -47,27 +47,36 @@ class MatchUserContractor extends StatelessWidget {
               },
               child: Container(
                 alignment: Alignment.center,
-                height: SizeConfig.heightMultiplier * 6,
+                height: SizeConfig.heightMultiplier * 7.5,
                 child: Column(
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppTextWidget(
-                          text: contractor['contractor_company_name'] ??
-                              "Unknown",
-                          fontSize: AppTextSize.textSizeSmallm,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
+                        Expanded(
+                          flex: 3,
+                          child: AppTextWidget(
+                            text: contractor['contractor_company_name'] ??
+                                "Unknown",
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        AppTextWidget(
-                          text:
-                              "(${contractor['contractor_phone_no'] ?? 'Unknown'})", // Phone number in brackets
-                          fontSize: AppTextSize.textSizeSmallm,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
+                        SizedBox(width: 8),
+                        Flexible(
+                          flex: 2,
+                          child: AppTextWidget(
+                            text:
+                                "(${contractor['contractor_phone_no'] ?? 'Unknown'})",
+                            fontSize: AppTextSize.textSizeExtraSmall,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.primaryText,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
                         ),
                       ],
                     ),

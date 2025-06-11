@@ -47,7 +47,7 @@ class LabourProfessDetails extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -167,6 +167,7 @@ class LabourProfessDetails extends StatelessWidget {
                                 .selectedtrade.value.isNotEmpty
                             ? labourProfessDetailsController.selectedtrade.value
                             : null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         hintText: 'Select Trade',
                         onChanged: (value) {
                           labourProfessDetailsController.selectedtrade.value =
@@ -250,12 +251,14 @@ class LabourProfessDetails extends StatelessWidget {
                     ),
                     Obx(
                       () => AppSearchDropdown(
+                        popupMaxHeight: SizeConfig.heightMultiplier * 28,
                         enabled: !addLabourController.userFound.value,
                         items: labourProfessDetailsController.yoenumbers
                             .map(
                               (yoe) => yoe.toString(),
                             )
                             .toList(),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         selectedItem: addLabourController.userFound.value
                             ? labourProfessDetailsController.selectedyoe.value
                                 .toString()
@@ -283,66 +286,6 @@ class LabourProfessDetails extends StatelessWidget {
                         },
                       ),
                     ),
-
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 2,
-                    ),
-                    Row(
-                      children: [
-                        AppTextWidget(
-                          text: AppTexts.skill,
-                          fontSize: AppTextSize.textSizeSmall,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryText,
-                        ),
-                        AppTextWidget(
-                            text: AppTexts.star,
-                            fontSize: AppTextSize.textSizeExtraSmall,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.starcolor),
-                      ],
-                    ),
-                    Obx(() => Row(
-                          children: [
-                            Radio(
-                              value: 'Skilled',
-                              groupValue: labourProfessDetailsController
-                                  .selectedSkillLevel.value,
-                              activeColor: Colors.orange,
-                              onChanged: addLabourController.userFound.value
-                                  ? null
-                                  : (value) {
-                                      labourProfessDetailsController
-                                          .updateSkillLevel(value as String);
-                                    },
-                            ),
-                            AppTextWidget(
-                              text: 'Skilled',
-                              fontSize: AppTextSize.textSizeSmallm,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.searchfeild,
-                            ),
-                            SizedBox(width: 16), // Space between options
-                            Radio(
-                              value: 'Unskilled',
-                              groupValue: labourProfessDetailsController
-                                  .selectedSkillLevel.value,
-                              activeColor: Colors.orange,
-                              onChanged: addLabourController.userFound.value
-                                  ? null //
-                                  : (value) {
-                                      labourProfessDetailsController
-                                          .updateSkillLevel(value as String);
-                                    },
-                            ),
-                            AppTextWidget(
-                              text: 'Unskilled',
-                              fontSize: AppTextSize.textSizeSmallm,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.searchfeild,
-                            ),
-                          ],
-                        )),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
@@ -368,6 +311,7 @@ class LabourProfessDetails extends StatelessWidget {
                     //------------------------------
                     Obx(
                       () => AppSearchDropdown(
+                        popupMaxHeight: SizeConfig.heightMultiplier * 28,
                         enabled: !addLabourController.userFound
                             .value, // ✅ Editable only if user NOT found
                         items: !addLabourController.userFound.value
@@ -380,6 +324,8 @@ class LabourProfessDetails extends StatelessWidget {
                             : addLabourController.assignedLabourProjects
                                 .map((e) => e.contractorName)
                                 .toList(),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+
                         selectedItem: labourProfessDetailsController
                                 .contractorCompanyName.value.isNotEmpty
                             ? labourProfessDetailsController
@@ -418,9 +364,93 @@ class LabourProfessDetails extends StatelessWidget {
                         },
                       ),
                     ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 2,
+                    ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: AppTexts.skill,
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryText,
+                        ),
+                        AppTextWidget(
+                            text: AppTexts.star,
+                            fontSize: AppTextSize.textSizeExtraSmall,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.starcolor),
+                      ],
+                    ),
+                    Obx(() => Row(
+                          children: [
+                            Radio(
+                              value: 'Skilled',
+                              groupValue: labourProfessDetailsController
+                                  .selectedSkillLevel.value,
+                              activeColor: Colors.orange,
+                              onChanged: addLabourController.userFound.value
+                                  ? null
+                                  : (value) {
+                                      labourProfessDetailsController
+                                          .updateSkillLevel(value as String);
+                                    },
+                            ),
+                            AppTextWidget(
+                              text: 'Skilled',
+                              fontSize: AppTextSize.textSizeSmallm,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                            SizedBox(width: 16), // Space between options
+                            Radio(
+                              value: 'Unskilled',
+                              groupValue: labourProfessDetailsController
+                                  .selectedSkillLevel.value,
+                              activeColor: Colors.orange,
+                              onChanged: addLabourController.userFound.value
+                                  ? null //
+                                  : (value) {
+                                      labourProfessDetailsController
+                                          .updateSkillLevel(value as String);
+                                    },
+                            ),
+                            AppTextWidget(
+                              text: 'Unskilled',
+                              fontSize: AppTextSize.textSizeSmallm,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                          ],
+                        )),
+                    Obx(() => labourProfessDetailsController
+                                .selectedSkillLevel.value.isEmpty &&
+                            labourProfessDetailsController
+                                .skillerror.value.isNotEmpty
+                        ? Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 4, left: 13),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      labourProfessDetailsController
+                                          .skillerror.value,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 174, 75, 68),
+                                          fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : SizedBox.shrink()),
 
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 12,
+                      height: SizeConfig.heightMultiplier * 22,
                     ),
 
                     SizedBox(
@@ -447,30 +477,37 @@ class LabourProfessDetails extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
                 onTap: () {
+                  if (labourProfessDetailsController
+                      .selectedSkillLevel.value.isEmpty) {
+                    labourProfessDetailsController.skillerror.value =
+                        "Please select skill level";
+                  }
                   if (formKey.currentState!.validate()) {
                     log('-------------${addLabourController.profilePhoto.value}');
                     log('-------------${addLabourController.profilePhoto.value}');
                     log('-----------------------$categoryId');
-
-                    Get.to(LabourDocumentation(
-                      categoryId: categoryId,
-                      userId: userId,
-                      userName: userName,
-                      userImg: userImg,
-                      userDesg: userDesg,
-                      projectId: projectId,
-                    ));
-                    print("Navigating to Documentaion with:");
-                    print("User ID: $userId");
-                    print("User Name: $userName");
-                    print("Project ID: $projectId");
-                    print("categoryId: $categoryId");
+                    if (labourProfessDetailsController
+                        .selectedSkillLevel.value.isNotEmpty) {
+                      Get.to(LabourDocumentation(
+                        categoryId: categoryId,
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId,
+                      ));
+                      print("Navigating to Documentaion with:");
+                      print("User ID: $userId");
+                      print("User Name: $userName");
+                      print("Project ID: $projectId");
+                      print("categoryId: $categoryId");
+                    }
                   }
                 },
                 child: AppMediumButton(
@@ -479,7 +516,7 @@ class LabourProfessDetails extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],

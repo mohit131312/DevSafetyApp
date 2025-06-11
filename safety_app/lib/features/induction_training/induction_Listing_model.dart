@@ -64,6 +64,9 @@ class InductionListingData {
   int? reasonOfVisit;
   // dynamic deletedAt;
   int? projectId;
+  String? lname;
+  String? sname;
+  String? cname;
   // String name;
 
   InductionListingData({
@@ -90,6 +93,9 @@ class InductionListingData {
     this.reasonOfVisit,
     // required this.deletedAt,
     this.projectId,
+    required this.lname,
+    required this.sname,
+    required this.cname,
     // required this.name,
   });
 
@@ -120,6 +126,9 @@ class InductionListingData {
         reasonOfVisit: json["reason_of_visit"] ?? "",
         // deletedAt: json["deleted_at"],
         projectId: json["project_id"] ?? 0,
+        lname: json["lname"] ?? "",
+        sname: json["sname"] ?? "",
+        cname: json["cname"] ?? "",
         // name: json["name"],
       );
 

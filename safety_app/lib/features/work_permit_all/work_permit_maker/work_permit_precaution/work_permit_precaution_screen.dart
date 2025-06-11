@@ -46,7 +46,7 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -137,6 +137,8 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final category =
                             workPermitController.categoryWorkList[index];
+                        workPermitPrecautionController
+                            .initCategoryKey(category.id);
                         final allDetailsForCategory = newWorkPermitController
                             .workPermitRequiredList
                             .where((item) =>
@@ -174,6 +176,8 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                               .workPermitErrorMap[category.id];
 
                           return Column(
+                            key: workPermitPrecautionController
+                                .categoryKeys[category.id], // Assign GlobalKey
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -232,6 +236,17 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                           visibleDetailIds,
                                           value ?? false,
                                         );
+                                        final selected =
+                                            workPermitPrecautionController
+                                                    .selectedWorkPermitData[
+                                                category.id];
+
+                                        if (selected != null &&
+                                            selected.isNotEmpty) {
+                                          workPermitPrecautionController
+                                              .workPermitErrorMap
+                                              .remove(category.id);
+                                        }
                                       },
                                     ),
                                     AppTextWidget(
@@ -245,9 +260,11 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                 SizedBox(
                                     height: SizeConfig.heightMultiplier * 2.5),
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: SizeConfig.widthMultiplier * 4,
-                                    vertical: SizeConfig.heightMultiplier * 3,
+                                  padding: EdgeInsets.only(
+                                    left: SizeConfig.widthMultiplier * 4,
+                                    right: SizeConfig.widthMultiplier * 1.5,
+                                    top: SizeConfig.heightMultiplier * 3,
+                                    bottom: SizeConfig.heightMultiplier * 3,
                                   ),
                                   width: SizeConfig.widthMultiplier * 100,
                                   decoration: BoxDecoration(
@@ -329,90 +346,120 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                                         )
                                       else
                                         SizedBox(
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              children: [
-                                                ListView.builder(
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount:
-                                                      filteredList.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    final detail =
-                                                        filteredList[index];
-                                                    return Obx(() {
-                                                      bool isChecked =
-                                                          workPermitPrecautionController
-                                                                  .selectedWorkPermitData[
+                                          height: filteredList.length == 1
+                                              ? 60
+                                              : filteredList.length == 2
+                                                  ? 100
+                                                  : 200,
+                                          child: ScrollbarTheme(
+                                            data: ScrollbarThemeData(
+                                              thumbVisibility:
+                                                  WidgetStateProperty.all(true),
+                                              thickness:
+                                                  WidgetStateProperty.all(3),
+                                              radius: const Radius.circular(8),
+                                              trackVisibility:
+                                                  WidgetStateProperty.all(true),
+                                              thumbColor:
+                                                  WidgetStateProperty.all(
+                                                      AppColors.buttoncolor),
+                                              trackColor:
+                                                  WidgetStateProperty.all(
+                                                      const Color.fromARGB(
+                                                          26, 101, 99, 99)),
+                                              trackBorderColor:
+                                                  WidgetStateProperty.all(
+                                                      Colors.transparent),
+                                            ),
+                                            child: Scrollbar(
+                                              interactive: true,
+                                              child: ListView.builder(
+                                                itemCount: filteredList.length,
+                                                itemBuilder: (context, index) {
+                                                  final detail =
+                                                      filteredList[index];
+                                                  return Obx(() {
+                                                    bool isChecked =
+                                                        workPermitPrecautionController
+                                                                .selectedWorkPermitData[
+                                                                    category.id]
+                                                                ?.contains(
+                                                                    detail
+                                                                        .id) ??
+                                                            false;
+                                                    return ListTile(
+                                                      visualDensity:
+                                                          VisualDensity.compact,
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              top: 0,
+                                                              bottom: 0,
+                                                              left: 16,
+                                                              right: 16),
+                                                      leading: SizedBox(
+                                                        width: 24.0,
+                                                        height: 24.0,
+                                                        child: Checkbox(
+                                                          value: isChecked,
+                                                          activeColor: AppColors
+                                                              .buttoncolor,
+                                                          side: BorderSide(
+                                                            color: AppColors
+                                                                .secondaryText,
+                                                            width: 1.2,
+                                                          ),
+                                                          onChanged:
+                                                              (bool? value) {
+                                                            workPermitPrecautionController
+                                                                .toggleSelection(
+                                                              category.id,
+                                                              detail.id,
+                                                              value ?? false,
+                                                            );
+                                                            final selected =
+                                                                workPermitPrecautionController
+                                                                        .selectedWorkPermitData[
+                                                                    category
+                                                                        .id];
+
+                                                            if (selected !=
+                                                                    null &&
+                                                                selected
+                                                                    .isNotEmpty) {
+                                                              workPermitPrecautionController
+                                                                  .workPermitErrorMap
+                                                                  .remove(
                                                                       category
-                                                                          .id]
-                                                                  ?.contains(
-                                                                      detail
-                                                                          .id) ??
-                                                              false;
-                                                      return ListTile(
-                                                        visualDensity:
-                                                            VisualDensity
-                                                                .compact,
-                                                        contentPadding:
-                                                            EdgeInsets.only(
-                                                                top: 0,
-                                                                bottom: 0,
-                                                                left: 16,
-                                                                right: 16),
-                                                        leading: SizedBox(
-                                                          width: 24.0,
-                                                          height: 24.0,
-                                                          child: Checkbox(
-                                                            value: isChecked,
-                                                            activeColor:
-                                                                AppColors
-                                                                    .buttoncolor,
-                                                            side: BorderSide(
+                                                                          .id);
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      title: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Flexible(
+                                                            child:
+                                                                AppTextWidget(
+                                                              text: detail
+                                                                  .permitDetails,
+                                                              fontSize: AppTextSize
+                                                                  .textSizeExtraSmall,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
                                                               color: AppColors
                                                                   .secondaryText,
-                                                              width: 1.2,
                                                             ),
-                                                            onChanged:
-                                                                (bool? value) {
-                                                              workPermitPrecautionController
-                                                                  .toggleSelection(
-                                                                category.id,
-                                                                detail.id,
-                                                                value ?? false,
-                                                              );
-                                                            },
                                                           ),
-                                                        ),
-                                                        title: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Flexible(
-                                                              child:
-                                                                  AppTextWidget(
-                                                                text: detail
-                                                                    .permitDetails,
-                                                                fontSize:
-                                                                    AppTextSize
-                                                                        .textSizeExtraSmall,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color: AppColors
-                                                                    .secondaryText,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    });
-                                                  },
-                                                )
-                                              ],
+                                                        ],
+                                                      ),
+                                                    );
+                                                  });
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -601,6 +648,7 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                           height: SizeConfig.heightMultiplier * 2,
                         ),
                         ElevatedButton(
+                          key: workPermitPrecautionController.assigneekey,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
@@ -681,7 +729,7 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
@@ -689,11 +737,12 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                 onTap: () {
                   var postData =
                       workPermitPrecautionController.getSelectedDataForPost();
-                  assignCheckerController.validateAssignee();
                   List<int> requiredCategories = workPermitController
                       .categoryWorkList
                       .map((e) => e.id)
                       .toList();
+                  assignCheckerController.validateAssignee();
+
                   log('-------------$postData');
                   bool isValidSelection = workPermitPrecautionController
                       .validateWorkPermitSelection(requiredCategories);
@@ -704,9 +753,12 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                   log('Assignee Valid: $isValidAssignee');
 
                   log('filteredListfinal List: ${workPermitPrecautionController.filteredListfinal}');
+                  workPermitPrecautionController
+                      .validateAndFocusFirstInvalidField(requiredCategories);
+                  assigneScroll();
 
-                  if (isValidAssignee &&
-                      isValidSelection &&
+                  if (isValidSelection &&
+                      isValidAssignee &&
                       workPermitPrecautionController
                           .filteredListfinal.isEmpty) {
                     workPermitPrecautionController.workPermitErrorMap.clear();
@@ -733,9 +785,6 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                         userDesg: userDesg,
                         projectId: projectId));
                   }
-                  if (!isValidAssignee && !isValidSelection) {
-                    workPermitPrecautionController.workPermitErrorMap.clear();
-                  }
                 },
                 child: AppMediumButton(
                   label: "Next",
@@ -743,7 +792,7 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],
@@ -751,5 +800,14 @@ class WorkPermitPrecautionScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void assigneScroll() {
+    if (assignCheckerController.addInvolveassigneeDataPerson.isEmpty &&
+        assignCheckerController.assigneeError.isNotEmpty) {
+      workPermitPrecautionController
+          .scrollToWidget(workPermitPrecautionController.assigneekey);
+      return;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,22 +16,27 @@ class AppTextFormfeild extends StatelessWidget {
   final Widget? prefixIcon;
   final void Function(String)? onChanged;
   final FocusNode? focusNode;
+  final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onFieldSubmitted;
+  final Color fillColor;
+  const AppTextFormfeild({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.done,
+    this.validator,
+    this.enabled = true,
+    this.readOnly = false,
+    this.suffixIcon,
+    this.prefixIcon,
+    this.onChanged,
+    this.focusNode,
+    this.inputFormatters, // 👈 Initialize inputFormatters
 
-  const AppTextFormfeild(
-      {super.key,
-      required this.controller,
-      required this.hintText,
-      this.keyboardType = TextInputType.text,
-      this.textInputAction = TextInputAction.done,
-      this.validator,
-      this.enabled = true,
-      this.readOnly = false,
-      this.suffixIcon,
-      this.prefixIcon,
-      this.onChanged,
-      this.focusNode,
-      this.onFieldSubmitted});
+    this.onFieldSubmitted,
+    this.fillColor = Colors.white, // 👈 Set default color
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +56,11 @@ class AppTextFormfeild extends StatelessWidget {
           fontWeight: FontWeight.w400,
           color: AppColors.primaryText,
         ),
+        inputFormatters: inputFormatters, // 👈 Apply formatters
+
+        autovalidateMode:
+            AutovalidateMode.onUserInteraction, // 👈 Add this line
+
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.inter(
@@ -77,7 +88,7 @@ class AppTextFormfeild extends StatelessWidget {
             ),
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: fillColor, // 👈 Use the parameter here
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(

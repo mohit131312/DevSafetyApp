@@ -57,11 +57,12 @@ class WorkPermitDetailsController extends GetxController {
               as List<dynamic>)
           .map((e) => SelectedSubActivity.fromJson(e as Map<String, dynamic>))
           .toList();
-      selectedToolboxTrainingMaker =
-          (await data['selected_toolbox_training'] as List<dynamic>)
-              .map((e) =>
+      selectedToolboxTrainingMaker = (data['selected_toolbox_training']
+                  as List<dynamic>?)
+              ?.map((e) =>
                   SelectedToolboxTraining.fromJson(e as Map<String, dynamic>))
-              .toList();
+              .toList() ??
+          [];
       checkerInformation = (await data['checker_information'] as List<dynamic>)
           .map((e) => CheckerInformation.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -97,5 +98,28 @@ class WorkPermitDetailsController extends GetxController {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void resetData() {
+    // Clear lists
+    workPermitsHomeDetails.clear();
+    subActivityHomeDetails.clear();
+    selectedToolboxTrainingMaker.clear();
+    checkerInformation.clear();
+    makerInformation.clear();
+
+    // Clear maps
+    buildingListHomeList.clear();
+    categoryListHomeList.clear();
+
+    // Clear text controllers
+    workPermitRemarksController.clear();
+    workPermitRemarksControllerenable.clear();
+
+    // Reset expansion states if needed
+    workpermitExpanded.value = true;
+    isprecautionworkpermitExpanded.value = true;
+
+    log('All WorkPermitDetailsController data has been reset.');
   }
 }

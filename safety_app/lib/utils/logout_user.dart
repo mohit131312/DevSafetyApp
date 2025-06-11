@@ -9,10 +9,14 @@ import '../features/login/login_controller.dart';
 String baseUrl = "http://192.168.1.72/Kumar/KumarProperties/storage/app/";
 String baseUrl2 = "http://192.168.1.72/Kumar/KumarProperties/";
 
-bool logStatus = true;
-void logout() {final LoginController loginController = Get.put(LoginController());
+// String baseUrl = "http://34.133.129.206/stagging/storage/app/";
+// String baseUrl2 = "http://34.133.129.206/stagging/";
 
-print("Before ${ApiClient.gs.read("login")}");
+bool logStatus = true;
+void logout() {
+  final LoginController loginController = Get.put(LoginController());
+
+  print("Before ${ApiClient.gs.read("login")}");
   ApiClient.gs.write('token', "");
   ApiClient.gs.write('user_id', "");
   ApiClient.gs.write('username', "");

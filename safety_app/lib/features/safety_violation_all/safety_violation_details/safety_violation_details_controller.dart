@@ -1,18 +1,56 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation_details/safety_violation_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SafetyViolationDetailsController extends GetxController {
+  GlobalKey photoKey = GlobalKey();
+  GlobalKey violationKey = GlobalKey();
+  GlobalKey categoryKey = GlobalKey();
+  GlobalKey riskKey = GlobalKey();
+  GlobalKey turnaroundKey = GlobalKey();
+  GlobalKey sourceKey = GlobalKey();
+  GlobalKey addinvolveKey = GlobalKey();
+  GlobalKey addinformKey = GlobalKey();
+  GlobalKey addassigneeKey = GlobalKey();
+
+  var dateError = "".obs;
   var violationimg = <XFile>[];
 
   var violationImageCount = 0.obs;
 
-  final maxPhotos = 5;
+  final maxPhotos = 10;
 
+  // Future<void> pickViolationImages({required ImageSource source}) async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   if (violationimg.length < maxPhotos) {
+  //     int remainingSlots = maxPhotos - violationimg.length;
+
+  //     if (source == ImageSource.gallery) {
+  //       final List<XFile> pickedFiles = await picker.pickMultiImage();
+  //       final List<XFile> limitedFiles =
+  //           pickedFiles.take(remainingSlots).toList();
+
+  //       violationimg.addAll(limitedFiles);
+  //       log('Picked from Gallery: ${limitedFiles.length} images');
+  //     } else if (source == ImageSource.camera) {
+  //       final XFile? capturedFile =
+  //           await picker.pickImage(source: ImageSource.camera);
+  //       if (capturedFile != null) {
+  //         violationimg.add(capturedFile);
+  //         log('Captured from Camera: 1 image');
+  //       }
+  //     }
+
+  //     violationImageCount.value = violationimg.length;
+  //     log('violationImageCount: ${violationImageCount.value}');
+  //   }
+  // }
   Future<void> pickViolationImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
@@ -24,14 +62,29 @@ class SafetyViolationDetailsController extends GetxController {
         final List<XFile> limitedFiles =
             pickedFiles.take(remainingSlots).toList();
 
-        violationimg.addAll(limitedFiles);
-        log('Picked from Gallery: ${limitedFiles.length} images');
+        for (var file in limitedFiles) {
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: file,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            violationimg.add(croppedFile);
+          }
+        }
+
+        log('Picked & Cropped from Gallery: ${violationimg.length} images');
       } else if (source == ImageSource.camera) {
         final XFile? capturedFile =
             await picker.pickImage(source: ImageSource.camera);
         if (capturedFile != null) {
-          violationimg.add(capturedFile);
-          log('Captured from Camera: 1 image');
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: capturedFile,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            violationimg.add(croppedFile);
+            log('Captured & Cropped from Camera: 1 image');
+          }
         }
       }
 
@@ -355,6 +408,8 @@ class SafetyViolationDetailsController extends GetxController {
     turnArounttimeController.clear();
     loactionofBreachController.clear();
 
+    turnArounttimeController.clear();
+    dateError.value = '';
     violationTypeList.clear();
     categoryList.clear();
     riskLevelList.clear();

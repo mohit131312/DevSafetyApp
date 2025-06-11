@@ -11,7 +11,6 @@ import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_perm
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -44,6 +43,7 @@ class WorkPermitPreviewController extends GetxController {
     List categoryDetailsList =
         await workPermitPrecautionController.getSelectedDataForPost();
     log("categoryDetailsList-------------------------------: $categoryDetailsList");
+
     try {
       showDialog(
           context: c,
@@ -68,6 +68,10 @@ class WorkPermitPreviewController extends GetxController {
       // request.fields['description'] = "abx";
       request.fields['description'] =
           newWorkPermitController.descWorkrController.text;
+      request.fields['floordescription'] =
+          newWorkPermitController.floordescriptionController.text.trim().isEmpty
+              ? ""
+              : newWorkPermitController.floordescriptionController.text;
 
       //request.fields['name_of_workpermit'] = "aa";
       request.fields['name_of_workpermit'] =
@@ -144,12 +148,12 @@ class WorkPermitPreviewController extends GetxController {
               log("----------------------------------------------------------------------msg: ");
               Navigator.pop(Get.context!, true);
 
-              await showDialog(
-                context: Get.context!,
-                builder: (BuildContext context) {
-                  return ValidationPopChang(message: validationmsg);
-                },
-              );
+              // await showDialog(
+              //   context: Get.context!,
+              //   builder: (BuildContext context) {
+              //     return ValidationPopChang(message: validationmsg);
+              //   },
+              // );
               Get.back();
             }
           } catch (e) {

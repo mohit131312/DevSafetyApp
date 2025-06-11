@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
@@ -102,32 +103,61 @@ class ContractorDetailsController extends GetxController {
 
   final maxPhotos = 1;
 
+  // Future<void> pickDocImages(ImageSource source) async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   try {
+  //     if (docImg.length < maxPhotos) {
+  //       XFile? pickedFile;
+
+  //       if (source == ImageSource.gallery) {
+  //         pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //       } else {
+  //         pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //       }
+
+  //       if (pickedFile != null) {
+  //         docImg.clear();
+  //         docImg.add(pickedFile);
+  //         docImgCount.value = docImg.length;
+  //         log('Image selected: ${pickedFile.path}');
+  //         log('_______________________${docImg.length}');
+  //         log('_______________________${docImgCount}');
+  //       }
+  //     } else {
+  //       log('Only one image is allowed.');
+  //     }
+  //   } catch (e) {
+  //     log('Error picking image: $e');
+  //   }
+  // }
   Future<void> pickDocImages(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
+    if (docImg.length >= maxPhotos) {
+      log('Only one image is allowed.');
+      return;
+    }
 
     try {
-      if (docImg.length < maxPhotos) {
-        XFile? pickedFile;
+      // Use your cropping helper
+      final XFile? croppedImage =
+          await ImageHelper.pickAndCropImage(source: source);
 
-        if (source == ImageSource.gallery) {
-          pickedFile = await picker.pickImage(source: ImageSource.gallery);
-        } else {
-          pickedFile = await picker.pickImage(source: ImageSource.camera);
+      if (croppedImage != null) {
+        docImg.clear(); // Ensure only one image is kept
+        docImg.add(croppedImage);
+        docImgCount.value = docImg.length;
+        if (docImgCount.value > 0) {
+          documentError.value = "";
         }
 
-        if (pickedFile != null) {
-          docImg.clear();
-          docImg.add(pickedFile);
-          docImgCount.value = docImg.length;
-          log('Image selected: ${pickedFile.path}');
-          log('_______________________${docImg.length}');
-          log('_______________________${docImgCount}');
-        }
+        log('Image selected and cropped: ${croppedImage.path}');
+        log('_______________________docImg.length: ${docImg.length}');
+        log('_______________________docImgCount: ${docImgCount.value}');
       } else {
-        log('Only one image is allowed.');
+        log('${source == ImageSource.camera ? "Camera" : "Gallery"} image picking/cropping cancelled or failed');
       }
     } catch (e) {
-      log('Error picking image: $e');
+      log('Error picking or cropping image: $e');
     }
   }
 

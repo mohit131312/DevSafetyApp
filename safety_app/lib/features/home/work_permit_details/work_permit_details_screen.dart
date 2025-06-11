@@ -19,7 +19,6 @@ class WorkPermitDetailsScreen extends StatelessWidget {
   final String userImg;
   final String userDesg;
   final int wpId;
-
   WorkPermitDetailsScreen({
     super.key,
     required this.userId,
@@ -36,7 +35,7 @@ class WorkPermitDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      //  resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -239,12 +238,26 @@ class WorkPermitDetailsScreen extends StatelessWidget {
                                               SizeConfig.heightMultiplier * 1,
                                         ),
                                         AppTextWidget(
-                                          text:
-                                              '${workPermitAllController.selectedToolboxTrainingMaker[0].id.toString()} /${workPermitAllController.selectedToolboxTrainingMaker[0].nameOfTbTraining}',
+                                          text: (workPermitAllController
+                                                      .selectedToolboxTrainingMaker
+                                                      .isNotEmpty &&
+                                                  workPermitAllController
+                                                          .selectedToolboxTrainingMaker[
+                                                              0]
+                                                          .id !=
+                                                      null &&
+                                                  workPermitAllController
+                                                          .selectedToolboxTrainingMaker[
+                                                              0]
+                                                          .nameOfTbTraining !=
+                                                      null)
+                                              ? '${workPermitAllController.selectedToolboxTrainingMaker[0].id} / ${workPermitAllController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
+                                              : 'Toolbox Training not available',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w400,
                                           color: AppColors.primaryText,
                                         ),
+
                                         SizedBox(
                                           height:
                                               SizeConfig.heightMultiplier * 2.5,
@@ -703,6 +716,7 @@ class WorkPermitDetailsScreen extends StatelessWidget {
                     //   }
                     //   return null;
                     // },
+                    fillColor: AppColors.textfeildcolor,
                     onChanged: (value) {},
                   ),
                   SizedBox(
@@ -748,7 +762,8 @@ class WorkPermitDetailsScreen extends StatelessWidget {
                     // focusNode: newWorkPermitController.dow,
                     // onFieldSubmitted: (_) {
                     //   newWorkPermitController.dow.unfocus();
-                    // },
+                    // },                    fillColor: AppColors.textfeildcolor,
+
                     keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
                     validator: (value) {

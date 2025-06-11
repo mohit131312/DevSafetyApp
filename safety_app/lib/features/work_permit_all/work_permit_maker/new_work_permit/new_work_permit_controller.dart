@@ -15,12 +15,16 @@ class NewWorkPermitController extends GetxController {
     super.onInit();
   }
 
+  // final GlobalKey subactivitykey = GlobalKey();
+  // final GlobalKey buildingkey = GlobalKey();
+  // final GlobalKey dofworkkey = GlobalKey();
+
   var selectedcategory = ''.obs;
   var selectedcategoryId = 0.obs;
   var selectedWorkActivity = ''.obs;
   var selectedWorkActivityId = 0.obs;
   var selectedtoolboxId = 0.obs;
-
+  var selectedReportingUnitId = 0.obs; // ✅ Capture reportingUnitId
   var selectedtoolboxtrainig = ''.obs; // Observable for Blood Group selection
 
   var buildings = RxList<String>([]);
@@ -30,12 +34,15 @@ class NewWorkPermitController extends GetxController {
 
   TextEditingController descWorkrController = TextEditingController();
   FocusNode dow = FocusNode();
+  TextEditingController floordescriptionController = TextEditingController();
+  FocusNode floordescriptionFocus = FocusNode();
 
   TextEditingController nameworkpermitController = TextEditingController();
   FocusNode nameofworkpermit = FocusNode();
 
   TextEditingController dateController = TextEditingController();
-
+  final GlobalKey subactivitykey = GlobalKey();
+  final GlobalKey sdwokkey = GlobalKey();
   //---------------
 
   RxString selectionError = ''.obs;
@@ -77,6 +84,7 @@ class NewWorkPermitController extends GetxController {
           'building_id': id,
           'floor_ids': <int>[], // Ensure correct type
         });
+        buildingfloorerror.value = ''; // Clear any previous error
       }
     }
     selectedBuildingIdListFinal.refresh();
@@ -218,6 +226,7 @@ class NewWorkPermitController extends GetxController {
         'floor_ids': selectedFloors.toList(),
       });
     }
+    buildingfloorerror.value = '';
 
     print("Updated Floor IDs for Building ID: $buildingId");
     print(
@@ -297,17 +306,18 @@ class NewWorkPermitController extends GetxController {
       buildingfloorerror.value = "Please select at least one building";
       return false;
     }
+    if (selectedReportingUnitId.value != 5) {
+      // Check if each building has at least one floor selected
+      bool hasEmptyFloors = selectedBuildingIdListFinal.any((building) {
+        List<int> floorIds = List<int>.from(building["floor_ids"] ?? []);
+        return floorIds.isEmpty;
+      });
 
-    // Check if each building has at least one floor selected
-    bool hasEmptyFloors = selectedBuildingIdListFinal.any((building) {
-      List<int> floorIds = List<int>.from(building["floor_ids"] ?? []);
-      return floorIds.isEmpty;
-    });
-
-    if (hasEmptyFloors) {
-      buildingfloorerror.value =
-          "Each building must have at least one floor selected";
-      return false;
+      if (hasEmptyFloors) {
+        buildingfloorerror.value =
+            "Each building must have at least one floor selected";
+        return false;
+      }
     }
 
     buildingfloorerror.value = "";
@@ -333,7 +343,7 @@ class NewWorkPermitController extends GetxController {
     selectedcategoryId.value = 0;
     selectedWorkActivity.value = '';
     selectedWorkActivityId.value = 0;
-
+    selectedReportingUnitId.value = 0;
     selectedtoolboxtrainig.value = '';
     selectedBuilding.value = '';
     selectedFloor.value = '';

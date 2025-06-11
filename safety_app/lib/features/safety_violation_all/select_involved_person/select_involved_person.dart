@@ -17,7 +17,9 @@ class SelectInvolvedPerson extends StatelessWidget {
       Get.find();
   final SelectInvolvedPersonController selectInvolvedPersonController =
       Get.find();
-
+  final ScrollController labourScrollController = ScrollController();
+  final ScrollController staffScrollController = ScrollController();
+  final ScrollController contractorScrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -27,7 +29,7 @@ class SelectInvolvedPerson extends StatelessWidget {
         bottom: true,
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -90,7 +92,7 @@ class SelectInvolvedPerson extends StatelessWidget {
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerHeight: 0,
-                  tabAlignment: TabAlignment.start,
+                  tabAlignment: TabAlignment.center,
                   tabs: [
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 4,
@@ -119,594 +121,702 @@ class SelectInvolvedPerson extends StatelessWidget {
                 height: SizeConfig.heightMultiplier * 0.2,
               ),
               Expanded(
-                child: TabBarView(
-                    //      controller: selectInvolvedPersonController.tabController,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: SizeConfig.heightMultiplier * 5.8,
-                                  width: SizeConfig.widthMultiplier * 92,
-                                  child: AppTextFormfeild(
-                                    controller: selectInvolvedPersonController
-                                        .searchController,
-                                    hintText: 'Search By Name..',
-                                    keyboardType: TextInputType.name,
-                                    textInputAction: TextInputAction.next,
-                                    prefixIcon: Container(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Image.asset(
-                                        'assets/icons/Search.png',
-                                        fit: BoxFit.contain,
+                child: PrimaryScrollController.none(
+                  child: TabBarView(
+                      //      controller: selectInvolvedPersonController.tabController,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 5, top: 16),
+                          child: Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: SizeConfig.heightMultiplier * 5.8,
+                                    width: SizeConfig.widthMultiplier * 92,
+                                    child: AppTextFormfeild(
+                                      controller: selectInvolvedPersonController
+                                          .searchController,
+                                      hintText: 'Search By Name..',
+                                      keyboardType: TextInputType.name,
+                                      textInputAction: TextInputAction.next,
+                                      prefixIcon: Container(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Image.asset(
+                                          'assets/icons/Search.png',
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
+                                      onChanged: (value) {
+                                        selectInvolvedPersonController
+                                            .updateSearchQuery(value);
+                                      },
                                     ),
-                                    onChanged: (value) {
-                                      selectInvolvedPersonController
-                                          .updateSearchQuery(value);
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: SizeConfig.widthMultiplier * 2,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: SizeConfig.heightMultiplier * 1.5,
+                            ),
+                            Expanded(
+                              child: ScrollbarTheme(
+                                data: ScrollbarThemeData(
+                                  thumbVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thickness: WidgetStateProperty.all(3),
+                                  radius: const Radius.circular(8),
+                                  trackVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thumbColor: WidgetStateProperty.all(
+                                      AppColors.buttoncolor),
+                                  trackColor: WidgetStateProperty.all(
+                                      const Color.fromARGB(26, 101, 99, 99)),
+                                  trackBorderColor: WidgetStateProperty.all(
+                                      Colors.transparent),
+                                ),
+                                child: Scrollbar(
+                                  controller: labourScrollController,
+                                  interactive: true,
+                                  child: Obx(
+                                    () {
+                                      final filteredList =
+                                          selectInvolvedPersonController
+                                              .filteredLabours;
+
+                                      return ListView.builder(
+                                          controller: labourScrollController,
+                                          itemCount: filteredList.length,
+                                          itemBuilder: (context, index) {
+                                            final labour = filteredList[index];
+
+                                            return ListTile(
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 0, right: 20),
+                                              leading: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Transform.scale(
+                                                      scale: 1.1,
+                                                      child: Obx(
+                                                        () => Checkbox(
+                                                          side: BorderSide(
+                                                              color: AppColors
+                                                                  .searchfeild,
+                                                              width: 1),
+                                                          value: selectInvolvedPersonController
+                                                              .selectedLabourIds
+                                                              .contains(
+                                                                  labour.id),
+                                                          onChanged: (value) {
+                                                            selectInvolvedPersonController
+                                                                .toggleSelection(
+                                                                    labour.id);
+                                                          },
+                                                          activeColor: AppColors
+                                                              .buttoncolor,
+                                                        ),
+                                                      )),
+                                                  // CircleAvatar(
+                                                  //   radius: 22,
+                                                  //   backgroundImage: NetworkImage(
+                                                  //       "$baseUrl${labour.userPhoto}"),
+                                                  // ),
+                                                  Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 28,
+                                                        backgroundColor: Colors
+                                                            .grey
+                                                            .shade200, // Fallback color
+                                                        child: ClipOval(
+                                                          child: Image.network(
+                                                            "$baseUrl${labour.userPhoto}",
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                56, // Diameter = radius * 2
+                                                            height: 56,
+                                                            loadingBuilder:
+                                                                (context, child,
+                                                                    loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null)
+                                                                return child;
+                                                              return Center(
+                                                                child: SizedBox(
+                                                                  width: 24,
+                                                                  height: 24,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2,
+                                                                    color: AppColors
+                                                                        .buttoncolor,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorBuilder:
+                                                                (context, error,
+                                                                    stackTrace) {
+                                                              return Image
+                                                                  .asset(
+                                                                'assets/icons/image.png',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              title: AppTextWidget(
+                                                text: labour.labourName
+                                                    .toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryText,
+                                              ),
+                                              subtitle: AppTextWidget(
+                                                text: labour.contactNumber
+                                                    .toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmalle,
+                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.secondaryText,
+                                              ),
+                                            );
+                                          });
                                     },
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 1.5,
-                          ),
-                          Expanded(
-                            child: Obx(
-                              () {
-                                final filteredList =
-                                    selectInvolvedPersonController
-                                        .filteredLabours;
+                            )
+                          ]),
+                        ),
 
-                                return ListView.builder(
-                                    itemCount: filteredList.length,
-                                    itemBuilder: (context, index) {
-                                      final labour = filteredList[index];
+                        //---------------------------------------------------------------------
 
-                                      return ListTile(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 0, right: 20),
-                                        leading: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Transform.scale(
-                                                scale: 1.1,
-                                                child: Obx(
-                                                  () => Checkbox(
-                                                    side: BorderSide(
-                                                        color: AppColors
-                                                            .searchfeild,
-                                                        width: 1),
-                                                    value:
-                                                        selectInvolvedPersonController
-                                                            .selectedLabourIds
-                                                            .contains(
-                                                                labour.id),
-                                                    onChanged: (value) {
-                                                      selectInvolvedPersonController
-                                                          .toggleSelection(
-                                                              labour.id);
-                                                    },
-                                                    activeColor:
-                                                        AppColors.thirdText,
-                                                  ),
-                                                )),
-                                            // CircleAvatar(
-                                            //   radius: 22,
-                                            //   backgroundImage: NetworkImage(
-                                            //       "$baseUrl${labour.userPhoto}"),
-                                            // ),
-                                            Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor: Colors.grey
-                                                      .shade200, // Fallback color
-                                                  child: ClipOval(
-                                                    child: Image.network(
-                                                      "$baseUrl${labour.userPhoto}",
-                                                      fit: BoxFit.cover,
-                                                      width:
-                                                          56, // Diameter = radius * 2
-                                                      height: 56,
-                                                      loadingBuilder: (context,
-                                                          child,
-                                                          loadingProgress) {
-                                                        if (loadingProgress ==
-                                                            null) return child;
-                                                        return Center(
-                                                          child: SizedBox(
-                                                            width: 24,
-                                                            height: 24,
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                              strokeWidth: 2,
-                                                              color: AppColors
-                                                                  .buttoncolor,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (context,
-                                                          error, stackTrace) {
-                                                        return Image.asset(
-                                                          'assets/icons/image.png',
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 5, top: 16),
+                          child: Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: SizeConfig.heightMultiplier * 5.8,
+                                    width: SizeConfig.widthMultiplier * 92,
+                                    child: AppTextFormfeild(
+                                      controller: selectInvolvedPersonController
+                                          .searchStaffController,
+                                      hintText: 'Search By Name..',
+                                      keyboardType: TextInputType.name,
+                                      textInputAction: TextInputAction.next,
+                                      prefixIcon: Container(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Image.asset(
+                                          'assets/icons/Search.png',
+                                          fit: BoxFit.contain,
                                         ),
-                                        title: AppTextWidget(
-                                          text: labour.labourName.toString(),
-                                          fontSize: AppTextSize.textSizeSmall,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primaryText,
-                                        ),
-                                        subtitle: AppTextWidget(
-                                          text: labour.contactNumber.toString(),
-                                          fontSize: AppTextSize.textSizeSmalle,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.secondaryText,
-                                        ),
-                                      );
-                                    });
-                              },
-                            ),
-                          )
-                        ]),
-                      ),
-
-                      //---------------------------------------------------------------------
-
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: SizeConfig.heightMultiplier * 5.8,
-                                  width: SizeConfig.widthMultiplier * 92,
-                                  child: AppTextFormfeild(
-                                    controller: selectInvolvedPersonController
-                                        .searchStaffController,
-                                    hintText: 'Search By Name..',
-                                    keyboardType: TextInputType.name,
-                                    textInputAction: TextInputAction.next,
-                                    prefixIcon: Container(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Image.asset(
-                                        'assets/icons/Search.png',
-                                        fit: BoxFit.contain,
                                       ),
+                                      onChanged: (value) {
+                                        selectInvolvedPersonController
+                                            .updateSearchStaffQuery(value);
+                                      },
                                     ),
-                                    onChanged: (value) {
-                                      selectInvolvedPersonController
-                                          .updateSearchStaffQuery(value);
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: SizeConfig.widthMultiplier * 1.5,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: SizeConfig.heightMultiplier * 1.5,
+                            ),
+                            Expanded(
+                              child: ScrollbarTheme(
+                                data: ScrollbarThemeData(
+                                  thumbVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thickness: WidgetStateProperty.all(3),
+                                  radius: const Radius.circular(8),
+                                  trackVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thumbColor: WidgetStateProperty.all(
+                                      AppColors.buttoncolor),
+                                  trackColor: WidgetStateProperty.all(
+                                      const Color.fromARGB(26, 101, 99, 99)),
+                                  trackBorderColor: WidgetStateProperty.all(
+                                      Colors.transparent),
+                                ),
+                                child: Scrollbar(
+                                  controller: staffScrollController,
+                                  interactive: true,
+                                  child: Obx(
+                                    () {
+                                      final filteredList =
+                                          selectInvolvedPersonController
+                                              .filteredStaff;
+
+                                      return ListView.builder(
+                                          controller: staffScrollController,
+                                          itemCount: filteredList.length,
+                                          itemBuilder: (context, index) {
+                                            final staff = filteredList[index];
+
+                                            return ListTile(
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 0, right: 20),
+                                              leading: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Transform.scale(
+                                                      scale: 1.1,
+                                                      child: Obx(
+                                                        () => Checkbox(
+                                                          side: BorderSide(
+                                                              color: AppColors
+                                                                  .searchfeild,
+                                                              width: 1),
+                                                          value: selectInvolvedPersonController
+                                                              .selectedStaffIds
+                                                              .contains(
+                                                                  staff.id),
+                                                          onChanged: (value) {
+                                                            selectInvolvedPersonController
+                                                                .toggleStaffSelection(
+                                                                    staff.id);
+                                                          },
+                                                          activeColor: AppColors
+                                                              .buttoncolor,
+                                                        ),
+                                                      )),
+                                                  // CircleAvatar(
+                                                  //   radius: 22,
+                                                  //   backgroundImage: NetworkImage(
+                                                  //       "$baseUrl${labour.userPhoto}"),
+                                                  // ),
+                                                  Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 28,
+                                                        backgroundColor: Colors
+                                                            .grey
+                                                            .shade200, // Fallback color
+                                                        child: ClipOval(
+                                                          child: Image.network(
+                                                            "$baseUrl${staff.userPhoto}",
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                56, // Diameter = radius * 2
+                                                            height: 56,
+                                                            loadingBuilder:
+                                                                (context, child,
+                                                                    loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null)
+                                                                return child;
+                                                              return Center(
+                                                                child: SizedBox(
+                                                                  width: 24,
+                                                                  height: 24,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2,
+                                                                    color: AppColors
+                                                                        .buttoncolor,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorBuilder:
+                                                                (context, error,
+                                                                    stackTrace) {
+                                                              return Image
+                                                                  .asset(
+                                                                'assets/icons/image.png',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              title: AppTextWidget(
+                                                text:
+                                                    staff.staffName.toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryText,
+                                              ),
+                                              subtitle: AppTextWidget(
+                                                text: staff.contactNumber
+                                                    .toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmalle,
+                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.secondaryText,
+                                              ),
+                                            );
+                                          });
                                     },
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 1.5,
-                          ),
-                          Expanded(
-                            child: Obx(
-                              () {
-                                final filteredList =
-                                    selectInvolvedPersonController
-                                        .filteredStaff;
+                            )
+                          ]),
+                        ),
 
-                                return ListView.builder(
-                                    itemCount: filteredList.length,
-                                    itemBuilder: (context, index) {
-                                      final staff = filteredList[index];
+                        //-------------------------------------------
+                        // Column(
+                        //   children: [
+                        //     SizedBox(
+                        //       height: SizeConfig.heightMultiplier * 3,
+                        //     ),
+                        //     Row(
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       children: [
+                        //         SizedBox(
+                        //           height: SizeConfig.heightMultiplier * 5.8,
+                        //           width: SizeConfig.widthMultiplier * 92,
+                        //           child: AppTextFormfeild(
+                        //             controller: selectInvolvedPersonController
+                        //                 .searchContractorController,
+                        //             hintText: 'Search By Contractor Name..',
+                        //             keyboardType: TextInputType.name,
+                        //             textInputAction: TextInputAction.next,
+                        //             prefixIcon: Container(
+                        //               padding: EdgeInsets.all(10.0),
+                        //               child: Image.asset(
+                        //                 'assets/icons/Search.png',
+                        //                 fit: BoxFit.contain,
+                        //               ),
+                        //             ),
+                        //             onChanged: (value) {
+                        //               selectInvolvedPersonController
+                        //                   .updateSearchContractorQuery(value);
+                        //             },
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     SizedBox(
+                        //       height: SizeConfig.heightMultiplier * 1.5,
+                        //     ),
+                        //     Expanded(
+                        //       child: Obx(
+                        //         () {
+                        //           final filteredList =
+                        //               selectInvolvedPersonController
+                        //                   .filteredContractor;
 
-                                      return ListTile(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 0, right: 20),
-                                        leading: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Transform.scale(
-                                                scale: 1.1,
-                                                child: Obx(
-                                                  () => Checkbox(
-                                                    side: BorderSide(
-                                                        color: AppColors
-                                                            .searchfeild,
-                                                        width: 1),
-                                                    value:
-                                                        selectInvolvedPersonController
-                                                            .selectedStaffIds
-                                                            .contains(staff.id),
-                                                    onChanged: (value) {
-                                                      selectInvolvedPersonController
-                                                          .toggleStaffSelection(
-                                                              staff.id);
-                                                    },
-                                                    activeColor:
-                                                        AppColors.thirdText,
-                                                  ),
-                                                )),
-                                            // CircleAvatar(
-                                            //   radius: 22,
-                                            //   backgroundImage: NetworkImage(
-                                            //       "$baseUrl${labour.userPhoto}"),
-                                            // ),
-                                            Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor: Colors.grey
-                                                      .shade200, // Fallback color
-                                                  child: ClipOval(
-                                                    child: Image.network(
-                                                      "$baseUrl${staff.userPhoto}",
-                                                      fit: BoxFit.cover,
-                                                      width:
-                                                          56, // Diameter = radius * 2
-                                                      height: 56,
-                                                      loadingBuilder: (context,
-                                                          child,
-                                                          loadingProgress) {
-                                                        if (loadingProgress ==
-                                                            null) return child;
-                                                        return Center(
-                                                          child: SizedBox(
-                                                            width: 24,
-                                                            height: 24,
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                              strokeWidth: 2,
-                                                              color: AppColors
-                                                                  .buttoncolor,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (context,
-                                                          error, stackTrace) {
-                                                        return Image.asset(
-                                                          'assets/icons/image.png',
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                        //           return ListView.builder(
+                        //               itemCount: filteredList.length,
+                        //               itemBuilder: (context, index) {
+                        //                 final contractor = filteredList[index];
+
+                        //                 return ListTile(
+                        //                   contentPadding:
+                        //                       EdgeInsets.only(left: 0, right: 20),
+                        //                   leading: Row(
+                        //                     mainAxisSize: MainAxisSize.min,
+                        //                     children: [
+                        //                       Transform.scale(
+                        //                           scale: 1.1,
+                        //                           child: Obx(
+                        //                             () => Checkbox(
+                        //                               side: BorderSide(
+                        //                                   color:
+                        //                                       AppColors.searchfeild,
+                        //                                   width: 1),
+                        //                               value:
+                        //                                   selectInvolvedPersonController
+                        //                                       .selectedContractorIds
+                        //                                       .contains(
+                        //                                           contractor.id),
+                        //                               onChanged: (value) {
+                        //                                 selectInvolvedPersonController
+                        //                                     .toggleContractorSelection(
+                        //                                         contractor.id);
+                        //                               },
+                        //                               activeColor:
+                        //                                   AppColors.thirdText,
+                        //                             ),
+                        //                           )),
+                        //                       // CircleAvatar(
+                        //                       //   radius: 22,
+                        //                       //   backgroundImage: NetworkImage(
+                        //                       //       "$baseUrl${contractor.documentPath}"),
+                        //                       // ),
+                        //                       Stack(
+                        //                         alignment: Alignment.center,
+                        //                         children: [
+                        //                           CircleAvatar(
+                        //                             radius: 28,
+                        //                             backgroundColor: Colors.grey
+                        //                                 .shade200, // Fallback color
+                        //                             child: ClipOval(
+                        //                               child: Image.network(
+                        //                                 "$baseUrl${contractor.documentPath}",
+                        //                                 fit: BoxFit.cover,
+                        //                                 width:
+                        //                                     56, // Diameter = radius * 2
+                        //                                 height: 56,
+                        //                                 loadingBuilder: (context,
+                        //                                     child,
+                        //                                     loadingProgress) {
+                        //                                   if (loadingProgress ==
+                        //                                       null) return child;
+                        //                                   return Center(
+                        //                                     child: SizedBox(
+                        //                                       width: 24,
+                        //                                       height: 24,
+                        //                                       child:
+                        //                                           CircularProgressIndicator(
+                        //                                         strokeWidth: 2,
+                        //                                         color: AppColors
+                        //                                             .buttoncolor,
+                        //                                       ),
+                        //                                     ),
+                        //                                   );
+                        //                                 },
+                        //                                 errorBuilder: (context,
+                        //                                     error, stackTrace) {
+                        //                                   return Image.asset(
+                        //                                     'assets/icons/image.png',
+                        //                                     fit: BoxFit.cover,
+                        //                                   );
+                        //                                 },
+                        //                               ),
+                        //                             ),
+                        //                           ),
+                        //                         ],
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                   title: AppTextWidget(
+                        //                     text: contractor.contractorName
+                        //                         .toString(),
+                        //                     fontSize: AppTextSize.textSizeSmall,
+                        //                     fontWeight: FontWeight.w600,
+                        //                     color: AppColors.primaryText,
+                        //                   ),
+                        //                   subtitle: AppTextWidget(
+                        //                     text: contractor.contractorPhoneNo
+                        //                         .toString(),
+                        //                     fontSize: AppTextSize.textSizeSmalle,
+                        //                     fontWeight: FontWeight.w400,
+                        //                     color: AppColors.secondaryText,
+                        //                   ),
+                        //                 );
+                        //               });
+                        //         },
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 5, top: 16),
+                          child: Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: SizeConfig.heightMultiplier * 5.8,
+                                    width: SizeConfig.widthMultiplier * 92,
+                                    child: AppTextFormfeild(
+                                      controller: selectInvolvedPersonController
+                                          .searchContractorController,
+                                      hintText: 'Search By Name..',
+                                      keyboardType: TextInputType.name,
+                                      textInputAction: TextInputAction.next,
+                                      prefixIcon: Container(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Image.asset(
+                                          'assets/icons/Search.png',
+                                          fit: BoxFit.contain,
                                         ),
-                                        title: AppTextWidget(
-                                          text: staff.staffName.toString(),
-                                          fontSize: AppTextSize.textSizeSmall,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primaryText,
-                                        ),
-                                        subtitle: AppTextWidget(
-                                          text: staff.contactNumber.toString(),
-                                          fontSize: AppTextSize.textSizeSmalle,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.secondaryText,
-                                        ),
-                                      );
-                                    });
-                              },
-                            ),
-                          )
-                        ]),
-                      ),
-
-                      //-------------------------------------------
-                      // Column(
-                      //   children: [
-                      //     SizedBox(
-                      //       height: SizeConfig.heightMultiplier * 3,
-                      //     ),
-                      //     Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         SizedBox(
-                      //           height: SizeConfig.heightMultiplier * 5.8,
-                      //           width: SizeConfig.widthMultiplier * 92,
-                      //           child: AppTextFormfeild(
-                      //             controller: selectInvolvedPersonController
-                      //                 .searchContractorController,
-                      //             hintText: 'Search By Contractor Name..',
-                      //             keyboardType: TextInputType.name,
-                      //             textInputAction: TextInputAction.next,
-                      //             prefixIcon: Container(
-                      //               padding: EdgeInsets.all(10.0),
-                      //               child: Image.asset(
-                      //                 'assets/icons/Search.png',
-                      //                 fit: BoxFit.contain,
-                      //               ),
-                      //             ),
-                      //             onChanged: (value) {
-                      //               selectInvolvedPersonController
-                      //                   .updateSearchContractorQuery(value);
-                      //             },
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     SizedBox(
-                      //       height: SizeConfig.heightMultiplier * 1.5,
-                      //     ),
-                      //     Expanded(
-                      //       child: Obx(
-                      //         () {
-                      //           final filteredList =
-                      //               selectInvolvedPersonController
-                      //                   .filteredContractor;
-
-                      //           return ListView.builder(
-                      //               itemCount: filteredList.length,
-                      //               itemBuilder: (context, index) {
-                      //                 final contractor = filteredList[index];
-
-                      //                 return ListTile(
-                      //                   contentPadding:
-                      //                       EdgeInsets.only(left: 0, right: 20),
-                      //                   leading: Row(
-                      //                     mainAxisSize: MainAxisSize.min,
-                      //                     children: [
-                      //                       Transform.scale(
-                      //                           scale: 1.1,
-                      //                           child: Obx(
-                      //                             () => Checkbox(
-                      //                               side: BorderSide(
-                      //                                   color:
-                      //                                       AppColors.searchfeild,
-                      //                                   width: 1),
-                      //                               value:
-                      //                                   selectInvolvedPersonController
-                      //                                       .selectedContractorIds
-                      //                                       .contains(
-                      //                                           contractor.id),
-                      //                               onChanged: (value) {
-                      //                                 selectInvolvedPersonController
-                      //                                     .toggleContractorSelection(
-                      //                                         contractor.id);
-                      //                               },
-                      //                               activeColor:
-                      //                                   AppColors.thirdText,
-                      //                             ),
-                      //                           )),
-                      //                       // CircleAvatar(
-                      //                       //   radius: 22,
-                      //                       //   backgroundImage: NetworkImage(
-                      //                       //       "$baseUrl${contractor.documentPath}"),
-                      //                       // ),
-                      //                       Stack(
-                      //                         alignment: Alignment.center,
-                      //                         children: [
-                      //                           CircleAvatar(
-                      //                             radius: 28,
-                      //                             backgroundColor: Colors.grey
-                      //                                 .shade200, // Fallback color
-                      //                             child: ClipOval(
-                      //                               child: Image.network(
-                      //                                 "$baseUrl${contractor.documentPath}",
-                      //                                 fit: BoxFit.cover,
-                      //                                 width:
-                      //                                     56, // Diameter = radius * 2
-                      //                                 height: 56,
-                      //                                 loadingBuilder: (context,
-                      //                                     child,
-                      //                                     loadingProgress) {
-                      //                                   if (loadingProgress ==
-                      //                                       null) return child;
-                      //                                   return Center(
-                      //                                     child: SizedBox(
-                      //                                       width: 24,
-                      //                                       height: 24,
-                      //                                       child:
-                      //                                           CircularProgressIndicator(
-                      //                                         strokeWidth: 2,
-                      //                                         color: AppColors
-                      //                                             .buttoncolor,
-                      //                                       ),
-                      //                                     ),
-                      //                                   );
-                      //                                 },
-                      //                                 errorBuilder: (context,
-                      //                                     error, stackTrace) {
-                      //                                   return Image.asset(
-                      //                                     'assets/icons/image.png',
-                      //                                     fit: BoxFit.cover,
-                      //                                   );
-                      //                                 },
-                      //                               ),
-                      //                             ),
-                      //                           ),
-                      //                         ],
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                   title: AppTextWidget(
-                      //                     text: contractor.contractorName
-                      //                         .toString(),
-                      //                     fontSize: AppTextSize.textSizeSmall,
-                      //                     fontWeight: FontWeight.w600,
-                      //                     color: AppColors.primaryText,
-                      //                   ),
-                      //                   subtitle: AppTextWidget(
-                      //                     text: contractor.contractorPhoneNo
-                      //                         .toString(),
-                      //                     fontSize: AppTextSize.textSizeSmalle,
-                      //                     fontWeight: FontWeight.w400,
-                      //                     color: AppColors.secondaryText,
-                      //                   ),
-                      //                 );
-                      //               });
-                      //         },
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: SizeConfig.heightMultiplier * 5.8,
-                                  width: SizeConfig.widthMultiplier * 92,
-                                  child: AppTextFormfeild(
-                                    controller: selectInvolvedPersonController
-                                        .searchContractorController,
-                                    hintText: 'Search By Name..',
-                                    keyboardType: TextInputType.name,
-                                    textInputAction: TextInputAction.next,
-                                    prefixIcon: Container(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Image.asset(
-                                        'assets/icons/Search.png',
-                                        fit: BoxFit.contain,
                                       ),
+                                      onChanged: (value) {
+                                        selectInvolvedPersonController
+                                            .updateSearchContractorQuery(value);
+                                      },
                                     ),
-                                    onChanged: (value) {
-                                      selectInvolvedPersonController
-                                          .updateSearchContractorQuery(value);
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: SizeConfig.widthMultiplier * 2,
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: SizeConfig.heightMultiplier * 1.5,
+                            ),
+                            Expanded(
+                              child: ScrollbarTheme(
+                                data: ScrollbarThemeData(
+                                  thumbVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thickness: WidgetStateProperty.all(3),
+                                  radius: const Radius.circular(8),
+                                  trackVisibility:
+                                      WidgetStateProperty.all(true),
+                                  thumbColor: WidgetStateProperty.all(
+                                      AppColors.buttoncolor),
+                                  trackColor: WidgetStateProperty.all(
+                                      const Color.fromARGB(26, 101, 99, 99)),
+                                  trackBorderColor: WidgetStateProperty.all(
+                                      Colors.transparent),
+                                ),
+                                child: Scrollbar(
+                                  controller: contractorScrollController,
+                                  interactive: true,
+                                  child: Obx(
+                                    () {
+                                      final filteredList =
+                                          selectInvolvedPersonController
+                                              .filteredContractor;
+
+                                      return ListView.builder(
+                                          controller:
+                                              contractorScrollController,
+                                          itemCount: filteredList.length,
+                                          itemBuilder: (context, index) {
+                                            final contractor =
+                                                filteredList[index];
+
+                                            return ListTile(
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 0, right: 20),
+                                              leading: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Transform.scale(
+                                                      scale: 1.1,
+                                                      child: Obx(
+                                                        () => Checkbox(
+                                                          side: BorderSide(
+                                                              color: AppColors
+                                                                  .searchfeild,
+                                                              width: 1),
+                                                          value: selectInvolvedPersonController
+                                                              .selectedContractorIds
+                                                              .contains(
+                                                                  contractor
+                                                                      .id),
+                                                          onChanged: (value) {
+                                                            selectInvolvedPersonController
+                                                                .toggleContractorSelection(
+                                                                    contractor
+                                                                        .id);
+                                                          },
+                                                          activeColor: AppColors
+                                                              .buttoncolor,
+                                                        ),
+                                                      )),
+                                                  Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 28,
+                                                        backgroundColor: Colors
+                                                            .grey
+                                                            .shade200, // Fallback color
+                                                        child: ClipOval(
+                                                          child: Image.network(
+                                                            "$baseUrl${contractor.documentPath}",
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                56, // Diameter = radius * 2
+                                                            height: 56,
+                                                            loadingBuilder:
+                                                                (context, child,
+                                                                    loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null)
+                                                                return child;
+                                                              return Center(
+                                                                child: SizedBox(
+                                                                  width: 24,
+                                                                  height: 24,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2,
+                                                                    color: AppColors
+                                                                        .buttoncolor,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorBuilder:
+                                                                (context, error,
+                                                                    stackTrace) {
+                                                              return Image
+                                                                  .asset(
+                                                                'assets/icons/image.png',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              title: AppTextWidget(
+                                                text: contractor.contractorName
+                                                    .toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmall,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryText,
+                                              ),
+                                              subtitle: AppTextWidget(
+                                                text: contractor
+                                                    .contractorPhoneNo
+                                                    .toString(),
+                                                fontSize:
+                                                    AppTextSize.textSizeSmalle,
+                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.secondaryText,
+                                              ),
+                                            );
+                                          });
                                     },
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 1.5,
-                          ),
-                          Expanded(
-                            child: Obx(
-                              () {
-                                final filteredList =
-                                    selectInvolvedPersonController
-                                        .filteredContractor;
-
-                                return ListView.builder(
-                                    itemCount: filteredList.length,
-                                    itemBuilder: (context, index) {
-                                      final contractor = filteredList[index];
-
-                                      return ListTile(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 0, right: 20),
-                                        leading: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Transform.scale(
-                                                scale: 1.1,
-                                                child: Obx(
-                                                  () => Checkbox(
-                                                    side: BorderSide(
-                                                        color: AppColors
-                                                            .searchfeild,
-                                                        width: 1),
-                                                    value:
-                                                        selectInvolvedPersonController
-                                                            .selectedContractorIds
-                                                            .contains(
-                                                                contractor.id),
-                                                    onChanged: (value) {
-                                                      selectInvolvedPersonController
-                                                          .toggleContractorSelection(
-                                                              contractor.id);
-                                                    },
-                                                    activeColor:
-                                                        AppColors.thirdText,
-                                                  ),
-                                                )),
-                                            Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor: Colors.grey
-                                                      .shade200, // Fallback color
-                                                  child: ClipOval(
-                                                    child: Image.network(
-                                                      "$baseUrl${contractor.documentPath}",
-                                                      fit: BoxFit.cover,
-                                                      width:
-                                                          56, // Diameter = radius * 2
-                                                      height: 56,
-                                                      loadingBuilder: (context,
-                                                          child,
-                                                          loadingProgress) {
-                                                        if (loadingProgress ==
-                                                            null) return child;
-                                                        return Center(
-                                                          child: SizedBox(
-                                                            width: 24,
-                                                            height: 24,
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                              strokeWidth: 2,
-                                                              color: AppColors
-                                                                  .buttoncolor,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (context,
-                                                          error, stackTrace) {
-                                                        return Image.asset(
-                                                          'assets/icons/image.png',
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        title: AppTextWidget(
-                                          text: contractor.contractorName
-                                              .toString(),
-                                          fontSize: AppTextSize.textSizeSmall,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primaryText,
-                                        ),
-                                        subtitle: AppTextWidget(
-                                          text: contractor.contractorPhoneNo
-                                              .toString(),
-                                          fontSize: AppTextSize.textSizeSmalle,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.secondaryText,
-                                        ),
-                                      );
-                                    });
-                              },
-                            ),
-                          )
-                        ]),
-                      ),
-                    ]),
+                            )
+                          ]),
+                        ),
+                      ]),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(

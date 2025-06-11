@@ -4,12 +4,12 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/safety_violation_all/safety_violation/safety_violation_details/safety_violation_details_all/safety_violation_details_all_model.dart';
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -59,6 +59,9 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
   ScrollController scrollContractorController = ScrollController();
   ScrollController scrolldataController = ScrollController();
   TextEditingController assigneecommentController = TextEditingController();
+  FocusNode assigneeFocusNode = FocusNode();
+  GlobalKey photoKey = GlobalKey();
+  GlobalKey signKey = GlobalKey();
 
   List<ViolationDebitNote> violationDebitNote = [];
   List<Category> violationType = [];
@@ -262,12 +265,12 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
               log("----------------------------------------------------------------------msg: ");
               Navigator.pop(Get.context!, true);
 
-              await showDialog(
-                context: Get.context!,
-                builder: (BuildContext context) {
-                  return ValidationPopChang(message: validationmsg);
-                },
-              );
+              // await showDialog(
+              //   context: Get.context!,
+              //   builder: (BuildContext context) {
+              //     return ValidationPopChang(message: validationmsg);
+              //   },
+              // );
               Get.back();
             }
           } catch (e) {
@@ -345,23 +348,69 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
 
   final maxPhotos = 5;
 
-  Future<void> pickIncidentAssigneeImages() async {
+  // Future<void> pickIncidentAssigneeImages() async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   if (incidentAssigneeimg.length < maxPhotos) {
+  //     int remainingSlots = maxPhotos - incidentAssigneeimg.length;
+
+  //     final List<XFile> pickedFiles = await picker.pickMultiImage();
+
+  //     final List<XFile> limitedFiles =
+  //         pickedFiles.take(remainingSlots).toList();
+
+  //     incidentAssigneeimg.addAll(limitedFiles);
+  //     incidentAssigneeCount.value =
+  //         incidentAssigneeimg.length; // ✅ Correct update
+
+  //     log('-----------incidentImageCount------------$incidentAssigneeCount');
+  //     log('-----------incidentimg-------------${incidentAssigneeimg.length}');
+  //   }
+  // }
+  Future<void> pickIncidentAssigneeImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
     if (incidentAssigneeimg.length < maxPhotos) {
       int remainingSlots = maxPhotos - incidentAssigneeimg.length;
 
-      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      if (source == ImageSource.gallery) {
+        final List<XFile> pickedFiles = await picker.pickMultiImage();
+        final List<XFile> limitedFiles =
+            pickedFiles.take(remainingSlots).toList();
 
-      final List<XFile> limitedFiles =
-          pickedFiles.take(remainingSlots).toList();
+        for (var file in limitedFiles) {
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: file,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            incidentAssigneeimg.add(croppedFile);
+          }
+        }
 
-      incidentAssigneeimg.addAll(limitedFiles);
-      incidentAssigneeCount.value =
-          incidentAssigneeimg.length; // ✅ Correct update
+        log('Picked & Cropped from Gallery: ${incidentAssigneeimg.length} images');
+      } else if (source == ImageSource.camera) {
+        final XFile? capturedFile =
+            await picker.pickImage(source: ImageSource.camera);
 
-      log('-----------incidentImageCount------------$incidentAssigneeCount');
-      log('-----------incidentimg-------------${incidentAssigneeimg.length}');
+        if (capturedFile != null) {
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: capturedFile,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            incidentAssigneeimg.add(croppedFile);
+            log('Captured & Cropped from Camera: 1 image');
+          }
+        }
+      }
+
+      incidentAssigneeCount.value = incidentAssigneeimg.length;
+      if (incidentAssigneeCount.value > 0) {
+        photoAssigneeError.value = "";
+      }
+
+      log('incidentAssigneeCount: ${incidentAssigneeCount.value}');
     }
   }
 

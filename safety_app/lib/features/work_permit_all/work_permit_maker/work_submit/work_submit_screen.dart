@@ -9,8 +9,10 @@ import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_scr
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_undertaking/work_permit_under_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class WorkSubmitScreen extends StatelessWidget {
@@ -62,7 +64,7 @@ class WorkSubmitScreen extends StatelessWidget {
                       height: SizeConfig.heightMultiplier * 7,
                     ),
                     AppTextWidget(
-                      text: 'Submitted Successfully!',
+                      text: 'Created Successfully!',
                       fontSize: AppTextSize.textSizeMediumm,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -89,41 +91,54 @@ class WorkSubmitScreen extends StatelessWidget {
             child: AppElevatedButton(
                 text: 'Done',
                 onPressed: () async {
-                  workPermitUnderController.filteredDetailsUndertaking.clear();
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) => CustomLoadingPopup());
-                  await workPermitController.getWorkPermitAllListing(
-                      projectId, userId, 1);
-                  await workPermitController.getWorkPermitMakerListing(
-                      projectId, userId, 2);
-                  await workPermitController.getWorkPermitCheckerListing(
-                      projectId, userId, 3);
-                  final HomeScreenController homeScreenController =
-                      Get.put(HomeScreenController());
-                  await homeScreenController.getWorkPermitAllListing(
-                    projectId,
-                  );
+                  if (await CheckInternet.checkInternet()) {
+                    workPermitUnderController.filteredDetailsUndertaking
+                        .clear();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            CustomLoadingPopup());
+                    await workPermitController.getWorkPermitAllListing(
+                        projectId, userId, 1);
+                    await workPermitController.getWorkPermitMakerListing(
+                        projectId, userId, 2);
+                    await workPermitController.getWorkPermitCheckerListing(
+                        projectId, userId, 3);
+                    final HomeScreenController homeScreenController =
+                        Get.put(HomeScreenController());
+                    await homeScreenController.getWorkPermitAllListing(
+                      projectId,
+                    );
 
-                  await homeScreenController.getCardListing(projectId, userId);
+                    await homeScreenController.getCardListing(
+                        projectId, userId);
 
-                  Navigator.pop(context);
-                  Get.offUntil(
-                    GetPageRoute(
-                        page: () => WorkPermitScreen(
-                              userId: userId,
-                              userName: userName,
-                              projectId: projectId,
-                              userImg: userImg,
-                              userDesg: userDesg,
-                            )),
-                    (route) {
-                      if (route is GetPageRoute) {
-                        return route.page!().runtimeType == HomeScreen;
-                      }
-                      return false;
-                    },
-                  );
+                    Navigator.pop(context);
+                    Get.offUntil(
+                      GetPageRoute(
+                          page: () => WorkPermitScreen(
+                                userId: userId,
+                                userName: userName,
+                                projectId: projectId,
+                                userImg: userImg,
+                                userDesg: userDesg,
+                              )),
+                      (route) {
+                        if (route is GetPageRoute) {
+                          return route.page!().runtimeType == HomeScreen;
+                        }
+                        return false;
+                      },
+                    );
+                  } else {
+                    await showDialog(
+                      context: Get.context!,
+                      builder: (BuildContext context) {
+                        return CustomValidationPopup(
+                            message: "Please check your internet connection.");
+                      },
+                    );
+                  }
                 }),
           ),
         ),

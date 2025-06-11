@@ -416,17 +416,18 @@ class CheckerUserList {
 class SubActivityList {
   int id;
   String subActivityName;
-
+  int? reportingUnitId;
   SubActivityList({
     required this.id,
     required this.subActivityName,
+    this.reportingUnitId,
   });
 
   factory SubActivityList.fromJson(Map<String, dynamic> json) =>
       SubActivityList(
-        id: json["id"],
-        subActivityName: json["sub_activity_name"],
-      );
+          id: json["id"],
+          subActivityName: json["sub_activity_name"],
+          reportingUnitId: json["reporting_unit_id"] ?? 0);
 
   Map<String, dynamic> toJson() => {
         "id": id,

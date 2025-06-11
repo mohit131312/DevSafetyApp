@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_app/features/safety_violation_all/safety_violation/safet
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -121,7 +124,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -137,7 +140,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
           title: Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: AppTextWidget(
-              text: AppTexts.preview,
+              text: "Safety Violation",
               fontSize: AppTextSize.textSizeMedium,
               fontWeight: FontWeight.w400,
               color: AppColors.primary,
@@ -1489,6 +1492,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                         //   return null;
                         // },
                         onChanged: (value) {},
+                        fillColor: AppColors.textfeildcolor,
                       ),
                       SizedBox(
                         height: SizeConfig.heightMultiplier * 2.5,
@@ -1707,10 +1711,21 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                         controller: safetyViolationDetailsAssignorCont
                             .assignorcommentController,
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode: safetyViolationDetailsAssignorCont
+                            .assignorFocusNode,
+                        onFieldSubmitted: (_) {
+                          safetyViolationDetailsAssignorCont.assignorFocusNode
+                              .unfocus();
+                        },
+                        fillColor:
+                            safetyViolationDetailsAssignorCont.userFound.value
+                                ? AppColors.textfeildcolor
+                                : Colors.white,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\s]'),
+                          ),
+                        ],
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -1751,8 +1766,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 20, bottom: 20),
-                              height: 305,
+                                  left: 12, right: 12, top: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.textfeildcolor,
                                 borderRadius: BorderRadius.circular(12),
@@ -1792,7 +1806,7 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 4,
+                                    height: SizeConfig.heightMultiplier * 2,
                                   ),
                                   Obx(() {
                                     if (safetyViolationDetailsAssignorCont
@@ -1817,15 +1831,31 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                                           : const Text(
                                               "No signature available");
                                     } else {
-                                      // Show signature pad
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Signature(
-                                          height: 206,
-                                          controller:
+                                      return Listener(
+                                        key: safetyViolationDetailsAssignorCont
+                                            .signKey,
+                                        onPointerDown: (_) {
+                                          Future.delayed(
+                                              Duration(milliseconds: 50), () {
+                                            if (safetyViolationDetailsAssignorCont
+                                                .signatureCheckerController
+                                                .isNotEmpty) {
                                               safetyViolationDetailsAssignorCont
-                                                  .signatureCheckerController,
-                                          backgroundColor: Colors.white,
+                                                  .signatureattestationError
+                                                  .value = "";
+                                            }
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Signature(
+                                            height: 206,
+                                            controller:
+                                                safetyViolationDetailsAssignorCont
+                                                    .signatureCheckerController,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                       );
                                     }
@@ -2017,11 +2047,18 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
             ),
             child: AppElevatedButton(
                 text: safetyViolationDetailsAssignorCont.userFound.value
-                    ? "Closed"
-                    : 'Submit',
+                    ? "Close"
+                    : 'Close the Safety Violation',
                 onPressed: () async {
                   if (safetyViolationDetailsAssignorCont.userFound.value ==
                       false) {
+                    validateAndFocusFirstInvalidField();
+                    if (safetyViolationDetailsAssignorCont
+                        .signatureCheckerController.isEmpty) {
+                      safetyViolationDetailsAssignorCont
+                          .signatureattestationError
+                          .value = "Please fill in the signature.";
+                    }
                     if (formKey.currentState!.validate()) {
                       await safetyViolationDetailsAssignorCont
                           .saveIncidentAssigneeSignature();
@@ -2037,7 +2074,18 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                               .signatureCheckerController.isNotEmpty &&
                           safetyViolationDetailsAssignorCont
                               .assignorcommentController.text.isNotEmpty) {
-                        showConfirmationDialogClosed(context);
+                        if (await CheckInternet.checkInternet()) {
+                          showConfirmationDialogClosed(context);
+                        } else {
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
+                        }
                       }
                     }
                     //   Get.to(WorkPermitPrecautionScreen());
@@ -2047,5 +2095,33 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                 })),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (safetyViolationDetailsAssignorCont.assignorcommentController.text
+        .trim()
+        .isEmpty) {
+      safetyViolationDetailsAssignorCont.assignorFocusNode.requestFocus();
+      return;
+    }
+
+    if (safetyViolationDetailsAssignorCont.signatureCheckerController.isEmpty) {
+      scrollToWidget(safetyViolationDetailsAssignorCont.signKey);
+      return;
+    }
   }
 }

@@ -10,7 +10,6 @@ import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'dart:developer';
 
 class LabourListingScreen extends StatelessWidget {
   final int userId;
@@ -33,16 +32,16 @@ class LabourListingScreen extends StatelessWidget {
   final LocationController locationController = Get.find();
   @override
   Widget build(BuildContext context) {
-    String imageUrl =
-        "$baseUrl${labourListingController.labourDetailsList[0].userPhoto}";
-    log("Image in list below URL: $imageUrl");
+    // String imageUrl =
+    //     "$baseUrl${labourListingController.labourDetailsList[0].userPhoto}";
+    // log("Image in list below URL: $imageUrl");
 
     return SafeArea(
       top: false,
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -672,14 +671,15 @@ class LabourListingScreen extends StatelessWidget {
                                                     1,
                                               ),
                                               AppTextWidget(
-                                                  text: labourListingController
-                                                          .labourDetailsList[0]
-                                                          .emergencyContactName
+                                                  text: (labourListingController
+                                                                  .labourDetailsList[
+                                                                      0]
+                                                                  .emergencyContactName ??
+                                                              '')
                                                           .isNotEmpty
                                                       ? labourListingController
                                                           .labourDetailsList[0]
-                                                          .emergencyContactName
-                                                          .toString()
+                                                          .emergencyContactName!
                                                       : "",
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,
@@ -705,11 +705,11 @@ class LabourListingScreen extends StatelessWidget {
                                               AppTextWidget(
                                                   text: labourListingController
                                                           .labourDetailsList[0]
-                                                          .emergencyContactRelation
+                                                          .emergencyContactRelation!
                                                           .isNotEmpty
                                                       ? labourListingController
                                                           .labourDetailsList[0]
-                                                          .emergencyContactRelation
+                                                          .emergencyContactRelation!
                                                           .toString()
                                                       : "",
                                                   fontSize:
@@ -751,11 +751,11 @@ class LabourListingScreen extends StatelessWidget {
                                               AppTextWidget(
                                                   text: labourListingController
                                                           .labourDetailsList[0]
-                                                          .emergencyContactNumber
+                                                          .emergencyContactNumber!
                                                           .isNotEmpty
                                                       ? labourListingController
                                                           .labourDetailsList[0]
-                                                          .emergencyContactNumber
+                                                          .emergencyContactNumber!
                                                           .toString()
                                                       : "",
                                                   fontSize:
@@ -831,7 +831,7 @@ class LabourListingScreen extends StatelessWidget {
                       ),
               ),
 
-              //---------------------------------------------------------------------
+              // ---------------------------------------------------------------------
 
               Obx(
                 () => labourListingController
@@ -1194,7 +1194,7 @@ class LabourListingScreen extends StatelessWidget {
                                             if (index >=
                                                 labourListingController
                                                     .documentDetailsList[index]
-                                                    .idNumber
+                                                    .idNumber!
                                                     .length) {
                                               return SizedBox
                                                   .shrink(); // Prevents the error
@@ -1247,7 +1247,7 @@ class LabourListingScreen extends StatelessWidget {
                                                                       labourListingController
                                                                           .documentDetailsList[
                                                                               index]
-                                                                          .documentPath
+                                                                          .documentPath!
                                                                           .isNotEmpty) {
                                                                     showDialog(
                                                                       context:
@@ -1299,7 +1299,7 @@ class LabourListingScreen extends StatelessWidget {
                                                                             labourListingController
                                                                                 .documentDetailsList[
                                                                                     index]
-                                                                                .documentPath
+                                                                                .documentPath!
                                                                                 .isNotEmpty)
                                                                         ? Image
                                                                             .network(
@@ -1337,12 +1337,12 @@ class LabourListingScreen extends StatelessWidget {
                                                                   text: labourListingController
                                                                           .documentDetailsList[
                                                                               index]
-                                                                          .docmentType
+                                                                          .docmentType!
                                                                           .isNotEmpty
                                                                       ? labourListingController
                                                                           .documentDetailsList[
                                                                               index]
-                                                                          .docmentType
+                                                                          .docmentType!
                                                                       : "",
                                                                   fontSize:
                                                                       AppTextSize
@@ -1399,12 +1399,12 @@ class LabourListingScreen extends StatelessWidget {
                                                                   text: labourListingController
                                                                           .documentDetailsList[
                                                                               index]
-                                                                          .idNumber
+                                                                          .idNumber!
                                                                           .isNotEmpty
                                                                       ? labourListingController
                                                                           .documentDetailsList[
                                                                               index]
-                                                                          .idNumber
+                                                                          .idNumber!
                                                                       : "",
                                                                   fontSize:
                                                                       AppTextSize
@@ -1948,7 +1948,7 @@ class LabourListingScreen extends StatelessWidget {
             horizontal: SizeConfig.widthMultiplier * 4,
           ),
           child: AppElevatedButton(
-              text: 'Closed',
+              text: 'Close',
               onPressed: () {
                 Get.back();
               }),

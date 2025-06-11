@@ -79,6 +79,7 @@ class SelectTraineeController extends GetxController
 
     print(
         "SelectedLabour Data for API: ${selectedIncidentLabourIdsFinal.toList()}");
+    // toolboxAddTraineeController.trainnerError.value = "";
   }
 
   void removeIncidentData(int index) {

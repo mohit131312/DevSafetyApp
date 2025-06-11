@@ -105,4 +105,13 @@ class ContractorListingController extends GetxController {
       print("Error: $e");
     }
   }
+
+  void resetData() {
+    contractorDetailsList.clear();
+    contractorCompanyDetailsList.clear();
+    contractorServicesDetail.clear();
+    contractorInductionTrainingsList.clear();
+    contractorReasonOfVisitList.clear();
+    statusApi = false;
+  }
 }

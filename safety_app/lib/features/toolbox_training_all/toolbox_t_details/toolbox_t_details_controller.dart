@@ -139,4 +139,9 @@ class ToolboxTDetailsController extends GetxController {
 
     log("ToolboxTDetailsController data has been reset");
   }
+
+  //--------------------------------
+  final GlobalKey categoryKey = GlobalKey();
+  final GlobalKey reviewerKey = GlobalKey();
+  final GlobalKey instructionKey = GlobalKey();
 }

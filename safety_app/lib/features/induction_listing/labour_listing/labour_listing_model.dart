@@ -38,65 +38,94 @@ class LabourListing {
 }
 
 class Data {
-  List<LabourDetail> userDetails;
-  List<TradeName> tradeName;
-  List<ContractorCompanyDetail> contractorCompanyDetails;
-  List<SkillLevel> skillLevel;
-  List<InductionTraining> inductionTrainings;
-  List<DocumentDetail> documentDetails;
-  List<EquipmentDetail> equipmentDetails;
-  List<InstructionDetail> instructionDetails;
-  List<ReasonOfVisit> reasonOfVisit;
+  List<LabourDetail>? userDetails;
+  List<TradeName>? tradeName;
+  List<ContractorCompanyDetail>? contractorCompanyDetails;
+  List<SkillLevel>? skillLevel;
+  List<InductionTraining>? inductionTrainings;
+  List<DocumentDetail>? documentDetails;
+  List<EquipmentDetail>? equipmentDetails;
+  List<InstructionDetail>? instructionDetails;
+  List<ReasonOfVisit>? reasonOfVisit;
 
   Data({
-    required this.userDetails,
-    required this.tradeName,
-    required this.contractorCompanyDetails,
-    required this.skillLevel,
-    required this.inductionTrainings,
-    required this.documentDetails,
-    required this.equipmentDetails,
-    required this.instructionDetails,
-    required this.reasonOfVisit,
+    this.userDetails,
+    this.tradeName,
+    this.contractorCompanyDetails,
+    this.skillLevel,
+    this.inductionTrainings,
+    this.documentDetails,
+    this.equipmentDetails,
+    this.instructionDetails,
+    this.reasonOfVisit,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        userDetails: List<LabourDetail>.from(
-            json["user_details"].map((x) => LabourDetail.fromJson(x))),
-        tradeName: List<TradeName>.from(
-            json["trade_name"].map((x) => TradeName.fromJson(x))),
-        contractorCompanyDetails: List<ContractorCompanyDetail>.from(
-            json["contractor_company_details"]
-                .map((x) => ContractorCompanyDetail.fromJson(x))),
-        skillLevel: List<SkillLevel>.from(
-            json["skill_level"].map((x) => SkillLevel.fromJson(x))),
-        inductionTrainings: List<InductionTraining>.from(
-            json["induction_trainings"]
+        userDetails: json["user_details"] == null
+            ? null
+            : List<LabourDetail>.from(
+                json["user_details"].map((x) => LabourDetail.fromJson(x))),
+        tradeName: json["trade_name"] == null
+            ? null
+            : List<TradeName>.from(
+                json["trade_name"].map((x) => TradeName.fromJson(x))),
+        contractorCompanyDetails: json["contractor_company_details"] == null
+            ? null
+            : List<ContractorCompanyDetail>.from(
+                json["contractor_company_details"]
+                    .map((x) => ContractorCompanyDetail.fromJson(x))),
+        skillLevel: json["skill_level"] == null
+            ? null
+            : List<SkillLevel>.from(
+                json["skill_level"].map((x) => SkillLevel.fromJson(x))),
+        inductionTrainings: json["induction_trainings"] == null
+            ? null
+            : List<InductionTraining>.from(json["induction_trainings"]
                 .map((x) => InductionTraining.fromJson(x))),
-        documentDetails: List<DocumentDetail>.from(
-            json["document_details"].map((x) => DocumentDetail.fromJson(x))),
-        equipmentDetails: List<EquipmentDetail>.from(
-            json["equipment_details"].map((x) => EquipmentDetail.fromJson(x))),
-        instructionDetails: List<InstructionDetail>.from(
-            json["instruction_details"]
+        documentDetails: json["document_details"] == null
+            ? null
+            : List<DocumentDetail>.from(json["document_details"]
+                .map((x) => DocumentDetail.fromJson(x))),
+        equipmentDetails: json["equipment_details"] == null
+            ? null
+            : List<EquipmentDetail>.from(json["equipment_details"]
+                .map((x) => EquipmentDetail.fromJson(x))),
+        instructionDetails: json["instruction_details"] == null
+            ? null
+            : List<InstructionDetail>.from(json["instruction_details"]
                 .map((x) => InstructionDetail.fromJson(x))),
-        reasonOfVisit: List<ReasonOfVisit>.from(
-            json["reason_of_visit"].map((x) => ReasonOfVisit.fromJson(x))),
+        reasonOfVisit: json["reason_of_visit"] == null
+            ? null
+            : List<ReasonOfVisit>.from(
+                json["reason_of_visit"].map((x) => ReasonOfVisit.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "user_details": List<dynamic>.from(userDetails.map((x) => x.toJson())),
-        "trade_name": List<dynamic>.from(tradeName.map((x) => x.toJson())),
-        "induction_trainings":
-            List<dynamic>.from(inductionTrainings.map((x) => x.toJson())),
-        "document_details":
-            List<dynamic>.from(documentDetails.map((x) => x.toJson())),
-        "equipment_details":
-            List<dynamic>.from(equipmentDetails.map((x) => x.toJson())),
-        "instruction_details":
-            List<dynamic>.from(instructionDetails.map((x) => x.toJson())),
-        "reason_of_visit":
-            List<dynamic>.from(reasonOfVisit.map((x) => x.toJson())),
+        if (userDetails != null)
+          "user_details":
+              List<dynamic>.from(userDetails!.map((x) => x.toJson())),
+        if (tradeName != null)
+          "trade_name": List<dynamic>.from(tradeName!.map((x) => x.toJson())),
+        if (contractorCompanyDetails != null)
+          "contractor_company_details": List<dynamic>.from(
+              contractorCompanyDetails!.map((x) => x.toJson())),
+        if (skillLevel != null)
+          "skill_level": List<dynamic>.from(skillLevel!.map((x) => x.toJson())),
+        if (inductionTrainings != null)
+          "induction_trainings":
+              List<dynamic>.from(inductionTrainings!.map((x) => x.toJson())),
+        if (documentDetails != null)
+          "document_details":
+              List<dynamic>.from(documentDetails!.map((x) => x.toJson())),
+        if (equipmentDetails != null)
+          "equipment_details":
+              List<dynamic>.from(equipmentDetails!.map((x) => x.toJson())),
+        if (instructionDetails != null)
+          "instruction_details":
+              List<dynamic>.from(instructionDetails!.map((x) => x.toJson())),
+        if (reasonOfVisit != null)
+          "reason_of_visit":
+              List<dynamic>.from(reasonOfVisit!.map((x) => x.toJson())),
       };
 }
 
@@ -158,10 +187,10 @@ class SkillLevel {
 }
 
 class DocumentDetail {
-  String docmentType;
-  String idNumber;
-  DateTime validity;
-  String documentPath;
+  String? docmentType;
+  String? idNumber;
+  DateTime? validity;
+  String? documentPath;
 
   DocumentDetail({
     required this.docmentType,
@@ -171,17 +200,18 @@ class DocumentDetail {
   });
 
   factory DocumentDetail.fromJson(Map<String, dynamic> json) => DocumentDetail(
-        docmentType: json["docment_type"],
-        idNumber: json["id_number"],
-        validity: DateTime.parse(json["validity"]),
-        documentPath: json["document_path"],
+        docmentType: json["docment_type"] ?? "",
+        idNumber: json["id_number"] ?? "",
+        validity:
+            json["validity"] == null ? null : DateTime.parse(json["validity"]),
+        documentPath: json["document_path"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
         "docment_type": docmentType,
         "id_number": idNumber,
         "validity":
-            "${validity.year.toString().padLeft(4, '0')}-${validity.month.toString().padLeft(2, '0')}-${validity.day.toString().padLeft(2, '0')}",
+            "${validity!.year.toString().padLeft(4, '0')}-${validity!.month.toString().padLeft(2, '0')}-${validity!.day.toString().padLeft(2, '0')}",
         "document_path": documentPath,
       };
 }
@@ -394,9 +424,9 @@ class LabourDetail {
   // String insuranceNumber;
   // String insuranceType;
   // String insuranceValidity;
-  String emergencyContactName;
-  String emergencyContactNumber;
-  String emergencyContactRelation;
+  String? emergencyContactName;
+  String? emergencyContactNumber;
+  String? emergencyContactRelation;
   // String isActive;
   // dynamic deletedAt;
   DateTime? createdAt;
@@ -493,9 +523,9 @@ class LabourDetail {
         // insuranceNumber: json["insurance_number"],
         // insuranceType: json["insurance_type"],
         // insuranceValidity: json["insurance_validity"],
-        emergencyContactName: json["emergency_contact_name"],
-        emergencyContactNumber: json["emergency_contact_number"],
-        emergencyContactRelation: json["emergency_contact_relation"],
+        emergencyContactName: json["emergency_contact_name"] ?? "",
+        emergencyContactNumber: json["emergency_contact_number"] ?? "",
+        emergencyContactRelation: json["emergency_contact_relation"] ?? "",
         // isActive: json["is_active"],
         // deletedAt: json["deleted_at"],
         createdAt: json["created_at"] != null

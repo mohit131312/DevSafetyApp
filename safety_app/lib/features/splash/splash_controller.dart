@@ -10,7 +10,7 @@ class SplashController extends GetxController {
   late SelectProjectController selectProjectController;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
     if (!Get.isRegistered<SelectProjectController>()) {

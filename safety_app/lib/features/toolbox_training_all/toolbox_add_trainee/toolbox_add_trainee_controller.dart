@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/toolbox_training_all/seletc_trainee/select_trainee_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,6 +37,33 @@ class ToolboxAddTraineeController extends GetxController {
   //   }
   // }
 
+  // Future<void> picktraineeImages({required ImageSource source}) async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   if (traineeimg.length < maxPhotos) {
+  //     int remainingSlots = maxPhotos - traineeimg.length;
+
+  //     if (source == ImageSource.gallery) {
+  //       final List<XFile> pickedFiles = await picker.pickMultiImage();
+  //       final List<XFile> limitedFiles =
+  //           pickedFiles.take(remainingSlots).toList();
+  //       traineeimg.addAll(limitedFiles);
+  //       log('Picked from Gallery: ${limitedFiles.length} images');
+  //     } else if (source == ImageSource.camera) {
+  //       final XFile? capturedFile =
+  //           await picker.pickImage(source: ImageSource.camera);
+  //       if (capturedFile != null) {
+  //         traineeimg.add(capturedFile);
+  //         log('Captured from Camera: 1 image');
+  //       }
+  //     }
+
+  //     traineeImageCount.value = traineeimg.length;
+  //     log('-----------traineeImageCount------------$traineeImageCount');
+  //     log('-----------traineeimg-------------${traineeimg.length}');
+  //   }
+  // }
+
   Future<void> picktraineeImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
@@ -46,18 +74,37 @@ class ToolboxAddTraineeController extends GetxController {
         final List<XFile> pickedFiles = await picker.pickMultiImage();
         final List<XFile> limitedFiles =
             pickedFiles.take(remainingSlots).toList();
-        traineeimg.addAll(limitedFiles);
-        log('Picked from Gallery: ${limitedFiles.length} images');
+
+        for (var file in limitedFiles) {
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: file,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            traineeimg.add(croppedFile);
+          }
+        }
+
+        log('Picked from Gallery: ${traineeimg.length} images');
       } else if (source == ImageSource.camera) {
         final XFile? capturedFile =
             await picker.pickImage(source: ImageSource.camera);
         if (capturedFile != null) {
-          traineeimg.add(capturedFile);
-          log('Captured from Camera: 1 image');
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: capturedFile,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            traineeimg.add(croppedFile);
+            log('Captured from Camera: 1 image');
+          }
         }
       }
 
       traineeImageCount.value = traineeimg.length;
+      if (traineeImageCount.value > 0) {
+        photoError.value = '';
+      }
       log('-----------traineeImageCount------------$traineeImageCount');
       log('-----------traineeimg-------------${traineeimg.length}');
     }
@@ -236,34 +283,63 @@ class ToolboxAddTraineeController extends GetxController {
     } else {
       trainnerError.value = "";
     }
-    bool allTraineesSigned = true;
+    // bool allTraineesSigned = true;
+    // for (var trainee in selectTraineeController.addIncidentInvolvePerson) {
+    //   final signatureController = signatureControllers[trainee.id];
+
+    //   if (signatureController == null || signatureController.isEmpty) {
+    //     allTraineesSigned = false;
+    //     break;
+    //   }
+    // }
+
+    // // Show error message if any trainee has not signed
+    // if (!allTraineesSigned) {
+    //   trainnerError.value =
+    //       "All trainees must enter their signature before proceeding.";
+    //   log("🚨 Signature Error: ${trainnerError.value}");
+    //   return;
+    // }
+
+    // log("✅ Validation Passed: All trainees have signed.");
+    // bool isSignatureMissing = combinedIncidentIdsFinal.any((entry) {
+    //   return (entry["trainees_signature_photo"] ?? "").isEmpty;
+    // });
+
+    // if (isSignatureMissing) {
+    //   trainnerError.value =
+    //       "Please add at least one trainee & Signature is required for all trainees.";
+    //   log("🚨 Signature Error: ${trainnerError.value}");
+    // }
+
+    List<String> missingSignatures = [];
     for (var trainee in selectTraineeController.addIncidentInvolvePerson) {
       final signatureController = signatureControllers[trainee.id];
-
       if (signatureController == null || signatureController.isEmpty) {
-        allTraineesSigned = false;
-        break;
+        missingSignatures.add(trainee.labourName.toString());
       }
     }
 
-    // Show error message if any trainee has not signed
-    if (!allTraineesSigned) {
+    if (missingSignatures.isNotEmpty) {
       trainnerError.value =
-          "All trainees must enter their signature before proceeding.";
+          "Please add signatures for: ${missingSignatures.join(', ')}.";
       log("🚨 Signature Error: ${trainnerError.value}");
       return;
     }
 
-    log("✅ Validation Passed: All trainees have signed.");
     bool isSignatureMissing = combinedIncidentIdsFinal.any((entry) {
       return (entry["trainees_signature_photo"] ?? "").isEmpty;
     });
 
     if (isSignatureMissing) {
       trainnerError.value =
-          "Please add at least one trainee & Signature is required for all trainees.";
+          "Please add signatures for: ${missingSignatures.join(', ')}.";
       log("🚨 Signature Error: ${trainnerError.value}");
+      return;
     }
+
+    trainnerError.value = "";
+    log("✅ Validation Passed: All trainees have signed.");
   }
 
   void clearAllData() {

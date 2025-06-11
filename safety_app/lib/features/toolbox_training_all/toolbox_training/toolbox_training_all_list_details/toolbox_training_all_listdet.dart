@@ -40,7 +40,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
       top: false,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -995,13 +995,14 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                       //   }
                       //   return null;
                       // },
+                      fillColor: AppColors.textfeildcolor,
                       onChanged: (value) {},
                     ),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
                     AppTextWidget(
-                        text: 'Maker',
+                        text: 'Doer',
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText),
@@ -1049,7 +1050,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: 'Maker Comments',
+                          text: 'Doer Comments',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,
@@ -1063,6 +1064,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                       enabled: false,
                       controller:
                           toolboxTrainingAllListdetController.makerController,
+                      fillColor: AppColors.textfeildcolor,
 
                       hintText: 'Comments',
                       // focusNode: newWorkPermitController.dow,

@@ -1,9 +1,13 @@
 import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_all_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
+// module 8 mobile
+// entitle_id 3=induction training,5 toolbox training, 6 work permit ,23 safety actnable/violation,25 incident report
+// or entitlement_modeule_id safety module entitle list id
 class HomeScreenController extends GetxController {
   RxList<WorkPermitListingAll> workPermitListing = <WorkPermitListingAll>[].obs;
 
@@ -19,9 +23,11 @@ class HomeScreenController extends GetxController {
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      workPermitListing.value = (await responseData['data'] as List<dynamic>)
-          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
-          .toList();
+      workPermitListing.value = (responseData['data'] as List<dynamic>?)
+              ?.map((e) =>
+                  WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
       log('----------=workPermitListing: ${(workPermitListing.length)}');
       //-------------------------------------------------

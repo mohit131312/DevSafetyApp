@@ -5,6 +5,8 @@ import 'package:flutter_app/features/home/work_permit_details/work_permit_detail
 import 'package:flutter_app/features/home/work_permit_details/work_permit_details_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -41,25 +43,48 @@ class WorkPermitListItem extends StatelessWidget {
 
             return GestureDetector(
               onTap: () async {
-                await workPermitAllController.getWorkPermitAllDetails(
-                    projectId, userId, 1, work.id);
-                Get.to(WorkPermitDetailsScreen(
-                  userId: userId,
-                  userName: userName,
-                  userImg: userImg,
-                  userDesg: userDesg,
-                  projectId: projectId,
-                  wpId: work.id,
-                ));
+                if (await CheckInternet.checkInternet()) {
+                  workPermitAllController.resetData();
+
+                  await workPermitAllController.getWorkPermitAllDetails(
+                      projectId, userId, 1, work.id);
+                  Get.to(WorkPermitDetailsScreen(
+                    userId: userId,
+                    userName: userName,
+                    userImg: userImg,
+                    userDesg: userDesg,
+                    projectId: projectId,
+                    wpId: work.id,
+                  ));
+                } else {
+                  await showDialog(
+                    context: Get.context!,
+                    builder: (BuildContext context) {
+                      return CustomValidationPopup(
+                          message: "Please check your internet connection.");
+                    },
+                  );
+                }
               },
               child: Column(
                 children: [
                   ListTile(
-                    title: AppTextWidget(
-                      text: work.nameOfWorkpermit,
-                      fontSize: AppTextSize.textSizeSmall,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primaryText,
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppTextWidget(
+                          text: work.uniqueId!,
+                          fontSize: AppTextSize.textSizeSmalle,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryText,
+                        ),
+                        AppTextWidget(
+                          text: work.nameOfWorkpermit,
+                          fontSize: AppTextSize.textSizeSmalle,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryText,
+                        ),
+                      ],
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

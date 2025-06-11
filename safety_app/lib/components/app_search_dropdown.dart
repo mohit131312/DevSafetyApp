@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/size_config.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppSearchDropdown extends StatelessWidget {
@@ -12,6 +13,8 @@ class AppSearchDropdown extends StatelessWidget {
   final ValueChanged<String?> onChanged;
   final bool enabled;
   final FormFieldValidator<String?>? validator;
+  final AutovalidateMode autovalidateMode; // <-- Add this
+  final double? popupMaxHeight; // <-- add this
 
   const AppSearchDropdown({
     super.key,
@@ -21,6 +24,8 @@ class AppSearchDropdown extends StatelessWidget {
     this.hintText = 'Select an option',
     this.enabled = true, // Default to enabled if not specified
     this.validator,
+    this.autovalidateMode = AutovalidateMode.disabled, // default value
+    this.popupMaxHeight, // <-- add this
   });
 
   @override
@@ -28,20 +33,47 @@ class AppSearchDropdown extends StatelessWidget {
     return IgnorePointer(
       ignoring: !enabled,
       child: DropdownSearch<String>(
+        autoValidateMode: autovalidateMode, // <-- Pass here
+
         popupProps: PopupProps.menu(
+          fit: FlexFit.loose, // 👈 important to avoid forcing it centered
+
           menuProps: MenuProps(
+            barrierDismissible: true,
+            barrierColor: Colors.transparent,
             backgroundColor: Colors.white,
             borderRadius: BorderRadius.circular(16),
+            elevation: 8,
           ),
-          constraints: BoxConstraints(
-            maxHeight: (items.length * 80).toDouble().clamp(140, 300),
-          ), //
+          scrollbarProps: ScrollbarProps(
+            thumbVisibility: true,
+            thickness: 3, // Sleeker, modern feel
+            radius: const Radius.circular(8), // Smooth rounded edges
+            trackVisibility: true,
+            interactive: true,
+            mainAxisMargin: 2,
+            crossAxisMargin: 2,
+            fadeDuration: const Duration(milliseconds: 200),
+            timeToFade: const Duration(milliseconds: 800),
+            thumbColor: AppColors.buttoncolor,
+            trackColor: const Color.fromARGB(26, 101, 99, 99),
+            trackBorderColor: Colors.transparent,
+          ),
 
+          // constraints: BoxConstraints(
+          //   maxHeight: (items.length * 80).toDouble().clamp(140, 300),
+          // ), //
+          constraints: BoxConstraints(
+            maxHeight: popupMaxHeight ??
+                // (items.length * 80).toDouble().clamp(140, 300),
+                SizeConfig.heightMultiplier * 32,
+          ),
+          searchDelay: Duration.zero,
           showSearchBox: true,
           itemBuilder: (context, item, isSelected) {
             return Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 20, top: 20),
+                padding: const EdgeInsets.only(left: 20, top: 5, bottom: 10),
                 child: Text(
                   item,
                   style: GoogleFonts.inter(

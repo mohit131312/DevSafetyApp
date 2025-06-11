@@ -9,7 +9,7 @@ class IncidentMoreDetailsController extends GetxController {
   TextEditingController rootcauseController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   FocusNode rootcauseFocusNode = FocusNode();
-
+  GlobalKey preventivekey = GlobalKey();
   var selectedMoreIncidentIds = <int>[].obs;
   var isCheckedMeasures = false.obs;
 

@@ -15,8 +15,10 @@ import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_subm
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -69,6 +71,7 @@ class WorkPermitPreviewScreen extends StatelessWidget {
               color: AppColors.searchfeild),
           actions: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -131,7 +134,7 @@ class WorkPermitPreviewScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
           child: ClipRRect(
@@ -335,7 +338,7 @@ class WorkPermitPreviewScreen extends StatelessWidget {
                                                     2.5,
                                           ),
                                           AppTextWidget(
-                                              text: 'Toolbox Training Number',
+                                              text: 'Toolbox Training Name',
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
                                               fontWeight: FontWeight.w400,
@@ -1065,9 +1068,18 @@ class WorkPermitPreviewScreen extends StatelessWidget {
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
-                  showConfirmationDialogWorkPermit(
-                      context); // Call the function
+                onTap: () async {
+                  if (await CheckInternet.checkInternet()) {
+                    showConfirmationDialogWorkPermit(context);
+                  } else {
+                    await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        });
+                  }
                 },
                 child: AppMediumButton(
                   label: "Submit",

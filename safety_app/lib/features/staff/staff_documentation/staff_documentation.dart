@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_medium_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -165,6 +167,8 @@ class StaffDocumentation extends StatelessWidget {
     );
   }
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -172,7 +176,7 @@ class StaffDocumentation extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -465,42 +469,50 @@ class StaffDocumentation extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 1,
                     ),
-                    AppTextFormfeild(
-                      enabled: !addStaffController
-                          .userFound.value, // ✅ Editable only if user NOT found
-                      readOnly: addStaffController
-                          .userFound.value, // ✅ Read-only if user is found
-                      controller:
-                          staffDocumentationController.adharnoController,
-                      hintText: 'Enter Adhar ID number',
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.next,
-
-                      // validator: (value) {
-                      //   if (value == null || value.trim().isEmpty) {
-                      //     return 'Adhar number cannot be empty';
-                      //   }
-                      //   if (!RegExp(r'^\d{12}$').hasMatch(value)) {
-                      //     return 'Enter a valid 12-Adhar number';
-                      //   }
-                      //   return null;
-                      // },
+                    Form(
+                      key: formKey,
+                      child: AppTextFormfeild(
+                        enabled: !addStaffController.userFound
+                            .value, // ✅ Editable only if user NOT found
+                        readOnly: addStaffController
+                            .userFound.value, // ✅ Read-only if user is found
+                        controller:
+                            staffDocumentationController.adharnoController,
+                        hintText: 'Enter Adhar ID number',
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        focusNode: staffDocumentationController.adharnoFocus,
+                        onFieldSubmitted: (_) {
+                          staffDocumentationController.adharnoFocus.unfocus();
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Adhar number cannot be empty';
+                          }
+                          if (!RegExp(r'^\d{12}$').hasMatch(value)) {
+                            return 'Enter a valid 12-Adhar number';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 0.5,
-                    // ),
-                    Obx(() => staffDocumentationController
-                            .aadhaarError.isNotEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 4, left: 13),
-                            child: Text(
-                              staffDocumentationController.aadhaarError.value,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 174, 75, 68),
-                                  fontSize: 12),
-                            ),
-                          )
-                        : SizedBox.shrink()),
+
+                    // Obx(() => staffDocumentationController
+                    //         .aadhaarError.isNotEmpty
+                    //     ? Padding(
+                    //         padding: EdgeInsets.only(top: 4, left: 13),
+                    //         child: Text(
+                    //           staffDocumentationController.aadhaarError.value,
+                    //           style: TextStyle(
+                    //               color: const Color.fromARGB(255, 174, 75, 68),
+                    //               fontSize: 12),
+                    //         ),
+                    //       )
+                    //     : SizedBox.shrink()),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
@@ -573,6 +585,14 @@ class StaffDocumentation extends StatelessWidget {
                           if (selectedProof != null) {
                             staffDocumentationController
                                 .selectedIdProofId.value = selectedProof.id;
+                            if (staffDocumentationController
+                                .selectedDoctType.value.isEmpty) {
+                              staffDocumentationController.documentError.value =
+                                  "Please select a document type";
+                            } else {
+                              staffDocumentationController.documentError.value =
+                                  ""; // Clear error if valid
+                            }
                             print(
                                 "Selected Document ID: ${staffDocumentationController.selectedDoctType.value}");
                             print(
@@ -859,12 +879,18 @@ class StaffDocumentation extends StatelessWidget {
                       enabled: true, // Set to false to disable the field
                       readOnly:
                           false, // Set to true if you don't want it editable
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Id cannot be empty';
-                        }
+                      // validator: (value) {
+                      //   if (value == null || value.trim().isEmpty) {
+                      //     return 'Id cannot be empty';
+                      //   }
 
-                        return null;
+                      //   return null;
+                      // },
+                      onChanged: (value) {
+                        //    labourDocumentationController.idNumber.value = value;
+                        if (value.trim().isNotEmpty) {
+                          staffDocumentationController.idNumberError.value = "";
+                        }
                       },
                     ),
 
@@ -922,7 +948,7 @@ class StaffDocumentation extends StatelessWidget {
                             //       (value) as DateTime?;
                             // },
                             style: GoogleFonts.inter(
-                              fontSize: AppTextSize.textSizeSmallm,
+                              fontSize: AppTextSize.textSizeSmall,
                               fontWeight: FontWeight.w400,
                               color: AppColors.primaryText,
                             ),
@@ -961,7 +987,7 @@ class StaffDocumentation extends StatelessWidget {
                                   onTap: () => showDatePicker(
                                       context, staffDocumentationController),
                                   child: Image.asset(
-                                    'assets/icons/calendar.png',
+                                    'assets/images/calender.png',
                                     height: SizeConfig.imageSizeMultiplier * 3,
                                     width: SizeConfig.imageSizeMultiplier * 3,
                                   ),
@@ -1089,27 +1115,6 @@ class StaffDocumentation extends StatelessWidget {
                                 '';
                           }
                         }
-                        // if (staffDocumentationController.staffotherimg.isEmpty ||
-                        //     staffDocumentationController
-                        //         .selectedDoctType.value.isEmpty ||
-                        //     staffDocumentationController
-                        //         .validityController.text.isEmpty ||
-                        //     staffDocumentationController
-                        //         .idnoController.text.isEmpty) {
-                        //   // ID Proof Validation
-
-                        //   staffDocumentationController.documentError.value =
-                        //       "Please select a document type";
-
-                        //   staffDocumentationController.idNumberError.value =
-                        //       "ID Number is required";
-
-                        //   staffDocumentationController.validityError.value =
-                        //       "Validity is required";
-
-                        //   staffDocumentationController.photoError.value =
-                        //       "Photo is required";
-                        // }
 
                         if (staffDocumentationController
                                 .staffotherimg.isNotEmpty &&
@@ -1467,45 +1472,64 @@ class StaffDocumentation extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
-                  if (staffDocumentationController
+                onTap: () async {
+                  validateAndFocusFirstInvalidField();
+
+                  if (formKey.currentState!.validate() &&
+                      staffDocumentationController
                           .adharnoController.text.isNotEmpty &&
                       staffDocumentationController.staffimg.isNotEmpty &&
                       staffDocumentationController
                           .documentTypeName.isNotEmpty &&
                       staffDocumentationController.idNumber.isNotEmpty) {
-                    if (!RegExp(r'^\d{12}$').hasMatch(
-                        staffDocumentationController.adharnoController.text)) {
-                      staffDocumentationController.aadhaarError.value =
-                          "Aadhaar number must be exactly 12 digits";
-                      return;
-                    } else {
+                    if (formKey.currentState!.validate()) {
+                      log('-------------${addStaffController.profilePhoto.value}');
+                      log('-------------${staffDocumentationController.staffimg.length}');
+                      log('-------------${staffDocumentationController.documentTypeName.length}');
                       staffDocumentationController.aadhaarError.value = '';
+                      Get.to(StaffPrecaustionScreen(
+                        categoryId: categoryId,
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId,
+                      ));
+                      log('-----------------------$categoryId');
+                      print("Navigating to Labour precaution with:");
+                      print("User ID: $userId");
+                      print("User Name: $userName");
+                      print("Project ID: $projectId");
+                      print("categoryId: $categoryId");
                     }
-                    log('-------------${addStaffController.profilePhoto.value}');
-                    log('-------------${staffDocumentationController.staffimg.length}');
-                    log('-------------${staffDocumentationController.documentTypeName.length}');
-                    staffDocumentationController.aadhaarError.value = '';
-                    Get.to(StaffPrecaustionScreen(
-                      categoryId: categoryId,
-                      userId: userId,
-                      userName: userName,
-                      userImg: userImg,
-                      userDesg: userDesg,
-                      projectId: projectId,
-                    ));
-                    log('-----------------------$categoryId');
-                    print("Navigating to Labour precaution with:");
-                    print("User ID: $userId");
-                    print("User Name: $userName");
-                    print("Project ID: $projectId");
-                    print("categoryId: $categoryId");
                   } else {
+                    if (staffDocumentationController.adharnoController.text
+                                .trim()
+                                .length ==
+                            12 &&
+                        staffDocumentationController.staffimg.isEmpty &&
+                        staffDocumentationController.documentTypeName.isEmpty &&
+                        staffDocumentationController.idNumber.isEmpty) {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message: "Please Add Document ");
+                        },
+                      );
+                    } else {
+                      if (staffDocumentationController.adharnoController.text
+                          .trim()
+                          .isEmpty) {
+                        staffDocumentationController.adharnoFocus
+                            .requestFocus();
+                      }
+                    }
                     bool isValid = true;
 
                     if (staffDocumentationController
@@ -1523,7 +1547,9 @@ class StaffDocumentation extends StatelessWidget {
                     }
 
                     // ID Proof Validation
-                    if (staffDocumentationController.documentTypeName.isEmpty) {
+                    if (staffDocumentationController.documentTypeName.isEmpty &&
+                        staffDocumentationController
+                            .selectedDoctType.value.isEmpty) {
                       staffDocumentationController.documentError.value =
                           "Please select a document type";
                       isValid = false;
@@ -1532,7 +1558,9 @@ class StaffDocumentation extends StatelessWidget {
                     }
 
                     // ID Number Validation
-                    if (staffDocumentationController.idNumber.isEmpty) {
+                    if (staffDocumentationController.idNumber.isEmpty &&
+                        staffDocumentationController
+                            .idnoController.text.isEmpty) {
                       staffDocumentationController.idNumberError.value =
                           "ID Number is required";
                       isValid = false;
@@ -1540,7 +1568,9 @@ class StaffDocumentation extends StatelessWidget {
                       staffDocumentationController.idNumberError.value = "";
                     }
                     // ID Number Validation
-                    if (staffDocumentationController.validity.isEmpty) {
+                    if (staffDocumentationController.validity.isEmpty &&
+                        staffDocumentationController
+                            .validityController.text.isEmpty) {
                       staffDocumentationController.validityError.value =
                           "Validity is required";
                       isValid = false;
@@ -1548,13 +1578,16 @@ class StaffDocumentation extends StatelessWidget {
                       staffDocumentationController.validityError.value = "";
                     }
                     if (staffDocumentationController.staffimg.isEmpty) {
-                      staffDocumentationController.photoError.value =
-                          "Photo is required";
-                      isValid = false;
-                    } else {
-                      staffDocumentationController.photoError.value = "";
-                    }
+                      if (staffDocumentationController.otherImageCount.value >
+                          0) {
+                        staffDocumentationController.photoError.value = "";
+                      } else {
+                        staffDocumentationController.photoError.value =
+                            "Photo is required";
 
+                        isValid = false;
+                      }
+                    }
                     if (!isValid) return;
                   }
                 },
@@ -1564,7 +1597,7 @@ class StaffDocumentation extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],
@@ -1572,5 +1605,27 @@ class StaffDocumentation extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (!formKey.currentState!.validate()) {
+      if (staffDocumentationController.adharnoController.text.trim().isEmpty) {
+        staffDocumentationController.adharnoFocus.requestFocus();
+      }
+    }
   }
 }

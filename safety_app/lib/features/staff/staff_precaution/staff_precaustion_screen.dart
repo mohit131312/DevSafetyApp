@@ -44,7 +44,7 @@ class StaffPrecaustionScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -120,12 +120,12 @@ class StaffPrecaustionScreen extends StatelessWidget {
               SizedBox(
                 height: SizeConfig.heightMultiplier * 0.3,
               ),
-              AppTextWidget(
-                text: AppTexts.selectprecaustion,
-                fontSize: AppTextSize.textSizeSmalle,
-                fontWeight: FontWeight.w400,
-                color: AppColors.primaryText,
-              ),
+              // AppTextWidget(
+              //   text: AppTexts.selectprecaustion,
+              //   fontSize: AppTextSize.textSizeSmalle,
+              //   fontWeight: FontWeight.w400,
+              //   color: AppColors.primaryText,
+              // ),
               SizedBox(
                 height: SizeConfig.heightMultiplier * 2.5,
               ),
@@ -242,68 +242,77 @@ class StaffPrecaustionScreen extends StatelessWidget {
 
               SizedBox(height: SizeConfig.heightMultiplier * 2),
               SizedBox(
-                height: 270,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Obx(() {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: controller.filteredDetailsEquipment.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  visualDensity: VisualDensity.compact,
-                                  contentPadding: EdgeInsets.only(
-                                      top: 0, bottom: 0, left: 16, right: 16),
-                                  leading: SizedBox(
-                                      width: 24.0,
-                                      height: 24.0,
-                                      child: Obx(() => Checkbox(
-                                            value: controller.selectedItemIds
-                                                .contains(controller
+                height: 180,
+                child: ScrollbarTheme(
+                  data: ScrollbarThemeData(
+                    thumbVisibility: WidgetStateProperty.all(true),
+                    thickness: WidgetStateProperty.all(3),
+                    radius: const Radius.circular(8),
+                    trackVisibility: WidgetStateProperty.all(true),
+                    thumbColor: WidgetStateProperty.all(AppColors.buttoncolor),
+                    trackColor: WidgetStateProperty.all(
+                        const Color.fromARGB(26, 101, 99, 99)),
+                    trackBorderColor:
+                        WidgetStateProperty.all(Colors.transparent),
+                  ),
+                  child: Scrollbar(
+                    interactive: true,
+                    child: Obx(() {
+                      return ListView.builder(
+                        // shrinkWrap: true,
+                        // physics: NeverScrollableScrollPhysics(),
+                        itemCount: controller.filteredDetailsEquipment.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                visualDensity: VisualDensity.compact,
+                                contentPadding: EdgeInsets.only(
+                                    top: 0, bottom: 0, left: 16, right: 16),
+                                leading: SizedBox(
+                                    width: 24.0,
+                                    height: 24.0,
+                                    child: Obx(() => Checkbox(
+                                          value: controller.selectedItemIds
+                                              .contains(controller
+                                                  .filteredDetailsEquipment[
+                                                      index]
+                                                  .id),
+                                          activeColor: AppColors.buttoncolor,
+                                          side: BorderSide(
+                                            color: AppColors.secondaryText,
+                                            width: 1.2,
+                                          ),
+                                          onChanged: (bool? value) {
+                                            controller.toggleStaffSelection(
+                                                controller
                                                     .filteredDetailsEquipment[
                                                         index]
-                                                    .id),
-                                            activeColor: AppColors.buttoncolor,
-                                            side: BorderSide(
-                                              color: AppColors.secondaryText,
-                                              width: 1.2,
-                                            ),
-                                            onChanged: (bool? value) {
-                                              controller.toggleStaffSelection(
-                                                  controller
-                                                      .filteredDetailsEquipment[
-                                                          index]
-                                                      .id);
-                                            },
-                                          ))),
-                                  title: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      //${index + 1}.
+                                                    .id);
+                                          },
+                                        ))),
+                                title: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                  ), // 80% of screen width
 
-                                      AppTextWidget(
-                                        text: controller
-                                            .filteredDetailsEquipment[index]
-                                            .listDetails,
-                                        fontSize:
-                                            AppTextSize.textSizeExtraSmall,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.secondaryText,
-                                      ),
-                                    ],
+                                  child: AppTextWidget(
+                                    text: controller
+                                        .filteredDetailsEquipment[index]
+                                        .listDetails,
+                                    fontSize: AppTextSize.textSizeExtraSmall,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.secondaryText,
+                                    textAlign: TextAlign.start,
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      }),
-                    ],
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -415,77 +424,83 @@ class StaffPrecaustionScreen extends StatelessWidget {
                   : SizedBox()),
               SizedBox(height: SizeConfig.heightMultiplier * 2),
               SizedBox(
-                height: 270,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Obx(() {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount:
-                              controller.filteredDetailsInstruction.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  visualDensity: VisualDensity.compact,
-                                  contentPadding: EdgeInsets.only(
-                                      top: 0, bottom: 0, left: 16, right: 16),
-                                  leading: SizedBox(
-                                    width: 24.0,
-                                    height: 24.0,
-                                    child: Obx(
-                                      () => Checkbox(
-                                        value: controller
-                                            .selectedItemInstruction
-                                            .contains(
-                                          controller
-                                              .filteredDetailsInstruction[index]
-                                              .id,
-                                        ),
-                                        activeColor: AppColors.buttoncolor,
-                                        side: BorderSide(
-                                          color: AppColors.secondaryText,
-                                          width: 1.2,
-                                        ),
-                                        onChanged: (bool? value) {
-                                          controller
-                                              .toggleStaffSelectionInstruction(
-                                                  controller
-                                                      .filteredDetailsInstruction[
-                                                          index]
-                                                      .id);
-                                        },
+                height: 180,
+                child: Obx(() {
+                  return ScrollbarTheme(
+                    data: ScrollbarThemeData(
+                      thumbVisibility: WidgetStateProperty.all(true),
+                      thickness: WidgetStateProperty.all(3),
+                      radius: const Radius.circular(8),
+                      trackVisibility: WidgetStateProperty.all(true),
+                      thumbColor:
+                          WidgetStateProperty.all(AppColors.buttoncolor),
+                      trackColor: WidgetStateProperty.all(
+                          const Color.fromARGB(26, 101, 99, 99)),
+                      trackBorderColor:
+                          WidgetStateProperty.all(Colors.transparent),
+                    ),
+                    child: Scrollbar(
+                      interactive: true,
+                      child: ListView.builder(
+                        itemCount: controller.filteredDetailsInstruction.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                visualDensity: VisualDensity.compact,
+                                contentPadding: EdgeInsets.only(
+                                    top: 0, bottom: 0, left: 16, right: 16),
+                                leading: SizedBox(
+                                  width: 24.0,
+                                  height: 24.0,
+                                  child: Obx(
+                                    () => Checkbox(
+                                      value: controller.selectedItemInstruction
+                                          .contains(
+                                        controller
+                                            .filteredDetailsInstruction[index]
+                                            .id,
                                       ),
+                                      activeColor: AppColors.buttoncolor,
+                                      side: BorderSide(
+                                        color: AppColors.secondaryText,
+                                        width: 1.2,
+                                      ),
+                                      onChanged: (bool? value) {
+                                        controller
+                                            .toggleStaffSelectionInstruction(
+                                                controller
+                                                    .filteredDetailsInstruction[
+                                                        index]
+                                                    .id);
+                                      },
                                     ),
                                   ),
-                                  title: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      //${index + 1}.
+                                ),
+                                title: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                  ), // 80% of screen width
 
-                                      AppTextWidget(
-                                        text: controller
-                                            .filteredDetailsInstruction[index]
-                                            .inductionDetails,
-                                        fontSize:
-                                            AppTextSize.textSizeExtraSmall,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.secondaryText,
-                                      ),
-                                    ],
+                                  child: AppTextWidget(
+                                    text: controller
+                                        .filteredDetailsInstruction[index]
+                                        .inductionDetails,
+                                    fontSize: AppTextSize.textSizeExtraSmall,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.secondaryText,
+                                    textAlign: TextAlign.start,
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      }),
-                    ],
-                  ),
-                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }),
               ),
               SizedBox(
                 height: SizeConfig.heightMultiplier * 3,
@@ -510,7 +525,7 @@ class StaffPrecaustionScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
@@ -542,7 +557,7 @@ class StaffPrecaustionScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],

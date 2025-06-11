@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/location_validation.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,7 +31,7 @@ class LocationController extends GetxController {
         await showDialog(
           context: Get.context!,
           builder: (BuildContext context) {
-            return CustomValidationPopup(message: locationError.value);
+            return LocationValidation(message: locationError.value);
           },
         );
         return;

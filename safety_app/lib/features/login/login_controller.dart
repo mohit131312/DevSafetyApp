@@ -5,9 +5,7 @@ import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/validation.dart';
-import 'package:flutter_app/utils/validation_internet.dart';
 import 'package:flutter_app/utils/validation_invalid.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -52,17 +50,7 @@ class LoginController extends GetxController {
   String validationmsg = '';
   Future login() async {
     // First, check if the device is connected to the internet
-    bool isConnected = await isInternetAvailable();
-    if (!isConnected) {
-      // Show a dialog if there's no internet
-      await showDialog(
-        context: Get.context!,
-        builder: (BuildContext context) {
-          return ValidationInternet(message: "No internet connection.");
-        },
-      );
-      return false;
-    }
+
     try {
       Map<String, dynamic> map = {
         "email": usernameController.text,
@@ -86,7 +74,7 @@ class LoginController extends GetxController {
                 return CustomValidationPopupInvalid(message: validationmsg);
               },
             );
-          }else if (validationmsg == "User not found") {
+          } else if (validationmsg == "User not found") {
             await showDialog(
               context: Get.context!,
               builder: (BuildContext context) {
@@ -94,12 +82,12 @@ class LoginController extends GetxController {
               },
             );
           } else {
-            await showDialog(
-              context: Get.context!,
-              builder: (BuildContext context) {
-                return ValidationPopChang(message: validationmsg);
-              },
-            );
+            // await showDialog(
+            //   context: Get.context!,
+            //   builder: (BuildContext context) {
+            //     return ValidationPopChang(message: validationmsg);
+            //   },
+            // );
           }
         }
         String accessToken = responseData['data']['access_token'];

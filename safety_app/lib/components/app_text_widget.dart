@@ -8,6 +8,8 @@ class AppTextWidget extends StatelessWidget {
   final Color color;
   final TextAlign? textAlign;
   final TextDecoration? decoration;
+  final int? maxLines; // Add this
+  final TextOverflow? overflow; // Add this
 
   const AppTextWidget({
     super.key,
@@ -17,6 +19,8 @@ class AppTextWidget extends StatelessWidget {
     required this.color,
     this.textAlign,
     this.decoration,
+    this.maxLines, // Add to constructor
+    this.overflow, // Add to constructor
   });
 
   @override
@@ -29,6 +33,9 @@ class AppTextWidget extends StatelessWidget {
         color: color,
         decoration: decoration,
       ),
+      softWrap: true,
+      overflow: overflow ?? TextOverflow.clip, // Default to clip if null
+      maxLines: maxLines, // Use the passed value
       textAlign: textAlign,
     );
   }

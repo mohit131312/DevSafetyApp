@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -11,9 +12,12 @@ import 'package:flutter_app/features/safety_violation_all/safety_violation/safet
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 
@@ -124,7 +128,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -140,7 +144,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
           title: Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: AppTextWidget(
-              text: AppTexts.preview,
+              text: "Safety Violation",
               fontSize: AppTextSize.textSizeMedium,
               fontWeight: FontWeight.w400,
               color: AppColors.primary,
@@ -1481,6 +1485,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                       safetyViolationDetailsAssigneeCont.userFound.value
                           ? SizedBox()
                           : Row(
+                              key: safetyViolationDetailsAssigneeCont.photoKey,
                               children: [
                                 AppTextWidget(
                                   text: 'Photo',
@@ -1636,203 +1641,200 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                           : Column(
                               children: [
                                 Obx(
-                                  () =>
-                                      safetyViolationDetailsAssigneeCont
-                                                  .incidentAssigneeCount <
-                                              1
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                safetyViolationDetailsAssigneeCont
-                                                    .pickIncidentAssigneeImages();
-                                              },
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                width:
-                                                    SizeConfig.widthMultiplier *
-                                                        92,
-                                                padding: EdgeInsets.only(
-                                                    left: 16,
-                                                    right: 16,
-                                                    top: 24,
-                                                    bottom: 24),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.orange,
-                                                      width: 2),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  color: Colors.orange.shade50,
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.camera_alt_outlined,
-                                                      color: Colors.orange,
-                                                      size: 30,
-                                                    ),
-                                                    SizedBox(height: 8),
-                                                    AppTextWidget(
-                                                        text:
-                                                            'Maximum 10 photos',
-                                                        fontSize: AppTextSize
-                                                            .textSizeExtraSmall,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: AppColors
-                                                            .secondaryText),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          : Column(
+                                  () => safetyViolationDetailsAssigneeCont
+                                              .incidentAssigneeCount <
+                                          1
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            safetyViolationDetailsAssigneeCont
+                                                .pickIncidentAssigneeImages(
+                                                    source:
+                                                        ImageSource.gallery);
+                                          },
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            width:
+                                                SizeConfig.widthMultiplier * 92,
+                                            padding: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 24,
+                                                bottom: 24),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.orange,
+                                                  width: 2),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Colors.orange.shade50,
+                                            ),
+                                            child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start, // Ensure items align properly
+                                                Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  color: Colors.orange,
+                                                  size: 30,
+                                                ),
+                                                SizedBox(height: 8),
+                                                AppTextWidget(
+                                                    text: 'Maximum 5 photos',
+                                                    fontSize: AppTextSize
+                                                        .textSizeExtraSmall,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: AppColors
+                                                        .secondaryText),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start, // Ensure items align properly
 
-                                                  children: [
-                                                    Expanded(
-                                                      child: SizedBox(
-                                                        child: GridView.builder(
-                                                            physics:
-                                                                NeverScrollableScrollPhysics(),
-                                                            itemCount:
-                                                                safetyViolationDetailsAssigneeCont
-                                                                    .incidentAssigneeimg
-                                                                    .length,
-                                                            gridDelegate:
-                                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                              crossAxisCount:
-                                                                  3, // Ensures one row (horizontal scroll)
+                                              children: [
+                                                Expanded(
+                                                  child: SizedBox(
+                                                    child: GridView.builder(
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        itemCount:
+                                                            safetyViolationDetailsAssigneeCont
+                                                                .incidentAssigneeimg
+                                                                .length,
+                                                        gridDelegate:
+                                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount:
+                                                              3, // Ensures one row (horizontal scroll)
 
-                                                              childAspectRatio:
-                                                                  1, // Keeps items square
-                                                              mainAxisSpacing:
-                                                                  10,
-                                                              crossAxisSpacing:
-                                                                  10, // Spacing between images
-                                                            ),
-                                                            shrinkWrap: true,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              return Stack(
-                                                                children: [
-                                                                  SizedBox(
-                                                                    height:
-                                                                        SizeConfig.imageSizeMultiplier *
-                                                                            18,
-                                                                    width: SizeConfig
-                                                                            .imageSizeMultiplier *
-                                                                        18,
-                                                                    child:
-                                                                        ClipRRect(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
+                                                          childAspectRatio:
+                                                              1, // Keeps items square
+                                                          mainAxisSpacing: 10,
+                                                          crossAxisSpacing:
+                                                              10, // Spacing between images
+                                                        ),
+                                                        shrinkWrap: true,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Stack(
+                                                            children: [
+                                                              SizedBox(
+                                                                height: SizeConfig
+                                                                        .imageSizeMultiplier *
+                                                                    18,
+                                                                width: SizeConfig
+                                                                        .imageSizeMultiplier *
+                                                                    18,
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
                                                                               12), // Clip image to match container
 
-                                                                      child: Image
-                                                                          .file(
-                                                                        File(safetyViolationDetailsAssigneeCont
-                                                                            .incidentAssigneeimg[index]
-                                                                            .path),
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                                    ),
+                                                                  child: Image
+                                                                      .file(
+                                                                    File(safetyViolationDetailsAssigneeCont
+                                                                        .incidentAssigneeimg[
+                                                                            index]
+                                                                        .path),
+                                                                    fit: BoxFit
+                                                                        .cover,
                                                                   ),
-                                                                  Positioned(
-                                                                    top: 1,
-                                                                    right: 1,
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        safetyViolationDetailsAssigneeCont
-                                                                            .removeAssigneeImage(index);
-                                                                      },
-                                                                      child:
-                                                                          Container(
-                                                                        padding:
-                                                                            EdgeInsets.all(4),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          shape:
-                                                                              BoxShape.circle,
-                                                                          color: Colors
-                                                                              .black
-                                                                              .withOpacity(0.8),
-                                                                        ),
-                                                                        child: Icon(
-                                                                            Icons
-                                                                                .close,
-                                                                            color:
-                                                                                Colors.white,
-                                                                            size: 15),
-                                                                      ),
+                                                                ),
+                                                              ),
+                                                              Positioned(
+                                                                top: 1,
+                                                                right: 1,
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    safetyViolationDetailsAssigneeCont
+                                                                        .removeAssigneeImage(
+                                                                            index);
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    padding:
+                                                                        EdgeInsets
+                                                                            .all(4),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.8),
                                                                     ),
-                                                                  )
-                                                                ],
-                                                              );
-                                                            }),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: SizeConfig
-                                                              .imageSizeMultiplier *
-                                                          5,
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        safetyViolationDetailsAssigneeCont
-                                                            .pickIncidentAssigneeImages();
-                                                      },
-                                                      child: Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        height: SizeConfig
-                                                                .imageSizeMultiplier *
-                                                            18,
-                                                        width: SizeConfig
-                                                                .imageSizeMultiplier *
-                                                            18,
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.orange,
-                                                              width: 2),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(8),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons
-                                                              .camera_alt_outlined,
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .close,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        size:
+                                                                            15),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          );
+                                                        }),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: SizeConfig
+                                                          .imageSizeMultiplier *
+                                                      5,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    safetyViolationDetailsAssigneeCont
+                                                        .pickIncidentAssigneeImages(
+                                                            source: ImageSource
+                                                                .gallery);
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    height: SizeConfig
+                                                            .imageSizeMultiplier *
+                                                        18,
+                                                    width: SizeConfig
+                                                            .imageSizeMultiplier *
+                                                        18,
+                                                    padding: EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
                                                           color: Colors.orange,
-                                                          size: 30,
-                                                        ),
-                                                      ),
+                                                          width: 2),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
                                                     ),
-                                                  ],
+                                                    child: Icon(
+                                                      Icons.camera_alt_outlined,
+                                                      color: Colors.orange,
+                                                      size: 30,
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
+                                          ],
+                                        ),
                                 ),
                                 safetyViolationDetailsAssigneeCont
-                                            .incidentAssigneeCount <
-                                        1
+                                            .incidentAssigneeCount.value >
+                                        0
                                     ? SizedBox(
                                         height:
                                             SizeConfig.heightMultiplier * 2.5,
@@ -1860,6 +1862,9 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                     : SizedBox()),
                               ],
                             ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 2.5,
+                      ),
                       Row(
                         children: [
                           AppTextWidget(
@@ -1879,10 +1884,21 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                         controller: safetyViolationDetailsAssigneeCont
                             .assigneecommentController,
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode: safetyViolationDetailsAssigneeCont
+                            .assigneeFocusNode,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\s]'),
+                          ),
+                        ],
+                        onFieldSubmitted: (_) {
+                          safetyViolationDetailsAssigneeCont.assigneeFocusNode
+                              .unfocus();
+                        },
+                        fillColor:
+                            safetyViolationDetailsAssigneeCont.userFound.value
+                                ? AppColors.textfeildcolor
+                                : Colors.white,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -1920,8 +1936,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 20, bottom: 20),
-                              height: 305,
+                                  left: 12, right: 12, top: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.textfeildcolor,
                                 borderRadius: BorderRadius.circular(12),
@@ -1961,7 +1976,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 4,
+                                    height: SizeConfig.heightMultiplier * 2,
                                   ),
                                   Obx(() {
                                     if (safetyViolationDetailsAssigneeCont
@@ -1986,15 +2001,31 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                           : const Text(
                                               "No signature available");
                                     } else {
-                                      // Show signature pad
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Signature(
-                                          height: 206,
-                                          controller:
+                                      return Listener(
+                                        key: safetyViolationDetailsAssigneeCont
+                                            .signKey,
+                                        onPointerDown: (_) {
+                                          Future.delayed(
+                                              Duration(milliseconds: 50), () {
+                                            if (safetyViolationDetailsAssigneeCont
+                                                .signatureCheckerController
+                                                .isNotEmpty) {
                                               safetyViolationDetailsAssigneeCont
-                                                  .signatureCheckerController,
-                                          backgroundColor: Colors.white,
+                                                  .signatureattestationError
+                                                  .value = "";
+                                            }
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Signature(
+                                            height: 206,
+                                            controller:
+                                                safetyViolationDetailsAssigneeCont
+                                                    .signatureCheckerController,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                       );
                                     }
@@ -2172,11 +2203,23 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
           ),
           child: AppElevatedButton(
               text: safetyViolationDetailsAssigneeCont.userFound.value
-                  ? "Closed"
-                  : 'Submit',
+                  ? "Close"
+                  : 'Resolve',
               onPressed: () async {
                 if (safetyViolationDetailsAssigneeCont.userFound.value ==
                     false) {
+                  validateAndFocusFirstInvalidField();
+                  if (safetyViolationDetailsAssigneeCont
+                          .incidentAssigneeCount.value ==
+                      0) {
+                    safetyViolationDetailsAssigneeCont
+                        .photoAssigneeError.value = "Please add Images";
+                  }
+                  if (safetyViolationDetailsAssigneeCont
+                      .signatureCheckerController.isEmpty) {
+                    safetyViolationDetailsAssigneeCont.signatureattestationError
+                        .value = "Please fill in the signature.";
+                  }
                   if (formKey.currentState!.validate()) {
                     await safetyViolationDetailsAssigneeCont
                         .saveIncidentAssigneeSignature();
@@ -2192,7 +2235,18 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                             .signatureCheckerController.isNotEmpty &&
                         safetyViolationDetailsAssigneeCont
                             .assigneecommentController.text.isNotEmpty) {
-                      showConfirmationDialogClosed(context);
+                      if (await CheckInternet.checkInternet()) {
+                        showConfirmationDialogClosed(context);
+                      } else {
+                        await showDialog(
+                          context: Get.context!,
+                          builder: (BuildContext context) {
+                            return CustomValidationPopup(
+                                message:
+                                    "Please check your internet connection.");
+                          },
+                        );
+                      }
                     }
                   }
                   //   Get.to(WorkPermitPrecautionScreen());
@@ -2203,5 +2257,37 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (safetyViolationDetailsAssigneeCont.incidentAssigneeCount < 1) {
+      scrollToWidget(safetyViolationDetailsAssigneeCont.photoKey);
+      return;
+    }
+    if (safetyViolationDetailsAssigneeCont.assigneecommentController.text
+        .trim()
+        .isEmpty) {
+      safetyViolationDetailsAssigneeCont.assigneeFocusNode.requestFocus();
+      return;
+    }
+
+    if (safetyViolationDetailsAssigneeCont.signatureCheckerController.isEmpty) {
+      scrollToWidget(safetyViolationDetailsAssigneeCont.signKey);
+      return;
+    }
   }
 }

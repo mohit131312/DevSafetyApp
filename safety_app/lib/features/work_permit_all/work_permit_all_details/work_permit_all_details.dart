@@ -40,7 +40,7 @@ class WorkPermitAllDetails extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -404,8 +404,16 @@ class WorkPermitAllDetails extends StatelessWidget {
                                                       padding: const EdgeInsets
                                                           .symmetric(
                                                           vertical: 2.0),
-                                                      child: Text(
-                                                          "Floor: ${floor['floor_name']}"),
+                                                      child: floor['floor_name'] !=
+                                                                  null &&
+                                                              floor['floor_name']
+                                                                  .toString()
+                                                                  .trim()
+                                                                  .isNotEmpty
+                                                          ? Text(
+                                                              "Floor: ${floor['floor_name']}")
+                                                          : SizedBox
+                                                              .shrink(), // returns nothing (empty widget)
                                                     );
                                                   }).toList(),
                                                   SizedBox(height: 12),
@@ -767,6 +775,8 @@ class WorkPermitAllDetails extends StatelessWidget {
                       //   }
                       //   return null;
                       // },
+                      fillColor: AppColors.textfeildcolor,
+
                       onChanged: (value) {},
                     ),
                     SizedBox(
@@ -793,7 +803,7 @@ class WorkPermitAllDetails extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: 'Maker Comments',
+                          text: 'Doer Comments',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,
@@ -821,6 +831,8 @@ class WorkPermitAllDetails extends StatelessWidget {
                         }
                         return null;
                       },
+                      fillColor: AppColors.textfeildcolor,
+
                       onChanged: (value) {},
                     ),
                     SizedBox(
@@ -842,7 +854,7 @@ class WorkPermitAllDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppTextWidget(
-                        text: 'Maker',
+                        text: 'Doer',
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText),

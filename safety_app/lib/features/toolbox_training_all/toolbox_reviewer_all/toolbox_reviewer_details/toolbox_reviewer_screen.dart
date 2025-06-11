@@ -102,7 +102,7 @@ class ToolboxReviewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      //  resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
         child: ClipRRect(

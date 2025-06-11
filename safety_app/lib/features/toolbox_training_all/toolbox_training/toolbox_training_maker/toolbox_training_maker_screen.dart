@@ -8,8 +8,10 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -46,7 +48,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
           shape: RoundedRectangleBorder(
@@ -980,6 +982,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                         //   return null;
                         // },
                         onChanged: (value) {},
+                        fillColor: AppColors.textfeildcolor,
                       ),
                       SizedBox(
                         height: SizeConfig.heightMultiplier * 3,
@@ -993,7 +996,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       AppTextWidget(
-                          text: 'Maker',
+                          text: 'Doer',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.secondaryText),
@@ -1046,7 +1049,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                           Row(
                             children: [
                               AppTextWidget(
-                                text: 'Maker Comments',
+                                text: 'Doer Comments',
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.primaryText,
@@ -1062,10 +1065,12 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                             controller: toolboxTrainingMakerController
                                 .makerMakerController,
                             hintText: 'Comments',
-                            // focusNode: newWorkPermitController.dow,
-                            // onFieldSubmitted: (_) {
-                            //   newWorkPermitController.dow.unfocus();
-                            // },
+                            focusNode:
+                                toolboxTrainingMakerController.makerFocusNode,
+                            onFieldSubmitted: (_) {
+                              toolboxTrainingMakerController.makerFocusNode
+                                  .unfocus();
+                            },
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
@@ -1074,6 +1079,10 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                               }
                               return null;
                             },
+                            fillColor:
+                                toolboxTrainingMakerController.userFound.value
+                                    ? AppColors.textfeildcolor
+                                    : Colors.white,
                             onChanged: (value) {},
                           ),
                           SizedBox(
@@ -1082,7 +1091,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                           Row(
                             children: [
                               AppTextWidget(
-                                text: "Maker Signature",
+                                text: "Doer Signature",
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.primaryText,
@@ -1103,8 +1112,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.only(
-                                      left: 12, right: 12, top: 20, bottom: 20),
-                                  height: 305,
+                                      left: 12, right: 12, top: 10, bottom: 10),
                                   decoration: BoxDecoration(
                                     color: AppColors.textfeildcolor,
                                     borderRadius: BorderRadius.circular(12),
@@ -1145,7 +1153,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                                               ),
                                             ),
                                       SizedBox(
-                                        height: SizeConfig.heightMultiplier * 4,
+                                        height: SizeConfig.heightMultiplier * 2,
                                       ),
                                       Obx(() {
                                         if (toolboxTrainingMakerController
@@ -1171,15 +1179,32 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                                                   "No signature available");
                                         } else {
                                           // Show signature pad
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Signature(
-                                              height: 206,
-                                              controller:
+                                          return Listener(
+                                            key: toolboxTrainingMakerController
+                                                .signkey,
+                                            onPointerDown: (_) {
+                                              Future.delayed(
+                                                  Duration(milliseconds: 50),
+                                                  () {
+                                                if (toolboxTrainingMakerController
+                                                    .signatureattestationController
+                                                    .isNotEmpty) {
                                                   toolboxTrainingMakerController
-                                                      .signatureattestationController,
-                                              backgroundColor: Colors.white,
+                                                      .signatureattestationError
+                                                      .value = '';
+                                                }
+                                              });
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Signature(
+                                                height: 206,
+                                                controller:
+                                                    toolboxTrainingMakerController
+                                                        .signatureattestationController,
+                                                backgroundColor: Colors.white,
+                                              ),
                                             ),
                                           );
                                         }
@@ -1262,6 +1287,9 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                       //           ),
                       //         ],
                       //       ),
+                      SizedBox(
+                        height: SizeConfig.heightMultiplier * 3,
+                      ),
                       AppTextWidget(
                           text: 'Created On',
                           fontSize: AppTextSize.textSizeSmalle,
@@ -1326,11 +1354,17 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
             () => AppElevatedButton(
                 text: toolboxTrainingMakerController.userFound.value
                     ? 'Close'
-                    : 'Submit',
+                    : 'Close the Toolbox Training',
                 onPressed: () async {
+                  validateAndFocusFirstInvalidField();
                   if (toolboxTrainingMakerController.userFound.value) {
                     Get.back();
                   } else {
+                    if (toolboxTrainingMakerController
+                        .signatureattestationController.isEmpty) {
+                      toolboxTrainingMakerController.signatureattestationError
+                          .value = "Please fill in the signature.";
+                    }
                     if (formKey.currentState!.validate()) {
                       await toolboxTrainingMakerController
                           .saveSafetyattestationSignature();
@@ -1344,9 +1378,21 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                       if (toolboxTrainingMakerController
                               .signatureattestationController.isNotEmpty &&
                           toolboxTrainingMakerController
-                              .makerMakerController.text.isNotEmpty) {}
-                      // ignore: use_build_context_synchronously
-                      showConfirmationDialogClosed(context);
+                              .makerMakerController.text.isNotEmpty) {
+                        // ignore: use_build_context_synchronously
+                        if (await CheckInternet.checkInternet()) {
+                          showConfirmationDialogClosed(context);
+                        } else {
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
+                        }
+                      }
                       //   Get.to(WorkPermitPrecautionScreen());
                     }
                   }
@@ -1355,6 +1401,33 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (toolboxTrainingMakerController.makerMakerController.text
+        .trim()
+        .isEmpty) {
+      toolboxTrainingMakerController.makerFocusNode.requestFocus();
+      return;
+    }
+    if (toolboxTrainingMakerController.signatureattestationController.isEmpty) {
+      scrollToWidget(toolboxTrainingMakerController.signkey);
+      return;
+    }
   }
 
   void showConfirmationDialogClosed(BuildContext context) {

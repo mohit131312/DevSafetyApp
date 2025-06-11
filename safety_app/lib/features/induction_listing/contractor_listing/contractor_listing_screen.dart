@@ -37,7 +37,7 @@ class ContractorListingScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -193,11 +193,21 @@ class ContractorListingScreen extends StatelessWidget {
                                                       1,
                                             ),
                                             AppTextWidget(
-                                                text: contractorListingController
-                                                        .contractorCompanyDetailsList[
-                                                            0]
-                                                        .contractorCompanyName
-                                                        .isNotEmpty
+                                                text: (contractorListingController
+                                                            .contractorCompanyDetailsList
+                                                            .isNotEmpty &&
+                                                        contractorListingController
+                                                                .contractorCompanyDetailsList[
+                                                                    0]
+                                                                // ignore: unnecessary_null_comparison
+                                                                .contractorCompanyName !=
+                                                            null &&
+                                                        contractorListingController
+                                                            .contractorCompanyDetailsList[
+                                                                0]
+                                                            .contractorCompanyName
+                                                            .trim()
+                                                            .isNotEmpty)
                                                     ? contractorListingController
                                                         .contractorCompanyDetailsList[
                                                             0]
@@ -225,15 +235,21 @@ class ContractorListingScreen extends StatelessWidget {
                                             ),
                                             AppTextWidget(
                                               text: contractorListingController
-                                                      .contractorCompanyDetailsList[
-                                                          0]
-                                                      .gstnNumber!
+                                                      .contractorCompanyDetailsList
                                                       .isNotEmpty
-                                                  ? contractorListingController
-                                                      .contractorCompanyDetailsList[
-                                                          0]
-                                                      .gstnNumber!
-                                                      .toString()
+                                                  ? (contractorListingController
+                                                                  .contractorCompanyDetailsList[
+                                                                      0]
+                                                                  .gstnNumber ??
+                                                              '')
+                                                          .trim()
+                                                          .isNotEmpty
+                                                      ? contractorListingController
+                                                          .contractorCompanyDetailsList[
+                                                              0]
+                                                          .gstnNumber!
+                                                          .trim()
+                                                      : ''
                                                   : '',
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
@@ -1346,7 +1362,7 @@ class ContractorListingScreen extends StatelessWidget {
             horizontal: SizeConfig.widthMultiplier * 4,
           ),
           child: AppElevatedButton(
-              text: 'Closed',
+              text: 'Close',
               onPressed: () {
                 Get.back();
               }),

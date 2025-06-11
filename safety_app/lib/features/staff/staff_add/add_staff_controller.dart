@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/induction_training/induction_training_controller.dart';
 import 'package:flutter_app/features/staff/staff_add/add_staff_model.dart';
 import 'package:flutter_app/features/staff/staff_documentation/staff_documentation_controller.dart';
@@ -52,19 +53,30 @@ class AddStaffController extends GetxController {
   var profilePhotoEroor = ''.obs;
   XFile? selectedImage;
 
-  Future<void> pickStaffImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      selectedImage = pickedFile;
+  Future<void> pickStaffImage(BuildContext context) async {
+    final image = await ImageHelper.pickAndCropImage(
+      source: ImageSource.camera,
+      context: context,
+    );
 
-      profilePhoto.value = pickedFile.path;
+    if (image != null) {
+      selectedImage = image;
+      profilePhoto.value = image.path;
+      profilePhotoEroor.value = '';
     } else {
-      print("No image selected");
+      profilePhotoEroor.value = 'Invalid image. Please try again.';
     }
   }
-  //--------------------------------------------------------------
 
+  //--------------------------------------------------------------
+  final GlobalKey bloodGroupKey = GlobalKey();
+  final GlobalKey dob = GlobalKey();
+  final GlobalKey reason = GlobalKey();
+  final GlobalKey currentAdress = GlobalKey();
+  final GlobalKey permamntAddress = GlobalKey();
+  final GlobalKey profilePhotoKey = GlobalKey();
   var isSameAsCurrent = false.obs; // Checkbox state
+  final GlobalKey relationkey = GlobalKey();
 
   var selectedBloodGroup = ''.obs;
   var selectedreasons = ''.obs;
@@ -74,6 +86,7 @@ class AddStaffController extends GetxController {
   var selectedState = ''.obs;
   var selectedPermanantDistrict = ''.obs;
   var selectedPermanantState = ''.obs;
+  var selectedRelation = ''.obs;
 
   var selectedDate = Rxn<DateTime>();
   final TextEditingController dateController = TextEditingController();
@@ -198,6 +211,8 @@ class AddStaffController extends GetxController {
   //----------------------
   var searchType = 'ID'.obs;
   var userFound = false.obs;
+  var userFoundrelation = false.obs;
+
   var selectedStaffData = ''.obs;
   int staffID = 0;
   List<AssignLabourProject> assignedLabourProjects = [];
@@ -273,8 +288,7 @@ class AddStaffController extends GetxController {
       econtactnameController.text = data['emergency_contact_name'] ?? "";
       econtactnumberController.text = data['emergency_contact_number'] ?? "";
       dateController.text = data['birth_date'] ?? "";
-      econtactrelationController.text =
-          data['emergency_contact_relation'] ?? "";
+      selectedRelation.value = data['emergency_contact_relation'] ?? "";
 
       // profilePhoto.value = labour['user_photo'];
       print(profilePhoto.value);
@@ -348,6 +362,15 @@ class AddStaffController extends GetxController {
       print('Emergency Contact Name: ${econtactnameController.text}');
       print('Emergency Contact Number: ${econtactnumberController.text}');
       print('Emergency Contact Relation: ${econtactrelationController.text}');
+      if (econtactnameController.text.trim().isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
+      if (econtactnumberController.text.trim().isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
+      if (selectedRelation.value.isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
     } catch (e) {
       log("Error: $e");
       userFound.value = false;
@@ -422,6 +445,9 @@ class AddStaffController extends GetxController {
 
   void clearStaffUserFields() {
     staffnameController.clear();
+    profilePhoto.value = '';
+    userFoundrelation.value = false;
+    selectedRelation.value = '';
     contactnumberController.clear();
     econtactnameController.clear();
     econtactrelationController.clear();
@@ -548,7 +574,11 @@ class AddStaffController extends GetxController {
 
   void clearStaffUserFieldsFinal() {
     userFound.value = false;
-
+    userFoundrelation.value = false;
+    selectedRelation.value = '';
+    profilePhoto.value = '';
+    profilePhotoEroor.value = '';
+    selectedreasons.value = '';
     staffnameController.clear();
     contactnumberController.clear();
     econtactnameController.clear();

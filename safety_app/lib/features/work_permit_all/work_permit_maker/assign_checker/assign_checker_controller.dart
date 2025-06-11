@@ -65,7 +65,7 @@ class AssignCheckerController extends GetxController {
   var assigneeError = ''.obs;
   bool validateAssignee() {
     if (addInvolveassigneeDataPerson.isEmpty) {
-      assigneeError.value = "Please add an assignee";
+      assigneeError.value = "Please add an Checker";
       return false; // Validation failed
     } else {
       assigneeError.value = "";

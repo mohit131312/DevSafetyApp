@@ -37,7 +37,7 @@ class ToolboxAttestationScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -192,8 +192,7 @@ class ToolboxAttestationScreen extends StatelessWidget {
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.only(
-                            left: 12, right: 12, top: 20, bottom: 20),
-                        height: 305,
+                            left: 12, right: 12, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: AppColors.textfeildcolor,
                           borderRadius: BorderRadius.circular(12),
@@ -228,15 +227,27 @@ class ToolboxAttestationScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              height: SizeConfig.heightMultiplier * 4,
+                              height: SizeConfig.heightMultiplier * 2,
                             ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Signature(
-                                height: 206,
-                                controller: toolboxAttestationController
-                                    .signatureattestationController,
-                                backgroundColor: Colors.white,
+                            Listener(
+                              onPointerDown: (_) {
+                                Future.delayed(Duration(milliseconds: 50), () {
+                                  if (toolboxAttestationController
+                                      .signatureattestationController
+                                      .isNotEmpty) {
+                                    toolboxAttestationController
+                                        .signatureattestationError.value = '';
+                                  }
+                                });
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Signature(
+                                  height: 206,
+                                  controller: toolboxAttestationController
+                                      .signatureattestationController,
+                                  backgroundColor: Colors.white,
+                                ),
                               ),
                             ),
                           ],
@@ -263,7 +274,7 @@ class ToolboxAttestationScreen extends StatelessWidget {
                 ),
 
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 5,
+                  height: SizeConfig.heightMultiplier * 15,
                 ),
               ],
             ),
@@ -286,7 +297,7 @@ class ToolboxAttestationScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
@@ -318,7 +329,7 @@ class ToolboxAttestationScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],

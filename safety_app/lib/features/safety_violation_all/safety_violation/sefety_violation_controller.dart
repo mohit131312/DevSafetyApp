@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class SefetyViolationController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
-
+  TextEditingController activeController = TextEditingController();
   var searchQueryIncident = ''.obs;
   var incidentDetails = <Map<String, dynamic>>[].obs;
   var incidentfilteredDetails = <Map<String, dynamic>>[].obs;
@@ -202,7 +202,7 @@ class SefetyViolationController extends GetxController
     searchQuerySafetyAssignor.value = query;
   }
 
-  List<SafetyViolationModel> get filteredIncidentAssignorList {
+  List<SafetyViolationModel> get filteredSafetyAssignorList {
     final query = searchQuerySafetyAssignor.value.toLowerCase();
     return safetyViolationAssignor
         .where((ind) =>
@@ -267,6 +267,14 @@ class SefetyViolationController extends GetxController
     }
   }
 
+  void resetData() {
+    searchSafetyAllController.clear();
+    searchSafetyAssigneeController.clear();
+    searchSafetyAssignorController.clear();
+    searchQuerySafetyAll.value = "";
+    searchQuerySafetyAssignor.value = "";
+    searchQuerySafetyAssignee.value = "";
+  }
   // void resetIncidentData() {
   //   // Clear all listings
   //   incidentReportListingAll.clear();

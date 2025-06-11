@@ -9,7 +9,6 @@ import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +31,9 @@ class WorkPermitPreviewMakerController extends GetxController {
   }
 
   TextEditingController workPermitRemarksController = TextEditingController();
+  FocusNode workPermitmakerFocusNode = FocusNode();
+  final GlobalKey signatureSectionKey = GlobalKey();
+
   TextEditingController workPermitRemarksControllerenable =
       TextEditingController();
 
@@ -230,12 +232,12 @@ class WorkPermitPreviewMakerController extends GetxController {
               log("----------------------------------------------------------------------msg: ");
               Navigator.pop(Get.context!, true);
 
-              await showDialog(
-                context: Get.context!,
-                builder: (BuildContext context) {
-                  return ValidationPopChang(message: validationmsg);
-                },
-              );
+              // await showDialog(
+              //   context: Get.context!,
+              //   builder: (BuildContext context) {
+              //     return ValidationPopChang(message: validationmsg);
+              //   },
+              // );
               Get.back();
             }
           } catch (e) {

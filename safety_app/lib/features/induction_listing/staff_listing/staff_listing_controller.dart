@@ -108,4 +108,20 @@ class StaffListingController extends GetxController {
       print("Error: $e");
     }
   }
+
+  void resetData() {
+    staffDetailsList.clear();
+    staffInductionTrainingsList.clear();
+    staffDocumentDetailsList.clear();
+    staffEquipmentDetailsList.clear();
+    staffInstructionDetailsList.clear();
+    staffReasonOfVisitList.clear();
+    statusApi = false;
+
+    // Optionally reset expansion states
+    isPersonalDetailsExpanded.value = true;
+    isProfessionalDetailsExpanded.value = true;
+    isidproofDetailsExpanded.value = true;
+    isprecautionDetailsExpanded.value = true;
+  }
 }

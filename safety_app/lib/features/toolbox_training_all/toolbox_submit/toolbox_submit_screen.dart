@@ -7,8 +7,10 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolbox_training_screen.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class ToolboxSubmitScreen extends StatelessWidget {
@@ -83,39 +85,50 @@ class ToolboxSubmitScreen extends StatelessWidget {
               child: AppElevatedButton(
                   text: 'Done',
                   onPressed: () async {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            CustomLoadingPopup());
-                    ToolboxTrainingController toolboxTrainingController =
-                        Get.find();
-                    await toolboxTrainingController.getToolBoxListingAll(
-                        projectId, userId, 1);
-                    await toolboxTrainingController.getToolBoxListingMaker(
-                        projectId, userId, 2);
-                    await toolboxTrainingController.getToolBoxListingReviewer(
-                        projectId, userId, 3);
-                    final HomeScreenController homeScreenController =
-                        Get.put(HomeScreenController());
-                    await homeScreenController.getCardListing(
-                        projectId, userId);
-                    Navigator.pop(context);
-                    Get.offUntil(
-                      GetPageRoute(
-                          page: () => ToolboxTrainingScreen(
-                                userId: userId,
-                                userName: userName,
-                                projectId: projectId,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                              )),
-                      (route) {
-                        if (route is GetPageRoute) {
-                          return route.page!().runtimeType == HomeScreen;
-                        }
-                        return false;
-                      },
-                    );
+                    if (await CheckInternet.checkInternet()) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              CustomLoadingPopup());
+                      ToolboxTrainingController toolboxTrainingController =
+                          Get.find();
+                      await toolboxTrainingController.getToolBoxListingAll(
+                          projectId, userId, 1);
+                      await toolboxTrainingController.getToolBoxListingMaker(
+                          projectId, userId, 2);
+                      await toolboxTrainingController.getToolBoxListingReviewer(
+                          projectId, userId, 3);
+                      final HomeScreenController homeScreenController =
+                          Get.put(HomeScreenController());
+                      await homeScreenController.getCardListing(
+                          projectId, userId);
+                      Navigator.pop(context);
+                      Get.offUntil(
+                        GetPageRoute(
+                            page: () => ToolboxTrainingScreen(
+                                  userId: userId,
+                                  userName: userName,
+                                  projectId: projectId,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                )),
+                        (route) {
+                          if (route is GetPageRoute) {
+                            return route.page!().runtimeType == HomeScreen;
+                          }
+                          return false;
+                        },
+                      );
+                    } else {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        },
+                      );
+                    }
                   }),
             ),
           ),

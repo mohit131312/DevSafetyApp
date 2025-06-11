@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/features/home/home_screen_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_controller.dart';
 import 'package:flutter_app/features/work_permit_all/work_permit_maker/work_permit_details/work_permit_preview_maker_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
@@ -9,21 +10,24 @@ import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class WorkSubmitClosedScreen extends StatelessWidget {
   final int userId;
   final int projectId;
   final int wpId;
+  final String uniqueId;
 
-  WorkSubmitClosedScreen({
-    super.key,
-    required this.userId,
-    required this.projectId,
-    required this.wpId,
-  });
+  WorkSubmitClosedScreen(
+      {super.key,
+      required this.userId,
+      required this.projectId,
+      required this.wpId,
+      required this.uniqueId});
   final WorkPermitPreviewMakerController workPermitPreviewMakerController =
       Get.find();
   final WorkPermitController workPermitController =
       Get.put(WorkPermitController());
+  HomeScreenController homeScreenController = Get.find();
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async => false,
@@ -63,7 +67,8 @@ class WorkSubmitClosedScreen extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       AppTextWidget(
-                        text: 'Work permit $wpId has been closed successfully.',
+                        text:
+                            'Work permit $uniqueId has been closed successfully.',
                         fontSize: AppTextSize.textSizeSmalle,
                         fontWeight: FontWeight.w500,
                         color: AppColors.searchfeild,
@@ -96,6 +101,12 @@ class WorkSubmitClosedScreen extends StatelessWidget {
                     await workPermitController.getWorkPermitCheckerListing(
                         projectId, userId, 3);
 
+                    await homeScreenController.getWorkPermitAllListing(
+                      projectId,
+                    );
+
+                    await homeScreenController.getCardListing(
+                        projectId, userId);
                     Navigator.pop(context);
                     Get.back();
                     Get.back();

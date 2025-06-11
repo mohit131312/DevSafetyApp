@@ -25,7 +25,7 @@ class SelectSafetyAssignee extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -61,164 +61,186 @@ class SelectSafetyAssignee extends StatelessWidget {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: SizeConfig.heightMultiplier * 70,
-            child: Column(
+        body: Column(
+          children: [
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 3,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 5.8,
-                      width: SizeConfig.widthMultiplier * 92,
-                      child: AppTextFormfeild(
-                        controller: selectSafetyAssigneeController
-                            .assigneeDataController,
-                        hintText: 'Search By Assignee Name..',
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        prefixIcon: Container(
-                          padding: EdgeInsets.all(10.0),
-                          child: Image.asset(
-                            'assets/icons/Search.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          selectSafetyAssigneeController
-                              .updateSearchassigneeDataQuery(value);
-                        },
+                  height: SizeConfig.heightMultiplier * 5.8,
+                  width: SizeConfig.widthMultiplier * 92,
+                  child: AppTextFormfeild(
+                    controller:
+                        selectSafetyAssigneeController.assigneeDataController,
+                    hintText: 'Search By Assignee Name..',
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/Search.png',
+                        fit: BoxFit.contain,
                       ),
                     ),
-                  ],
+                    onChanged: (value) {
+                      selectSafetyAssigneeController
+                          .updateSearchassigneeDataQuery(value);
+                    },
+                  ),
                 ),
-                SizedBox(
-                  height: SizeConfig.heightMultiplier * 1.5,
+              ],
+            ),
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 1.5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbVisibility: WidgetStateProperty.all(true),
+                  thickness: WidgetStateProperty.all(3),
+                  radius: const Radius.circular(8),
+                  trackVisibility: WidgetStateProperty.all(true),
+                  thumbColor: WidgetStateProperty.all(AppColors.buttoncolor),
+                  trackColor: WidgetStateProperty.all(
+                      const Color.fromARGB(26, 101, 99, 99)),
+                  trackBorderColor: WidgetStateProperty.all(Colors.transparent),
                 ),
-                Obx(
-                  () {
-                    final filteredList =
-                        selectSafetyAssigneeController.filteredassigneeData;
+                child: Scrollbar(
+                  interactive: true,
+                  child: SizedBox(
+                    height: SizeConfig.heightMultiplier * 60,
+                    child: Obx(
+                      () {
+                        final filteredList =
+                            selectSafetyAssigneeController.filteredassigneeData;
 
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: filteredList.length,
-                        itemBuilder: (context, index) {
-                          final assigneeData = filteredList[index];
+                        return ListView.builder(
+                            itemCount: filteredList.length,
+                            itemBuilder: (context, index) {
+                              final assigneeData = filteredList[index];
 
-                          return ListTile(
-                            contentPadding: EdgeInsets.only(left: 0, right: 20),
-                            leading: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Transform.scale(
-                                  scale: 1.1,
-                                  child: Obx(
-                                    () => Radio<int>(
-                                      value: assigneeData.id,
-                                      groupValue: selectSafetyAssigneeController
-                                              .selectedassigneeDataIds.isEmpty
-                                          ? null
-                                          : selectSafetyAssigneeController
-                                              .selectedassigneeDataIds.first,
-                                      onChanged: (int? value) {
-                                        if (value != null) {
-                                          selectSafetyAssigneeController
-                                              .toggleSingleAssigneeSelection(
-                                                  value);
-                                        }
-                                      },
-                                      activeColor: AppColors.thirdText,
-                                    ),
-                                  ),
-                                ),
-                                // CircleAvatar(
-                                //   radius: 22,
-                                //   backgroundImage: NetworkImage(
-                                //       "$baseUrl${assigneeData.profilePhoto}"),
-                                // ),
-                                Stack(
-                                  alignment: Alignment.center,
+                              return ListTile(
+                                contentPadding:
+                                    EdgeInsets.only(left: 0, right: 20),
+                                leading: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    CircleAvatar(
-                                      radius: 28,
-                                      backgroundColor: Colors
-                                          .grey.shade200, // Fallback color
-                                      child: ClipOval(
-                                        child: Image.network(
-                                          "$baseUrl${assigneeData.profilePhoto}",
-                                          fit: BoxFit.cover,
-                                          width: 56, // Diameter = radius * 2
-                                          height: 56,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 24,
-                                                height: 24,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: AppColors.buttoncolor,
-                                                ),
-                                              ),
-                                            );
+                                    Transform.scale(
+                                      scale: 1.1,
+                                      child: Obx(
+                                        () => Radio<int>(
+                                          value: assigneeData.id,
+                                          groupValue:
+                                              selectSafetyAssigneeController
+                                                      .selectedassigneeDataIds
+                                                      .isEmpty
+                                                  ? null
+                                                  : selectSafetyAssigneeController
+                                                      .selectedassigneeDataIds
+                                                      .first,
+                                          onChanged: (int? value) {
+                                            if (value != null) {
+                                              selectSafetyAssigneeController
+                                                  .toggleSingleAssigneeSelection(
+                                                      value);
+                                            }
                                           },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              'assets/icons/image.png',
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
+                                          activeColor: AppColors.buttoncolor,
                                         ),
                                       ),
                                     ),
+                                    // CircleAvatar(
+                                    //   radius: 22,
+                                    //   backgroundImage: NetworkImage(
+                                    //       "$baseUrl${assigneeData.profilePhoto}"),
+                                    // ),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors
+                                              .grey.shade200, // Fallback color
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              "$baseUrl${assigneeData.profilePhoto}",
+                                              fit: BoxFit.cover,
+                                              width:
+                                                  56, // Diameter = radius * 2
+                                              height: 56,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null)
+                                                  return child;
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 24,
+                                                    height: 24,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color:
+                                                          AppColors.buttoncolor,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  'assets/icons/image.png',
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            title: AppTextWidget(
-                              text: assigneeData.firstName.toString(),
-                              fontSize: AppTextSize.textSizeSmall,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primaryText,
-                            ),
-                            subtitle: AppTextWidget(
-                              text: assigneeData.designation.toString(),
-                              fontSize: AppTextSize.textSizeSmalle,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.secondaryText,
-                            ),
-                            trailing: Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  selectSafetyAssigneeController
-                                      .makeCall(assigneeData.mobileNumber);
-                                },
-                                child: SizedBox(
-                                  height: SizeConfig.imageSizeMultiplier * 10,
-                                  width: SizeConfig.imageSizeMultiplier * 10,
-                                  child: Image.asset(
-                                      'assets/icons/phone_orange.png'),
+                                title: AppTextWidget(
+                                  text: assigneeData.firstName.toString(),
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryText,
                                 ),
-                              ),
-                            ),
-                          );
-                        });
-                  },
-                )
-              ],
-            ),
-          ),
+                                subtitle: AppTextWidget(
+                                  text: assigneeData.designation.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.secondaryText,
+                                ),
+                                trailing: Padding(
+                                  padding: const EdgeInsets.only(right: 20),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectSafetyAssigneeController
+                                          .makeCall(assigneeData.mobileNumber);
+                                    },
+                                    child: SizedBox(
+                                      height:
+                                          SizeConfig.imageSizeMultiplier * 10,
+                                      width:
+                                          SizeConfig.imageSizeMultiplier * 10,
+                                      child: Image.asset(
+                                          'assets/icons/phone_orange.png'),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.symmetric(

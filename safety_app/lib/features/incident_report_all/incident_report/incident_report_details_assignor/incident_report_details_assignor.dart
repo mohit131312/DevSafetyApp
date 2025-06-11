@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
@@ -10,8 +11,10 @@ import 'package:flutter_app/features/incident_report_all/incident_report/inciden
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -124,7 +127,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -140,7 +143,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
           title: Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: AppTextWidget(
-              text: AppTexts.preview,
+              text: "Incident Report",
               fontSize: AppTextSize.textSizeMedium,
               fontWeight: FontWeight.w400,
               color: AppColors.primary,
@@ -1704,6 +1707,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                           return null;
                         },
                         onChanged: (value) {},
+                        fillColor: AppColors.textfeildcolor,
                       ),
                       SizedBox(
                         height: SizeConfig.heightMultiplier * 2.5,
@@ -1923,10 +1927,22 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                         controller: incidentReportDetailsAssignorCotroller
                             .assignorcommentController,
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode: incidentReportDetailsAssignorCotroller
+                            .assignorcommentFocusnode,
+                        onFieldSubmitted: (_) {
+                          incidentReportDetailsAssignorCotroller
+                              .assignorcommentFocusnode
+                              .unfocus();
+                        },
+                        fillColor: incidentReportDetailsAssignorCotroller
+                                .userFound.value
+                            ? AppColors.textfeildcolor
+                            : Colors.white,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\s]'),
+                          ),
+                        ],
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -1967,8 +1983,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 20, bottom: 20),
-                              height: 305,
+                                  left: 12, right: 12, top: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.textfeildcolor,
                                 borderRadius: BorderRadius.circular(12),
@@ -2008,7 +2023,7 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 4,
+                                    height: SizeConfig.heightMultiplier * 2,
                                   ),
                                   Obx(() {
                                     if (incidentReportDetailsAssignorCotroller
@@ -2034,14 +2049,32 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                                               "No signature available");
                                     } else {
                                       // Show signature pad
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Signature(
-                                          height: 206,
-                                          controller:
+                                      return Listener(
+                                        key:
+                                            incidentReportDetailsAssignorCotroller
+                                                .signkey,
+                                        onPointerDown: (_) {
+                                          Future.delayed(
+                                              Duration(milliseconds: 50), () {
+                                            if (incidentReportDetailsAssignorCotroller
+                                                .signatureCheckerController
+                                                .isNotEmpty) {
                                               incidentReportDetailsAssignorCotroller
-                                                  .signatureCheckerController,
-                                          backgroundColor: Colors.white,
+                                                  .signatureattestationError
+                                                  .value = '';
+                                            }
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Signature(
+                                            height: 206,
+                                            controller:
+                                                incidentReportDetailsAssignorCotroller
+                                                    .signatureCheckerController,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                       );
                                     }
@@ -2163,11 +2196,18 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
           ),
           child: AppElevatedButton(
               text: incidentReportDetailsAssignorCotroller.userFound.value
-                  ? "Closed"
-                  : 'Submit',
+                  ? "Close"
+                  : 'Close the Incident Report',
               onPressed: () async {
                 if (incidentReportDetailsAssignorCotroller.userFound.value ==
                     false) {
+                  validateAndFocusFirstInvalidField();
+                  if (incidentReportDetailsAssignorCotroller
+                      .signatureCheckerController.isEmpty) {
+                    incidentReportDetailsAssignorCotroller
+                        .signatureattestationError
+                        .value = "Please fill in the signature.";
+                  }
                   if (formKey.currentState!.validate()) {
                     await incidentReportDetailsAssignorCotroller
                         .saveIncidentAssigneeSignature();
@@ -2183,10 +2223,20 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
                             .signatureCheckerController.isNotEmpty &&
                         incidentReportDetailsAssignorCotroller
                             .assignorcommentController.text.isNotEmpty) {
-                      showConfirmationDialogClosed(context);
+                      if (await CheckInternet.checkInternet()) {
+                        showConfirmationDialogClosed(context);
+                      } else {
+                        await showDialog(
+                          context: Get.context!,
+                          builder: (BuildContext context) {
+                            return CustomValidationPopup(
+                                message:
+                                    "Please check your internet connection.");
+                          },
+                        );
+                      }
                     }
                   }
-                  //   Get.to(WorkPermitPrecautionScreen());
                 } else {
                   Get.back();
                 }
@@ -2194,5 +2244,34 @@ class IncidentReportDetailsAssignor extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (incidentReportDetailsAssignorCotroller.assignorcommentController.text
+        .trim()
+        .isEmpty) {
+      incidentReportDetailsAssignorCotroller.assignorcommentFocusnode
+          .requestFocus();
+      return;
+    }
+    if (incidentReportDetailsAssignorCotroller
+        .signatureCheckerController.isEmpty) {
+      scrollToWidget(incidentReportDetailsAssignorCotroller.signkey);
+      return;
+    }
   }
 }

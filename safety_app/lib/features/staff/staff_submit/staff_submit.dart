@@ -7,8 +7,10 @@ import 'package:flutter_app/features/induction_training/induction_training_scree
 import 'package:flutter_app/features/staff/staff_add/add_staff_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class StaffSubmit extends StatelessWidget {
@@ -92,58 +94,68 @@ class StaffSubmit extends StatelessWidget {
               child: AppElevatedButton(
                   text: 'Done',
                   onPressed: () async {
-                    // Get.offUntil(
-                    //   GetPageRoute(
-                    //       page: () =>
-                    //           HomeScreen()), // Push new screen
-                    //   (route) {
-                    //     if (route is GetPageRoute) {
-                    //       return route.page!().runtimeType ==
-                    //           SelectProjectScreen;
-                    //     }
-                    //     return false;
-                    //   },
-                    // );
-                    final AddStaffController addStaffController =
-                        Get.put(AddStaffController());
-                    addStaffController.clearStaffUserFieldsFinal();
-                    InductionTrainingController inductionTrainingController =
-                        Get.put(InductionTrainingController());
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            CustomLoadingPopup());
+                    if (await CheckInternet.checkInternet()) {
+                      // Get.offUntil(
+                      //   GetPageRoute(
+                      //       page: () =>
+                      //           HomeScreen()), // Push new screen
+                      //   (route) {
+                      //     if (route is GetPageRoute) {
+                      //       return route.page!().runtimeType ==
+                      //           SelectProjectScreen;
+                      //     }
+                      //     return false;
+                      //   },
+                      // );
+                      final AddStaffController addStaffController =
+                          Get.put(AddStaffController());
+                      addStaffController.clearStaffUserFieldsFinal();
+                      InductionTrainingController inductionTrainingController =
+                          Get.put(InductionTrainingController());
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              CustomLoadingPopup());
 
-                    await inductionTrainingController.getInductionListing(
-                        projectId, userId);
+                      await inductionTrainingController.getInductionListing(
+                          projectId, userId);
 
-                    Navigator.pop(context);
-                    InductionTrainingScreen inductionTrainingScreen =
-                        Get.put(InductionTrainingScreen(
-                      userId: userId,
-                      userName: userName,
-                      userImg: userImg,
-                      userDesg: userDesg,
-                      projectId: projectId,
-                    ));
-                    inductionTrainingScreen.isFabExpanded.value = true;
-                    Get.offUntil(
-                      GetPageRoute(
-                          page: () => InductionTrainingScreen(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                              )),
-                      (route) {
-                        if (route is GetPageRoute) {
-                          return route.page!().runtimeType == HomeScreen;
-                        }
-                        return false;
-                      },
-                    );
-
+                      Navigator.pop(context);
+                      InductionTrainingScreen inductionTrainingScreen =
+                          Get.put(InductionTrainingScreen(
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId,
+                      ));
+                      inductionTrainingScreen.isFabExpanded.value = true;
+                      Get.offUntil(
+                        GetPageRoute(
+                            page: () => InductionTrainingScreen(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                )),
+                        (route) {
+                          if (route is GetPageRoute) {
+                            return route.page!().runtimeType == HomeScreen;
+                          }
+                          return false;
+                        },
+                      );
+                    } else {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        },
+                      );
+                    }
                     //   Get.back();
                   }),
             ),

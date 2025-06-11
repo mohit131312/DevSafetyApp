@@ -79,110 +79,35 @@ class _ColorLoaderState extends State<ColorLoader>
     return SizedBox(
       width: 40 * SizeConfig.widthMultiplier,
       height: 40 * SizeConfig.widthMultiplier,
-      //color: Colors.black12,
       child: Stack(
+        alignment: Alignment.center,
         children: [
+          // Static image, NOT rotating
           Center(
-            child: RotationTransition(
-              turns: animation_rotation,
-              child: Container(
-                //color: Colors.limeAccent,
-                child: Center(
-                  child: Stack(
-                    children: <Widget>[
-                      //      Image.asset('assets/icons/logoloader.png')
-                      Center(
-                        child: Image.asset(
-                          'assets/icons/ic_launcher.png',
-                          width: dotRadius * 5,
-                          height: dotRadius * 5,
-                        ),
-                      ),
+            child: Image.asset(
+              'assets/icons/ic_launcher.png',
+              width: dotRadius * 5,
+              height: dotRadius * 5,
+            ),
+          ),
 
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0),
-                          radius * sin(0.0),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 1 * pi / 4),
-                          radius * sin(0.0 + 1 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 2 * pi / 4),
-                          radius * sin(0.0 + 2 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 3 * pi / 4),
-                          radius * sin(0.0 + 3 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 4 * pi / 4),
-                          radius * sin(0.0 + 4 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 5 * pi / 4),
-                          radius * sin(0.0 + 5 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 6 * pi / 4),
-                          radius * sin(0.0 + 6 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(
-                          radius * cos(0.0 + 7 * pi / 4),
-                          radius * sin(0.0 + 7 * pi / 4),
-                        ),
-                        child: Dot(
-                          radius: dotRadius,
-                          color: AppColors.buttoncolor,
-                        ),
-                      ),
-                    ],
+          // Rotating dots only
+          RotationTransition(
+            turns: animation_rotation,
+            child: Stack(
+              children: List.generate(8, (index) {
+                final angle = index * pi / 4;
+                return Transform.translate(
+                  offset: Offset(
+                    radius * cos(angle),
+                    radius * sin(angle),
                   ),
-                ),
-              ),
+                  child: Dot(
+                    radius: dotRadius,
+                    color: AppColors.buttoncolor,
+                  ),
+                );
+              }),
             ),
           ),
         ],

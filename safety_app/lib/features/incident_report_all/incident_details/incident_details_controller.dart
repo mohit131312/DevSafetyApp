@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/incident_report_all/incident_details/incident_details_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,31 @@ class IncidentDetailsController extends GetxController {
 
   final maxPhotos = 10;
 
+  // Future<void> pickIncidentImages({required ImageSource source}) async {
+  //   final ImagePicker picker = ImagePicker();
+
+  //   if (incidentimg.length < maxPhotos) {
+  //     int remainingSlots = maxPhotos - incidentimg.length;
+
+  //     if (source == ImageSource.gallery) {
+  //       final List<XFile> pickedFiles = await picker.pickMultiImage();
+  //       final List<XFile> limitedFiles =
+  //           pickedFiles.take(remainingSlots).toList();
+  //       incidentimg.addAll(limitedFiles);
+  //       log('Picked from Gallery: ${limitedFiles.length} images');
+  //     } else if (source == ImageSource.camera) {
+  //       final XFile? capturedFile =
+  //           await picker.pickImage(source: ImageSource.camera);
+  //       if (capturedFile != null) {
+  //         incidentimg.add(capturedFile);
+  //         log('Captured from Camera: 1 image');
+  //       }
+  //     }
+
+  //     incidentImageCount.value = incidentimg.length;
+  //     log('incidentImageCount: ${incidentImageCount.value}');
+  //   }
+  // }
   Future<void> pickIncidentImages({required ImageSource source}) async {
     final ImagePicker picker = ImagePicker();
 
@@ -23,18 +49,38 @@ class IncidentDetailsController extends GetxController {
         final List<XFile> pickedFiles = await picker.pickMultiImage();
         final List<XFile> limitedFiles =
             pickedFiles.take(remainingSlots).toList();
-        incidentimg.addAll(limitedFiles);
-        log('Picked from Gallery: ${limitedFiles.length} images');
+
+        for (var file in limitedFiles) {
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: file,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            incidentimg.add(croppedFile);
+          }
+        }
+
+        log('Picked & Cropped from Gallery: ${incidentimg.length} images');
       } else if (source == ImageSource.camera) {
         final XFile? capturedFile =
             await picker.pickImage(source: ImageSource.camera);
+
         if (capturedFile != null) {
-          incidentimg.add(capturedFile);
-          log('Captured from Camera: 1 image');
+          final croppedFile = await ImageHelper.cropImageFile(
+            file: capturedFile,
+            context: Get.context,
+          );
+          if (croppedFile != null) {
+            incidentimg.add(croppedFile);
+            log('Captured & Cropped from Camera: 1 image');
+          }
         }
       }
 
       incidentImageCount.value = incidentimg.length;
+      if (incidentImageCount.value > 0) {
+        photoError.value = "";
+      }
       log('incidentImageCount: ${incidentImageCount.value}');
     }
   }
@@ -277,4 +323,14 @@ class IncidentDetailsController extends GetxController {
 
     log('IncidentDetailsController data has been reset.');
   }
+
+  //
+  GlobalKey photoKey = GlobalKey();
+  GlobalKey buildingKey = GlobalKey();
+  GlobalKey aowKey = GlobalKey();
+  GlobalKey contractorfirmKey = GlobalKey();
+  GlobalKey severityKey = GlobalKey();
+  GlobalKey addpeopleKey = GlobalKey();
+  GlobalKey addAssigneeKey = GlobalKey();
+  GlobalKey addInformedKey = GlobalKey();
 }

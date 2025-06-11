@@ -20,8 +20,10 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -70,7 +72,7 @@ class ToolboxTrainingScreen extends StatelessWidget {
         length: 3,
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -114,37 +116,39 @@ class ToolboxTrainingScreen extends StatelessWidget {
                   vertical: SizeConfig.heightMultiplier * 2,
                 ),
                 child: SizedBox(
-                  height: SizeConfig.heightMultiplier * 6.5,
+                  height: SizeConfig.heightMultiplier * 6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: SizeConfig.heightMultiplier * 6.4,
+                        height: SizeConfig.heightMultiplier * 6,
                         width: SizeConfig.widthMultiplier * 92,
                         child: Obx(() {
-                          TextEditingController activeController;
-
                           switch (
                               toolboxTrainingController.selectedOption.value) {
                             case 0:
-                              activeController = toolboxTrainingController
-                                  .searchtoolAllController;
+                              toolboxTrainingController.activeController =
+                                  toolboxTrainingController
+                                      .searchtoolAllController;
                               break;
                             case 1:
-                              activeController = toolboxTrainingController
-                                  .searchtoolMakerController;
+                              toolboxTrainingController.activeController =
+                                  toolboxTrainingController
+                                      .searchtoolMakerController;
                               break;
                             case 2:
-                              activeController = toolboxTrainingController
-                                  .searchtoolReviwerController;
+                              toolboxTrainingController.activeController =
+                                  toolboxTrainingController
+                                      .searchtoolReviwerController;
                               break;
                             default:
-                              activeController =
+                              toolboxTrainingController.activeController =
                                   TextEditingController(); // fallback
                           }
 
                           return AppTextFormfeild(
-                            controller: activeController,
+                            controller:
+                                toolboxTrainingController.activeController,
                             hintText: 'Search By Name..',
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
@@ -202,7 +206,7 @@ class ToolboxTrainingScreen extends StatelessWidget {
                     SizedBox(
                       width: SizeConfig.widthMultiplier * 20,
                       child: const Tab(
-                        text: AppTexts.maker,
+                        text: "Doer",
                       ),
                     ),
                     SizedBox(
@@ -231,24 +235,35 @@ class ToolboxTrainingScreen extends StatelessWidget {
 
                           return GestureDetector(
                             onTap: () async {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      CustomLoadingPopup());
-                              log('----------------------------${toolboxTrainingController.selectedOption.value}');
-                              toolboxTrainingAllListdetController.resetData();
-                              await toolboxTrainingAllListdetController
-                                  .gettoolBoxAllDetails(
-                                      projectId, userId, 1, tool.id);
-                              Get.back();
-                              Get.to(ToolboxTrainingAllListdet(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                toolBox: tool.id,
-                              ));
+                              if (await CheckInternet.checkInternet()) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomLoadingPopup());
+                                log('----------------------------${toolboxTrainingController.selectedOption.value}');
+                                toolboxTrainingAllListdetController.resetData();
+                                await toolboxTrainingAllListdetController
+                                    .gettoolBoxAllDetails(
+                                        projectId, userId, 1, tool.id);
+                                Get.back();
+                                Get.to(ToolboxTrainingAllListdet(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  toolBox: tool.id,
+                                ));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,25 +351,36 @@ class ToolboxTrainingScreen extends StatelessWidget {
                           return GestureDetector(
                             onTap: () async {
                               log('----------------------------${toolboxTrainingController.selectedOption.value}');
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      CustomLoadingPopup());
-                              toolboxTrainingMakerController
-                                  .cleartoolboxComment();
-                              await toolboxTrainingMakerController
-                                  .gettoolBoxMakerDetails(
-                                      projectId, userId, 2, tool.id);
-                              Get.back();
-                              Get.to(ToolboxTrainingMakerScreen(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                toolBox: tool.id,
-                                uniqueId: tool.tooluniqueId!,
-                              ));
+                              if (await CheckInternet.checkInternet()) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomLoadingPopup());
+                                toolboxTrainingMakerController
+                                    .cleartoolboxComment();
+                                await toolboxTrainingMakerController
+                                    .gettoolBoxMakerDetails(
+                                        projectId, userId, 2, tool.id);
+                                Get.back();
+                                Get.to(ToolboxTrainingMakerScreen(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  toolBox: tool.id,
+                                  uniqueId: tool.tooluniqueId!,
+                                ));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,26 +467,37 @@ class ToolboxTrainingScreen extends StatelessWidget {
 
                           return GestureDetector(
                             onTap: () async {
-                              toolboxTrainingReviewerController
-                                  .cleartoolboxComment();
-                              log('----------------------------${toolboxTrainingController.selectedOption.value}');
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      CustomLoadingPopup());
-                              await toolboxTrainingReviewerController
-                                  .gettoolBoxreviewerDetails(
-                                      projectId, userId, 3, tool.id);
-                              Get.back();
-                              Get.to(ToolboxTrainingReviewer(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                toolBox: tool.id,
-                                uniqueId: tool.tooluniqueId!,
-                              ));
+                              if (await CheckInternet.checkInternet()) {
+                                toolboxTrainingReviewerController
+                                    .cleartoolboxComment();
+                                log('----------------------------${toolboxTrainingController.selectedOption.value}');
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomLoadingPopup());
+                                await toolboxTrainingReviewerController
+                                    .gettoolBoxreviewerDetails(
+                                        projectId, userId, 3, tool.id);
+                                Get.back();
+                                Get.to(ToolboxTrainingReviewer(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  toolBox: tool.id,
+                                  uniqueId: tool.tooluniqueId!,
+                                ));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -554,28 +591,39 @@ class ToolboxTrainingScreen extends StatelessWidget {
                     height: SizeConfig.heightMultiplier * 6.5,
                     child: FloatingActionButton(
                       onPressed: () async {
-                        toolboxPreviewCotroller.resetAllData();
-                        toolboxTDetailsController.resetTdetailsAllData();
-                        toolboxAddTraineeController.clearAllData();
-                        selectTraineeController.clearAllTrainneData();
-                        toolboxAttestationController.clearAllData();
-                        selectReviewerController.clearReviewerData();
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                CustomLoadingPopup());
-                        await toolboxTrainingController.getToolBoxData(
-                            projectId, userId);
+                        if (await CheckInternet.checkInternet()) {
+                          toolboxPreviewCotroller.resetAllData();
+                          toolboxTDetailsController.resetTdetailsAllData();
+                          toolboxAddTraineeController.clearAllData();
+                          selectTraineeController.clearAllTrainneData();
+                          toolboxAttestationController.clearAllData();
+                          selectReviewerController.clearReviewerData();
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CustomLoadingPopup());
+                          await toolboxTrainingController.getToolBoxData(
+                              projectId, userId);
 
-                        // await toolboxTrainingController.getInstructionData(
-                        //     projectId, userId, userId);
-                        Get.back();
-                        Get.to(ToolboxTDetailsScreen(
-                            userId: userId,
-                            userName: userName,
-                            userImg: userImg,
-                            userDesg: userDesg,
-                            projectId: projectId));
+                          // await toolboxTrainingController.getInstructionData(
+                          //     projectId, userId, userId);
+                          Get.back();
+                          Get.to(ToolboxTDetailsScreen(
+                              userId: userId,
+                              userName: userName,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              projectId: projectId));
+                        } else {
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
+                        }
                       },
                       backgroundColor: AppColors.buttoncolor,
                       elevation: 0,

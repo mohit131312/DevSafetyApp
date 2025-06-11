@@ -32,26 +32,26 @@ class EmergencyContactScreen extends StatelessWidget {
       'subtitle': '101',
       'image': 'assets/icons/phone_orange.png',
     },
-    {
-      'title': 'Ambulance',
-      'subtitle': '102',
-      'image': 'assets/icons/phone_orange.png',
-    },
-    {
-      'title': 'National Emergency Number',
-      'subtitle': '112',
-      'image': 'assets/icons/phone_orange.png',
-    },
-    {
-      'title': 'Police',
-      'subtitle': '112',
-      'image': 'assets/icons/phone_orange.png',
-    },
-    {
-      'title': 'Fire',
-      'subtitle': '101',
-      'image': 'assets/icons/phone_orange.png',
-    },
+    // {
+    //   'title': 'Ambulance',
+    //   'subtitle': '102',
+    //   'image': 'assets/icons/phone_orange.png',
+    // },
+    // {
+    //   'title': 'National Emergency Number',
+    //   'subtitle': '112',
+    //   'image': 'assets/icons/phone_orange.png',
+    // },
+    // {
+    //   'title': 'Police',
+    //   'subtitle': '112',
+    //   'image': 'assets/icons/phone_orange.png',
+    // },
+    // {
+    //   'title': 'Fire',
+    //   'subtitle': '101',
+    //   'image': 'assets/icons/phone_orange.png',
+    // },
   ];
 
   @override

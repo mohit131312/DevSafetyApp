@@ -9,9 +9,11 @@ import 'package:flutter_app/features/select_role/select_role_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class SelectRole extends StatefulWidget {
@@ -30,7 +32,7 @@ class _SelectRoleState extends State<SelectRole> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -56,9 +58,19 @@ class _SelectRoleState extends State<SelectRole> {
           Padding(
             padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
             child: IconButton(
-              onPressed: () {
-                logout();
-                Get.offAll(() => LoginScreen());
+              onPressed: () async {
+                if (await CheckInternet.checkInternet()) {
+                  logout();
+                  Get.offAll(() => LoginScreen());
+                } else {
+                  await showDialog(
+                    context: Get.context!,
+                    builder: (BuildContext context) {
+                      return CustomValidationPopup(
+                          message: "Please check your internet connection.");
+                    },
+                  );
+                }
               },
               icon: Icon(
                 Icons.logout,
@@ -87,41 +99,52 @@ class _SelectRoleState extends State<SelectRole> {
                     log('-------------${selectRoleController.roleArray.length}');
                     return GestureDetector(
                       onTap: () async {
-                        selectRoleController.roleId.value = 0;
-                        selectRoleController.userDesg.value = '';
-                        selectRoleController.selectedIndex.value = -1;
-                        await selectRoleController.selectRole(index);
+                        if (await CheckInternet.checkInternet()) {
+                          selectRoleController.roleId.value = 0;
+                          selectRoleController.userDesg.value = '';
+                          selectRoleController.selectedIndex.value = -1;
+                          await selectRoleController.selectRole(index);
 
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                CustomLoadingPopup());
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CustomLoadingPopup());
 
-                        await selectProjectController.getProjectDetails(
-                          selectRoleController.userId.value,
-                          selectRoleController.roleId.value,
-                        );
+                          await selectProjectController.getProjectDetails(
+                            selectRoleController.userId.value,
+                            selectRoleController.roleId.value,
+                          );
 
-                        Navigator.pop(context);
+                          Navigator.pop(context);
 
-                        log('User ID: ${selectRoleController.userId.value}');
-                        log('Role ID: ${selectRoleController.roleId.value}');
+                          log('User ID: ${selectRoleController.userId.value}');
+                          log('Role ID: ${selectRoleController.roleId.value}');
 
-                        if (logStatus == true) {
-                          Get.to(() => SelectProjectScreen(
-                                userId: selectRoleController.userId.value,
-                                roleId: selectRoleController.roleId.value,
-                                userName: selectRoleController.username.value,
-                                userImg: selectRoleController.userimg.value,
-                                userDesg: selectRoleController.userDesg.value,
-                              ));
+                          if (logStatus == true) {
+                            Get.to(() => SelectProjectScreen(
+                                  userId: selectRoleController.userId.value,
+                                  roleId: selectRoleController.roleId.value,
+                                  userName: selectRoleController.username.value,
+                                  userImg: selectRoleController.userimg.value,
+                                  userDesg: selectRoleController.userDesg.value,
+                                ));
 
-                          log("User ID: ${selectRoleController.userId.value}");
-                          log("Role ID: ${selectRoleController.roleId.value}");
-                          log("Username: ${selectRoleController.username.value}");
-                          log("UserDesg: ${selectRoleController.userDesg.value}");
+                            log("User ID: ${selectRoleController.userId.value}");
+                            log("Role ID: ${selectRoleController.roleId.value}");
+                            log("Username: ${selectRoleController.username.value}");
+                            log("UserDesg: ${selectRoleController.userDesg.value}");
+                          } else {
+                            logout();
+                          }
                         } else {
-                          logout();
+                          await showDialog(
+                            context: Get.context!,
+                            builder: (BuildContext context) {
+                              return CustomValidationPopup(
+                                  message:
+                                      "Please check your internet connection.");
+                            },
+                          );
                         }
                       },
                       child: Obx(

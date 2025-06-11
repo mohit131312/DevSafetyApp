@@ -24,7 +24,7 @@ class SelectReviewer extends StatelessWidget {
       top: false,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -62,52 +62,61 @@ class SelectReviewer extends StatelessWidget {
         ),
         body: Column(
           children: [
-            SingleChildScrollView(
-              child: SizedBox(
-                height: SizeConfig.heightMultiplier * 70,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 3,
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: SizeConfig.heightMultiplier * 5.8,
+                  width: SizeConfig.widthMultiplier * 92,
+                  child: AppTextFormfeild(
+                    controller: selectReviewerController.assigneeDataController,
+                    hintText: 'Search here..',
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/Search.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: SizeConfig.heightMultiplier * 5.8,
-                          width: SizeConfig.widthMultiplier * 92,
-                          child: AppTextFormfeild(
-                            controller:
-                                selectReviewerController.assigneeDataController,
-                            hintText: 'Search By Assignee Name..',
-                            keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: Container(
-                              padding: EdgeInsets.all(10.0),
-                              child: Image.asset(
-                                'assets/icons/Search.png',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              selectReviewerController
-                                  .updateSearchassigneeDataQuery(value);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 1.5,
-                    ),
-                    Obx(
+                    onChanged: (value) {
+                      selectReviewerController
+                          .updateSearchassigneeDataQuery(value);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 1.5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbVisibility: WidgetStateProperty.all(true),
+                  thickness: WidgetStateProperty.all(3),
+                  radius: const Radius.circular(8),
+                  trackVisibility: WidgetStateProperty.all(true),
+                  thumbColor: WidgetStateProperty.all(AppColors.buttoncolor),
+                  trackColor: WidgetStateProperty.all(
+                      const Color.fromARGB(26, 101, 99, 99)),
+                  trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+                ),
+                child: Scrollbar(
+                  interactive: true,
+                  child: SizedBox(
+                    height: SizeConfig.heightMultiplier * 60,
+                    child: Obx(
                       () {
                         final filteredList =
                             selectReviewerController.filteredassigneeData;
 
                         return ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
                             itemCount: filteredList.length,
                             itemBuilder: (context, index) {
                               final assigneeData = filteredList[index];
@@ -137,7 +146,7 @@ class SelectReviewer extends StatelessWidget {
                                                       value);
                                             }
                                           },
-                                          activeColor: AppColors.thirdText,
+                                          activeColor: AppColors.buttoncolor,
                                         ),
                                       ),
                                     ),
@@ -223,11 +232,11 @@ class SelectReviewer extends StatelessWidget {
                               );
                             });
                       },
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
         bottomNavigationBar: Padding(

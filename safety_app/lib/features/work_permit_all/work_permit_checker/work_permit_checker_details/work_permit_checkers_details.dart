@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_medium_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -12,8 +13,10 @@ import 'package:flutter_app/features/work_permit_all/work_permit_checker/work_pe
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
@@ -139,7 +142,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -363,17 +366,24 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                             ),
                                             AppTextWidget(
                                               text: workPermitCheckerDetailsController
-                                                          .workPermitsCheckerDetails[
-                                                              0]
-                                                          .toolboxTrainingId !=
-                                                      null
-                                                  ? '${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].id.toString()} /${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
-                                                  : "",
+                                                          .workPermitsCheckerDetails
+                                                          .isNotEmpty &&
+                                                      workPermitCheckerDetailsController
+                                                              .workPermitsCheckerDetails[
+                                                                  0]
+                                                              .toolboxTrainingId !=
+                                                          null &&
+                                                      workPermitCheckerDetailsController
+                                                          .selectedToolboxTrainingMaker
+                                                          .isNotEmpty
+                                                  ? '${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].id} / ${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
+                                                  : '',
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.primaryText,
                                             ),
+
                                             SizedBox(
                                               height:
                                                   SizeConfig.heightMultiplier *
@@ -515,8 +525,16 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                             const EdgeInsets
                                                                 .symmetric(
                                                                 vertical: 2.0),
-                                                        child: Text(
-                                                            "Floor: ${floor['floor_name']}"),
+                                                        child: floor['floor_name'] !=
+                                                                    null &&
+                                                                floor['floor_name']
+                                                                    .toString()
+                                                                    .trim()
+                                                                    .isNotEmpty
+                                                            ? Text(
+                                                                "Floor: ${floor['floor_name']}")
+                                                            : SizedBox
+                                                                .shrink(), // returns nothing (empty widget)
                                                       );
                                                     }).toList(),
                                                     SizedBox(height: 12),
@@ -772,7 +790,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                          text: 'Maker',
+                          text: 'Doer',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText),
@@ -923,10 +941,17 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         controller: workPermitCheckerDetailsController
                             .workPermitRemarksController,
                         hintText: 'Comments',
-                        // focusNode: newWorkPermitController.dow,
-                        // onFieldSubmitted: (_) {
-                        //   newWorkPermitController.dow.unfocus();
-                        // },
+                        focusNode: workPermitCheckerDetailsController
+                            .workPermitRemarksFocusNode,
+                        onFieldSubmitted: (_) {
+                          workPermitCheckerDetailsController
+                              .workPermitRemarksFocusNode
+                              .unfocus();
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z\s]')),
+                        ],
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
@@ -936,6 +961,10 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           return null;
                         },
                         onChanged: (value) {},
+                        fillColor:
+                            workPermitCheckerDetailsController.userFound.value
+                                ? AppColors.textfeildcolor
+                                : Colors.white,
                       ),
                       SizedBox(
                         height: SizeConfig.heightMultiplier * 2,
@@ -964,8 +993,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 20, bottom: 20),
-                              height: 305,
+                                  left: 12, right: 12, top: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.textfeildcolor,
                                 borderRadius: BorderRadius.circular(12),
@@ -1005,7 +1033,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: SizeConfig.heightMultiplier * 4,
+                                    height: SizeConfig.heightMultiplier * 2,
                                   ),
                                   Obx(() {
                                     if (workPermitCheckerDetailsController
@@ -1031,14 +1059,31 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                               "No signature available");
                                     } else {
                                       // Show signature pad
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Signature(
-                                          height: 206,
-                                          controller:
+                                      return Listener(
+                                        key: workPermitCheckerDetailsController
+                                            .signatureSectionKey,
+                                        onPointerDown: (_) {
+                                          Future.delayed(
+                                              Duration(milliseconds: 50), () {
+                                            if (workPermitCheckerDetailsController
+                                                .signatureCheckerController
+                                                .isNotEmpty) {
                                               workPermitCheckerDetailsController
-                                                  .signatureCheckerController,
-                                          backgroundColor: Colors.white,
+                                                  .signatureattestationError
+                                                  .value = '';
+                                            }
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Signature(
+                                            height: 206,
+                                            controller:
+                                                workPermitCheckerDetailsController
+                                                    .signatureCheckerController,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                       );
                                     }
@@ -1262,10 +1307,22 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                               workPermitCheckerDetailsController
                                   .workPermitRemarksController
                                   .text
-                                  .isNotEmpty) {}
-                          // ignore: use_build_context_synchronously
-                          showConfirmationDialogClosed(context, 2);
-                          //   Get.to(WorkPermitPrecautionScreen());
+                                  .isNotEmpty) {
+                            if (await CheckInternet.checkInternet()) {
+                              // ignore: use_build_context_synchronously
+                              showConfirmationDialogClosed(context, 2);
+                              //   Get.to(WorkPermitPrecautionScreen());
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
+                          }
                         }
                       },
                       child: AppMediumButton(
@@ -1274,12 +1331,19 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         iconColor: AppColors.buttoncolor,
                         backgroundColor: Colors.white,
                         textColor: AppColors.buttoncolor,
-                        imagePath: 'assets/icons/arrow-narrow-left.png',
+                        imagePath: 'assets/images/leftarrow.png',
                       ),
                     ),
                     SizedBox(width: SizeConfig.widthMultiplier * 5),
                     GestureDetector(
                       onTap: () async {
+                        validateAndFocusFirstInvalidField();
+                        if (workPermitCheckerDetailsController
+                            .signatureCheckerController.isEmpty) {
+                          workPermitCheckerDetailsController
+                              .signatureattestationError
+                              .value = "Please fill in the signature.";
+                        }
                         if (formKey.currentState!.validate()) {
                           await workPermitCheckerDetailsController
                               .saveSafetyCheckerSignature();
@@ -1296,9 +1360,21 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                               workPermitCheckerDetailsController
                                   .workPermitRemarksController
                                   .text
-                                  .isNotEmpty) {}
-                          showConfirmationDialogClosed(context, 1);
-                          //   Get.to(WorkPermitPrecautionScreen());
+                                  .isNotEmpty) {
+                            if (await CheckInternet.checkInternet()) {
+                              showConfirmationDialogClosed(context, 1);
+                            } else {
+                              await showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return CustomValidationPopup(
+                                      message:
+                                          "Please check your internet connection.");
+                                },
+                              );
+                            }
+                            //   Get.to(WorkPermitPrecautionScreen());
+                          }
                         }
                       },
                       child: AppMediumButton(
@@ -1307,7 +1383,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         iconColor: Colors.white,
                         textColor: Colors.white,
                         backgroundColor: AppColors.buttoncolor,
-                        imagePath2: 'assets/icons/arrow-narrow-right.png',
+                        imagePath2: 'assets/images/rightarrow.png',
                       ),
                     ),
                   ],
@@ -1391,5 +1467,33 @@ class WorkPermitCheckersDetails extends StatelessWidget {
         );
       }).toList(),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (workPermitCheckerDetailsController.workPermitRemarksController.text
+        .trim()
+        .isEmpty) {
+      workPermitCheckerDetailsController.workPermitRemarksFocusNode
+          .requestFocus();
+      return;
+    }
+    if (workPermitCheckerDetailsController.signatureCheckerController.isEmpty) {
+      scrollToWidget(workPermitCheckerDetailsController.signatureSectionKey);
+      return;
+    }
   }
 }

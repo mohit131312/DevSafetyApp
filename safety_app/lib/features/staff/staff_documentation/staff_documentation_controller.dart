@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,8 @@ class StaffDocumentationController extends GetxController {
 
   var staffAdharcard = <XFile>[];
   TextEditingController adharnoController = TextEditingController();
+  FocusNode adharnoFocus = FocusNode();
+
   TextEditingController idnoController = TextEditingController();
   TextEditingController validityController = TextEditingController();
 
@@ -64,7 +67,6 @@ class StaffDocumentationController extends GetxController {
 
     print('documentType: ${documentType.length}');
     print('documentTypeName: ${documentTypeName.length}');
-
     print('idNumber: ${idNumber.length}');
     print('validity: ${validity.length}');
     staffimg.refresh();
@@ -109,27 +111,51 @@ class StaffDocumentationController extends GetxController {
     print('validity: ${validity.length}');
   }
 
+  // Future<void> pickotherImages(ImageSource source) async {
+  //   if (staffotherimg.length < maxPhotos2) {
+  //     final ImagePicker picker = ImagePicker();
+  //     if (source == ImageSource.gallery) {
+  //       // Pick multiple images from the gallery
+  //       final List<XFile> pickedFiles = await picker.pickMultiImage();
+  //       if (pickedFiles.isNotEmpty) {
+  //         staffotherimg.addAll(pickedFiles);
+  //         log('Picked from Gallery: ${pickedFiles.length} images');
+  //       }
+  //     } else {
+  //       // Capture a single image from the camera
+  //       XFile? capturedFile =
+  //           await picker.pickImage(source: ImageSource.camera);
+  //       if (capturedFile != null) {
+  //         staffotherimg.add(capturedFile);
+  //         log('Captured from Camera: 1 image');
+  //       }
+  //     }
+
+  //     otherImageCount.value = staffotherimg.length;
+  //     log('-----------otherImageCount-------------${otherImageCount.value}');
+  //     if (otherImageCount.value > 0) {
+  //       photoError.value = "";
+  //     }
+  //   }
+  // }
+
   Future<void> pickotherImages(ImageSource source) async {
     if (staffotherimg.length < maxPhotos2) {
-      final ImagePicker picker = ImagePicker();
-      if (source == ImageSource.gallery) {
-        // Pick multiple images from the gallery
-        final List<XFile> pickedFiles = await picker.pickMultiImage();
-        if (pickedFiles.isNotEmpty) {
-          staffotherimg.addAll(pickedFiles);
-          log('Picked from Gallery: ${pickedFiles.length} images');
-        }
+      final XFile? croppedImage = await ImageHelper.pickAndCropImage(
+        source: source,
+      );
+
+      if (croppedImage != null) {
+        staffotherimg.add(croppedImage);
+        log('Picked and cropped from ${source == ImageSource.camera ? "Camera" : "Gallery"}: 1 image');
       } else {
-        // Capture a single image from the camera
-        XFile? capturedFile =
-            await picker.pickImage(source: ImageSource.camera);
-        if (capturedFile != null) {
-          staffotherimg.add(capturedFile);
-          log('Captured from Camera: 1 image');
-        }
+        log('${source == ImageSource.camera ? "Camera" : "Gallery"} image picking/cropping cancelled or failed');
       }
 
       otherImageCount.value = staffotherimg.length;
+      if (otherImageCount.value > 0) {
+        photoError.value = "";
+      }
       log('-----------otherImageCount-------------${otherImageCount.value}');
     }
   }
@@ -203,6 +229,11 @@ class StaffDocumentationController extends GetxController {
   void updateDateValidity(DateTime newDate) {
     selectedDateValidity.value = newDate;
     validityController.text = DateFormat("yyyy-MM-dd").format(newDate);
+    if (validityController.text.isEmpty) {
+      validityError.value = "Validity is required";
+    } else {
+      validityError.value = "";
+    }
   }
 
   var shouldValidate = false.obs; // Controls validation state

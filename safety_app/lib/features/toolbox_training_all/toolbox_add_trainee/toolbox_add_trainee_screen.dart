@@ -44,7 +44,7 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -740,6 +740,8 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                                                               .updateCombinedList(
                                                                   true,
                                                                   labour.id);
+                                                          toolboxAddTraineeController
+                                                              .validateIncidentSelection();
                                                         },
                                                         child: Container(
                                                           padding: EdgeInsets
@@ -848,13 +850,16 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
           child: Row(
             children: [
               GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
                 child: AppMediumButton(
                   label: "Previous",
                   borderColor: AppColors.buttoncolor,
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
@@ -891,7 +896,7 @@ class ToolboxAddTraineeScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],

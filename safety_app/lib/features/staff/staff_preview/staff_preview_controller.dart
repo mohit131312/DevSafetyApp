@@ -11,7 +11,6 @@ import 'package:flutter_app/features/staff/staff_undertaking/staff_undertaking_c
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
-import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -189,7 +188,7 @@ class StaffPreviewController extends GetxController {
       request.fields['emergency_contact_number'] =
           addStaffController.econtactnumberController.text;
       request.fields['emergency_contact_relation'] =
-          addStaffController.econtactrelationController.text;
+          addStaffController.selectedRelation.value;
       request.fields['staff_id'] = addStaffController.staffID.toString();
       request.fields['reason_of_visit'] =
           addStaffController.selectedReasonId.toString();
@@ -255,12 +254,12 @@ class StaffPreviewController extends GetxController {
               log("----------------------------------------------------------------------msg: ");
               Navigator.pop(Get.context!, true);
 
-              await showDialog(
-                context: Get.context!,
-                builder: (BuildContext context) {
-                  return ValidationPopChang(message: validationmsg);
-                },
-              );
+              // await showDialog(
+              //   context: Get.context!,
+              //   builder: (BuildContext context) {
+              //     return ValidationPopChang(message: validationmsg);
+              //   },
+              // );
               Get.back();
 
               // Get.to(StaffSubmit(

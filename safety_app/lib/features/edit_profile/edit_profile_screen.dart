@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/features/edit_profile/edit_profile_controller.dart';
@@ -8,9 +9,11 @@ import 'package:flutter_app/features/profile_details/profile_details_controller.
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -164,34 +167,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    log('Before---------------$updatedData');
-                    _saveProfileChanges();
-                    log('after---------------$updatedData');
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            CustomLoadingPopup());
-                    await editProfileController.getEditProfileDetails(
-                        updatedData, context);
-                    Get.back();
+                    if (await CheckInternet.checkInternet()) {
+                      log('Before---------------$updatedData');
+                      _saveProfileChanges();
+                      log('after---------------$updatedData');
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              CustomLoadingPopup());
+                      await editProfileController.getEditProfileDetails(
+                          updatedData, context);
+                      Get.back();
 
-                    if (editProfileController.validationmsg ==
-                        'Profile updated successfully') {
-                      Get.back();
-                      Get.back();
-                      Get.back();
+                      if (editProfileController.validationmsg ==
+                          'Profile updated successfully') {
+                        Get.back();
+                        Get.back();
+                        Get.back();
+                      }
+                      // if (labourPreviewController.validationmsg ==
+                      //     'Induction training data saved.') {
+                      //   Get.to(() => LabourSubmit(
+                      //         categoryId: categoryId,
+                      //         userId: userId,
+                      //         userName: userName,
+                      //         userImg: userImg,
+                      //         userDesg: userDesg,
+                      //         projectId: projectId,
+                      //       ));
+                      // }
+                    } else {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message:
+                                  "Please check your internet connection.");
+                        },
+                      );
                     }
-                    // if (labourPreviewController.validationmsg ==
-                    //     'Induction training data saved.') {
-                    //   Get.to(() => LabourSubmit(
-                    //         categoryId: categoryId,
-                    //         userId: userId,
-                    //         userName: userName,
-                    //         userImg: userImg,
-                    //         userDesg: userDesg,
-                    //         projectId: projectId,
-                    //       ));
-                    // }
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -289,27 +303,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     child: Image.network(
                                         "$baseUrl${profileDetailsControllers.profiledetails['profile_photo']}"),
                                   ),
-                                  Positioned(
-                                    bottom: SizeConfig.heightMultiplier * 1,
-                                    left: SizeConfig.heightMultiplier * 7,
-                                    child: Container(
-                                      height:
-                                          SizeConfig.imageSizeMultiplier * 8,
-                                      width: SizeConfig.imageSizeMultiplier * 8,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.fourtText,
-                                      ),
-                                      child: SizedBox(
-                                        height:
-                                            SizeConfig.imageSizeMultiplier * 6,
-                                        width:
-                                            SizeConfig.imageSizeMultiplier * 6,
-                                        child: Image.asset(
-                                            "assets/icons/camera_icon.png"),
-                                      ),
-                                    ),
-                                  )
+                                  // Positioned(
+                                  //   bottom: SizeConfig.heightMultiplier * 1,
+                                  //   left: SizeConfig.heightMultiplier * 7,
+                                  //   child: Container(
+                                  //     height:
+                                  //         SizeConfig.imageSizeMultiplier * 8,
+                                  //     width: SizeConfig.imageSizeMultiplier * 8,
+                                  //     decoration: BoxDecoration(
+                                  //       shape: BoxShape.circle,
+                                  //       color: AppColors.fourtText,
+                                  //     ),
+                                  //     child: SizedBox(
+                                  //       height:
+                                  //           SizeConfig.imageSizeMultiplier * 6,
+                                  //       width:
+                                  //           SizeConfig.imageSizeMultiplier * 6,
+                                  //       child: Image.asset(
+                                  //           "assets/icons/camera_icon.png"),
+                                  //     ),
+                                  //   ),
+                                  // )
                                 ],
                               ),
                             ],
@@ -324,104 +338,141 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  AppTextWidget(
-                                    text: field["label"]!,
-                                    fontSize: AppTextSize.textSizeSmall,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primaryText,
-                                  ),
-                                  SizedBox(
-                                      height: SizeConfig.heightMultiplier * 1),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    decoration: BoxDecoration(),
-                                    child: TextFormField(
-                                      readOnly: index == 2 || index == 3,
-                                      enabled: index != 2 && index != 3,
-                                      controller: _getControllerForField(index),
-                                      style: GoogleFonts.inter(
-                                        fontSize: AppTextSize.textSizeSmall,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.primaryText,
-                                      ),
-                                      decoration: InputDecoration(
-                                        fillColor: index == 2 || index == 3
-                                            ? AppColors.textfeildcolor
-                                            : Colors
-                                                .white, // Grey background for disabled fields
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 13, horizontal: 15),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                  index == 3
+                                      ? SizedBox()
+                                      : AppTextWidget(
+                                          text: field["label"]!,
+                                          fontSize: AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.primaryText,
                                         ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color: AppColors.searchfeildcolor,
-                                              width: 1),
+                                  index == 3
+                                      ? SizedBox()
+                                      : SizedBox(
+                                          height:
+                                              SizeConfig.heightMultiplier * 1),
+                                  index == 3
+                                      ? SizedBox()
+                                      : Container(
+                                          alignment: Alignment.centerLeft,
+                                          decoration: BoxDecoration(),
+                                          child: TextFormField(
+                                            readOnly: index == 2 || index == 3,
+                                            enabled: index != 2 && index != 3,
+                                            controller:
+                                                _getControllerForField(index),
+                                            style: GoogleFonts.inter(
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.primaryText,
+                                            ),
+                                            decoration: InputDecoration(
+                                              fillColor: index == 2 ||
+                                                      index == 3
+                                                  ? AppColors.textfeildcolor
+                                                  : Colors
+                                                      .white, // Grey background for disabled fields
+                                              filled: true,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 15),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    color: AppColors
+                                                        .searchfeildcolor,
+                                                    width: 1),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    color: AppColors
+                                                        .searchfeildcolor,
+                                                    width: 1),
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (index == 0 || index == 1) {
+                                                final RegExp regex = RegExp(
+                                                    r'^[a-zA-Z0-9]+$'); // Letters and numbers only
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return '${field["label"]} is required';
+                                                }
+                                                if (!regex.hasMatch(value)) {
+                                                  return '${field["label"]} can only contain letters and numbers';
+                                                }
+                                                if (value.length > 50) {
+                                                  return '${field["label"]} cannot be longer than 50 characters';
+                                                }
+                                              }
+
+                                              // Contact Number: Only digits, 10-15 digits allowed
+                                              if (index == 4) {
+                                                final RegExp numberRegex = RegExp(
+                                                    r'^[0-9]+$'); // Only digits
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Contact Number is required';
+                                                }
+                                                if (!numberRegex
+                                                    .hasMatch(value)) {
+                                                  return 'Contact Number must contain only digits';
+                                                }
+                                                if (value.length < 10) {
+                                                  return 'Contact Number must be at least 10 digits';
+                                                }
+                                                if (value.length > 15) {
+                                                  return 'Contact Number cannot exceed 15 digits';
+                                                }
+                                              }
+
+                                              // Email: Valid email format check
+                                              if (index == 5) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Email is required';
+                                                }
+                                                final emailRegex = RegExp(
+                                                    r"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$"); // Basic email pattern
+                                                if (!emailRegex
+                                                    .hasMatch(value)) {
+                                                  return 'Enter a valid email';
+                                                }
+                                              }
+
+                                              return null;
+                                            },
+                                            inputFormatters:
+                                                index == 0 || index == 1
+                                                    ? [
+                                                        FilteringTextInputFormatter
+                                                            .allow(RegExp(
+                                                                r'[a-zA-Z\s]'))
+                                                      ]
+                                                    : index == 4
+                                                        ? [
+                                                            FilteringTextInputFormatter
+                                                                .digitsOnly,
+                                                            LengthLimitingTextInputFormatter(
+                                                                10),
+                                                          ]
+                                                        : [],
+                                          ),
                                         ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color: AppColors.searchfeildcolor,
-                                              width: 1),
-                                        ),
-                                      ),
-                                      validator: (value) {
-                                        if (index == 0 || index == 1) {
-                                          final RegExp regex = RegExp(
-                                              r'^[a-zA-Z0-9]+$'); // Letters and numbers only
-                                          if (value == null || value.isEmpty) {
-                                            return '${field["label"]} is required';
-                                          }
-                                          if (!regex.hasMatch(value)) {
-                                            return '${field["label"]} can only contain letters and numbers';
-                                          }
-                                          if (value.length > 50) {
-                                            return '${field["label"]} cannot be longer than 50 characters';
-                                          }
-                                        }
-
-                                        // Contact Number: Only digits, 10-15 digits allowed
-                                        if (index == 4) {
-                                          final RegExp numberRegex = RegExp(
-                                              r'^[0-9]+$'); // Only digits
-                                          if (value == null || value.isEmpty) {
-                                            return 'Contact Number is required';
-                                          }
-                                          if (!numberRegex.hasMatch(value)) {
-                                            return 'Contact Number must contain only digits';
-                                          }
-                                          if (value.length < 10) {
-                                            return 'Contact Number must be at least 10 digits';
-                                          }
-                                          if (value.length > 15) {
-                                            return 'Contact Number cannot exceed 15 digits';
-                                          }
-                                        }
-
-                                        // Email: Valid email format check
-                                        if (index == 5) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Email is required';
-                                          }
-                                          final emailRegex = RegExp(
-                                              r"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$"); // Basic email pattern
-                                          if (!emailRegex.hasMatch(value)) {
-                                            return 'Enter a valid email';
-                                          }
-                                        }
-
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: SizeConfig.heightMultiplier * 2),
+                                  index == 3
+                                      ? SizedBox()
+                                      : SizedBox(
+                                          height:
+                                              SizeConfig.heightMultiplier * 2),
                                 ],
                               );
                             },

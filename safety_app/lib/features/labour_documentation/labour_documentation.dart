@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_medium_button.dart';
 import 'package:flutter_app/components/app_search_dropdown.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,6 +41,8 @@ class LabourDocumentation extends StatelessWidget {
     required this.userDesg,
     required this.projectId,
   });
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final LabourDocumentationController labourDocumentationController =
       Get.find();
   final InductionTrainingController inductionTrainingController = Get.find();
@@ -145,7 +149,7 @@ class LabourDocumentation extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         labourDocumentationController
-                            .updateDateValidity(tempPickedDate); // Save date
+                            .updateDateValidity(tempPickedDate);
                         Navigator.pop(context);
                       },
                       child: AppTextWidget(
@@ -175,7 +179,7 @@ class LabourDocumentation extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -279,178 +283,6 @@ class LabourDocumentation extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2.5,
                     ),
-                    // Row(
-                    //   children: [
-                    //     AppTextWidget(
-                    //         text: AppTexts.photo,
-                    //         fontSize: AppTextSize.textSizeSmall,
-                    //         fontWeight: FontWeight.w400,
-                    //         color: AppColors.primaryText),
-                    //     AppTextWidget(
-                    //         text: AppTexts.star,
-                    //         fontSize: AppTextSize.textSizeExtraSmall,
-                    //         fontWeight: FontWeight.w400,
-                    //         color: AppColors.starcolor),
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 2,
-                    // ),
-                    // Obx(
-                    //   () => labourDocumentationController.adharImageCount < 1
-                    //       ? GestureDetector(
-                    //           onTap: () {
-                    //             labourDocumentationController.pickadharImages();
-                    //           },
-                    //           child: Container(
-                    //             alignment: Alignment.center,
-                    //             width: SizeConfig.widthMultiplier * 82,
-                    //             padding: EdgeInsets.all(16),
-                    //             decoration: BoxDecoration(
-                    //               border:
-                    //                   Border.all(color: Colors.orange, width: 2),
-                    //               borderRadius: BorderRadius.circular(8),
-                    //               color: Colors.orange.shade50,
-                    //             ),
-                    //             child: Column(
-                    //               mainAxisAlignment: MainAxisAlignment.center,
-                    //               crossAxisAlignment: CrossAxisAlignment.center,
-                    //               children: [
-                    //                 Icon(
-                    //                   Icons.camera_alt_outlined,
-                    //                   color: Colors.orange,
-                    //                   size: 30,
-                    //                 ),
-                    //                 SizedBox(height: 8),
-                    //                 AppTextWidget(
-                    //                     text: AppTexts.uploadphoto,
-                    //                     fontSize: AppTextSize.textSizeExtraSmall,
-                    //                     fontWeight: FontWeight.w400,
-                    //                     color: AppColors.secondaryText),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         )
-                    //       : Column(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           crossAxisAlignment: CrossAxisAlignment.center,
-                    //           children: [
-                    //             Row(
-                    //               crossAxisAlignment: CrossAxisAlignment
-                    //                   .start, // Ensure items align properly
-
-                    //               children: [
-                    //                 Expanded(
-                    //                   child: SizedBox(
-                    //                     height: SizeConfig.imageSizeMultiplier *
-                    //                         20, // Adjust based on UI needs
-
-                    //                     child: GridView.builder(
-                    //                         physics:
-                    //                             NeverScrollableScrollPhysics(),
-                    //                         itemCount:
-                    //                             labourDocumentationController
-                    //                                 .labourAdharcard.length,
-                    //                         gridDelegate:
-                    //                             SliverGridDelegateWithFixedCrossAxisCount(
-                    //                           crossAxisCount:
-                    //                               3, // Ensures one row (horizontal scroll)
-
-                    //                           childAspectRatio:
-                    //                               1, // Keeps items square
-                    //                           mainAxisSpacing: 10,
-                    //                           crossAxisSpacing:
-                    //                               10, // Spacing between images
-                    //                         ),
-                    //                         shrinkWrap: true,
-                    //                         itemBuilder: (context, index) {
-                    //                           return Stack(
-                    //                             children: [
-                    //                               SizedBox(
-                    //                                 height: SizeConfig
-                    //                                         .imageSizeMultiplier *
-                    //                                     18,
-                    //                                 width: SizeConfig
-                    //                                         .imageSizeMultiplier *
-                    //                                     18,
-                    //                                 child: ClipRRect(
-                    //                                   borderRadius:
-                    //                                       BorderRadius.circular(
-                    //                                           12), // Clip image to match container
-
-                    //                                   child: Image.file(
-                    //                                     File(
-                    //                                         labourDocumentationController
-                    //                                             .labourAdharcard[
-                    //                                                 index]
-                    //                                             .path),
-                    //                                     fit: BoxFit.cover,
-                    //                                   ),
-                    //                                 ),
-                    //                               ),
-                    //                               Positioned(
-                    //                                 top: 1,
-                    //                                 right: 1,
-                    //                                 child: GestureDetector(
-                    //                                   onTap: () {
-                    //                                     labourDocumentationController
-                    //                                         .removeAdharImage(
-                    //                                             index);
-                    //                                   },
-                    //                                   child: Container(
-                    //                                     padding:
-                    //                                         EdgeInsets.all(4),
-                    //                                     decoration: BoxDecoration(
-                    //                                       shape: BoxShape.circle,
-                    //                                       color: Colors.black
-                    //                                           .withOpacity(0.8),
-                    //                                     ),
-                    //                                     child: Icon(Icons.close,
-                    //                                         color: Colors.white,
-                    //                                         size: 15),
-                    //                                   ),
-                    //                                 ),
-                    //                               )
-                    //                             ],
-                    //                           );
-                    //                         }),
-                    //                   ),
-                    //                 ),
-                    //                 SizedBox(
-                    //                   width: SizeConfig.imageSizeMultiplier * 5,
-                    //                 ),
-                    //                 GestureDetector(
-                    //                   onTap: () {
-                    //                     labourDocumentationController
-                    //                         .pickadharImages();
-                    //                   },
-                    //                   child: Container(
-                    //                     alignment: Alignment.center,
-                    //                     height:
-                    //                         SizeConfig.imageSizeMultiplier * 18,
-                    //                     width:
-                    //                         SizeConfig.imageSizeMultiplier * 18,
-                    //                     padding: EdgeInsets.all(8),
-                    //                     decoration: BoxDecoration(
-                    //                       border: Border.all(
-                    //                           color: Colors.orange, width: 2),
-                    //                       borderRadius: BorderRadius.circular(8),
-                    //                     ),
-                    //                     child: Icon(
-                    //                       Icons.camera_alt_outlined,
-                    //                       color: Colors.orange,
-                    //                       size: 30,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ],
-                    //         ),
-                    // ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 2.5,
-                    // ),
                     Row(
                       children: [
                         AppTextWidget(
@@ -468,42 +300,37 @@ class LabourDocumentation extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 1,
                     ),
-                    AppTextFormfeild(
-                      enabled: !addLabourController
-                          .userFound.value, // ✅ Editable only if user NOT found
-                      readOnly: addLabourController
-                          .userFound.value, // ✅ Read-only if user is found
-                      controller:
-                          labourDocumentationController.adharnoController,
-                      hintText: 'Enter Adhar ID number',
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.next,
-
-                      // validator: (value) {
-                      //   if (value == null || value.trim().isEmpty) {
-                      //     return 'Adhar number cannot be empty';
-                      //   }
-                      //   if (!RegExp(r'^\d{12}$').hasMatch(value)) {
-                      //     return 'Enter a valid 12-Adhar number';
-                      //   }
-                      //   return null;
-                      // },
+                    Form(
+                      key: formKey,
+                      child: AppTextFormfeild(
+                        enabled: !addLabourController.userFound
+                            .value, // ✅ Editable only if user NOT found
+                        readOnly: addLabourController
+                            .userFound.value, // ✅ Read-only if user is found
+                        controller:
+                            labourDocumentationController.adharnoController,
+                        hintText: 'Enter Adhar ID number',
+                        focusNode: labourDocumentationController.adharnoFocus,
+                        keyboardType: TextInputType.number,
+                        onFieldSubmitted: (_) {
+                          labourDocumentationController.adharnoFocus.unfocus();
+                        },
+                        textInputAction: TextInputAction.next,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Adhar number cannot be empty';
+                          }
+                          if (!RegExp(r'^\d{12}$').hasMatch(value)) {
+                            return 'Enter a valid 12-Adhar number';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    // SizedBox(
-                    //   height: SizeConfig.heightMultiplier * 0.5,
-                    // ),
-                    Obx(() => labourDocumentationController
-                            .aadhaarError.isNotEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 4, left: 13),
-                            child: Text(
-                              labourDocumentationController.aadhaarError.value,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 174, 75, 68),
-                                  fontSize: 12),
-                            ),
-                          )
-                        : SizedBox.shrink()),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2,
                     ),
@@ -576,6 +403,15 @@ class LabourDocumentation extends StatelessWidget {
                           if (selectedProof != null) {
                             labourDocumentationController
                                 .selectedIdProofId.value = selectedProof.id;
+                            if (labourDocumentationController
+                                .selectedDoctType.value.isEmpty) {
+                              labourDocumentationController.documentError
+                                  .value = "Please select a document type";
+                            } else {
+                              labourDocumentationController.documentError
+                                  .value = ""; // Clear error if valid
+                            }
+
                             print(
                                 "Selected Document ID: ${labourDocumentationController.selectedDoctType.value}");
                             print(
@@ -689,7 +525,7 @@ class LabourDocumentation extends StatelessWidget {
                                         ),
                                         SizedBox(height: 8),
                                         AppTextWidget(
-                                            text: 'Open Galley',
+                                            text: 'Open Gallery',
                                             fontSize:
                                                 AppTextSize.textSizeExtraSmall,
                                             fontWeight: FontWeight.w400,
@@ -790,32 +626,6 @@ class LabourDocumentation extends StatelessWidget {
                                     SizedBox(
                                       width: SizeConfig.imageSizeMultiplier * 5,
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        labourDocumentationController
-                                            .pickotherImages(
-                                                ImageSource.camera);
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height:
-                                            SizeConfig.imageSizeMultiplier * 18,
-                                        width:
-                                            SizeConfig.imageSizeMultiplier * 18,
-                                        padding: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.orange, width: 2),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Icon(
-                                          Icons.camera_alt_outlined,
-                                          color: Colors.orange,
-                                          size: 30,
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ],
@@ -863,12 +673,19 @@ class LabourDocumentation extends StatelessWidget {
                       enabled: true, // Set to false to disable the field
                       readOnly:
                           false, // Set to true if you don't want it editable
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Id cannot be empty';
-                        }
+                      // validator: (value) {
+                      //   if (value == null || value.trim().isEmpty) {
+                      //     return 'Id cannot be empty';
+                      //   }
 
-                        return null;
+                      //   return null;
+                      // },
+                      onChanged: (value) {
+                        //    labourDocumentationController.idNumber.value = value;
+                        if (value.trim().isNotEmpty) {
+                          labourDocumentationController.idNumberError.value =
+                              "";
+                        }
                       },
                     ),
 
@@ -915,16 +732,12 @@ class LabourDocumentation extends StatelessWidget {
                       onTap: () {
                         //  if (!addLabourController.userFound.value) {
                         showDatePicker(context, labourDocumentationController);
-                        // }
                       },
                       child: Container(
                         child: AbsorbPointer(
                           child: TextFormField(
                             controller: labourDocumentationController
-                                .validityController, // onChanged: (value) {
-                            //   addLabourController.selectedDate.value =
-                            //       (value) as DateTime?;
-                            // },
+                                .validityController,
                             style: GoogleFonts.inter(
                               fontSize: AppTextSize.textSizeSmallm,
                               fontWeight: FontWeight.w400,
@@ -965,16 +778,25 @@ class LabourDocumentation extends StatelessWidget {
                                   onTap: () => showDatePicker(
                                       context, labourDocumentationController),
                                   child: Image.asset(
-                                    'assets/icons/calendar.png',
+                                    'assets/images/calender.png',
                                     height: SizeConfig.imageSizeMultiplier * 3,
                                     width: SizeConfig.imageSizeMultiplier * 3,
                                   ),
                                 ),
                               ),
                             ),
-
-                            //   enabled: !addLabourController.userFound.value, //
-                            //enabled: !addLabourController.userFound.value, //
+                            onChanged: (value) {
+                              labourDocumentationController
+                                  .validatiyoptional.value = value;
+                              if (labourDocumentationController
+                                  .validityController.text.isEmpty) {
+                                labourDocumentationController.validityError
+                                    .value = "Validity is required";
+                              } else {
+                                labourDocumentationController
+                                    .validityError.value = "";
+                              }
+                            },
                             readOnly: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -1449,46 +1271,65 @@ class LabourDocumentation extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
-                  if (labourDocumentationController
+                onTap: () async {
+                  validateAndFocusFirstInvalidField();
+                  if (formKey.currentState!.validate() &&
+                      labourDocumentationController
                           .adharnoController.text.isNotEmpty &&
                       labourDocumentationController.labourimg.isNotEmpty &&
                       labourDocumentationController
                           .documentTypeName.isNotEmpty &&
                       labourDocumentationController.idNumber.isNotEmpty) {
-                    if (!RegExp(r'^\d{12}$').hasMatch(
-                        labourDocumentationController.adharnoController.text)) {
-                      labourDocumentationController.aadhaarError.value =
-                          "Aadhaar number must be exactly 12 digits";
-                      return;
-                    } else {
+                    if (formKey.currentState!.validate()) {
+                      log('-------------${addLabourController.profilePhoto.value}');
+                      log('-------------${labourDocumentationController.labourimg.length}');
+                      log('-------------${labourDocumentationController.documentTypeName.length}');
                       labourDocumentationController.aadhaarError.value = '';
-                    }
-                    log('-------------${addLabourController.profilePhoto.value}');
-                    log('-------------${labourDocumentationController.labourimg.length}');
-                    log('-------------${labourDocumentationController.documentTypeName.length}');
-                    labourDocumentationController.aadhaarError.value = '';
 
-                    Get.to(LabourPrecaustionScreen(
-                      categoryId: categoryId,
-                      userId: userId,
-                      userName: userName,
-                      userImg: userImg,
-                      userDesg: userDesg,
-                      projectId: projectId,
-                    ));
-                    log('-----------------------$categoryId');
-                    print("Navigating to Labour precaution with:");
-                    print("User ID: $userId");
-                    print("User Name: $userName");
-                    print("Project ID: $projectId");
-                    print("categoryId: $categoryId");
+                      Get.to(LabourPrecaustionScreen(
+                        categoryId: categoryId,
+                        userId: userId,
+                        userName: userName,
+                        userImg: userImg,
+                        userDesg: userDesg,
+                        projectId: projectId,
+                      ));
+                      log('-----------------------$categoryId');
+                      print("Navigating to Labour precaution with:");
+                      print("User ID: $userId");
+                      print("User Name: $userName");
+                      print("Project ID: $projectId");
+                      print("categoryId: $categoryId");
+                    }
                   } else {
+                    if (labourDocumentationController.adharnoController.text
+                                .trim()
+                                .length ==
+                            12 &&
+                        labourDocumentationController.labourimg.isEmpty &&
+                        labourDocumentationController
+                            .documentTypeName.isEmpty &&
+                        labourDocumentationController.idNumber.isEmpty) {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomValidationPopup(
+                              message: "Please Add Document ");
+                        },
+                      );
+                    } else {
+                      if (labourDocumentationController.adharnoController.text
+                          .trim()
+                          .isEmpty) {
+                        labourDocumentationController.adharnoFocus
+                            .requestFocus();
+                      }
+                    }
                     bool isValid = true;
 
                     if (labourDocumentationController
@@ -1507,7 +1348,9 @@ class LabourDocumentation extends StatelessWidget {
 
                     // ID Proof Validation
                     if (labourDocumentationController
-                        .documentTypeName.isEmpty) {
+                            .documentTypeName.isEmpty &&
+                        labourDocumentationController
+                            .selectedDoctType.value.isEmpty) {
                       labourDocumentationController.documentError.value =
                           "Please select a document type";
                       isValid = false;
@@ -1516,7 +1359,9 @@ class LabourDocumentation extends StatelessWidget {
                     }
 
                     // ID Number Validation
-                    if (labourDocumentationController.idNumber.isEmpty) {
+                    if (labourDocumentationController.idNumber.isEmpty &&
+                        labourDocumentationController
+                            .idnoController.text.isEmpty) {
                       labourDocumentationController.idNumberError.value =
                           "ID Number is required";
                       isValid = false;
@@ -1524,7 +1369,9 @@ class LabourDocumentation extends StatelessWidget {
                       labourDocumentationController.idNumberError.value = "";
                     }
                     // ID Number Validation
-                    if (labourDocumentationController.validity.isEmpty) {
+                    if (labourDocumentationController.validity.isEmpty &&
+                        labourDocumentationController
+                            .validityController.text.isEmpty) {
                       labourDocumentationController.validityError.value =
                           "Validity is required";
                       isValid = false;
@@ -1532,11 +1379,15 @@ class LabourDocumentation extends StatelessWidget {
                       labourDocumentationController.validityError.value = "";
                     }
                     if (labourDocumentationController.labourimg.isEmpty) {
-                      labourDocumentationController.photoError.value =
-                          "Photo is required";
-                      isValid = false;
-                    } else {
-                      labourDocumentationController.photoError.value = "";
+                      if (labourDocumentationController.otherImageCount.value >
+                          0) {
+                        labourDocumentationController.photoError.value = "";
+                      } else {
+                        labourDocumentationController.photoError.value =
+                            "Photo is required";
+
+                        isValid = false;
+                      }
                     }
 
                     if (!isValid) return;
@@ -1548,7 +1399,7 @@ class LabourDocumentation extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],
@@ -1556,5 +1407,27 @@ class LabourDocumentation extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void scrollToWidget(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      });
+    }
+  }
+
+  void validateAndFocusFirstInvalidField() {
+    if (!formKey.currentState!.validate()) {
+      if (labourDocumentationController.adharnoController.text.trim().isEmpty) {
+        labourDocumentationController.adharnoFocus.requestFocus();
+      }
+    }
   }
 }

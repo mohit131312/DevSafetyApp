@@ -17,8 +17,8 @@ class Validator {
     if (value == null || value.isEmpty) {
       return 'Please enter a password';
     }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+    if (value.length < 4) {
+      return 'Password must be at least 4 characters';
     }
     // String pattern =
     //     r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$';

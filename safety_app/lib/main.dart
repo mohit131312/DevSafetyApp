@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'utils/size_config.dart';
 import 'package:flutter/services.dart';
+// import 'package:device_preview/device_preview.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,12 @@ Future<void> main() async {
   final LoginController loginController = Get.put(LoginController());
 
   runApp(MyApp());
+  // runApp(
+  //   DevicePreview(
+  //     // enabled: !kReleaseMode, // Only enable in debug mode
+  //     builder: (context) => MyApp(),
+  //   ),
+  // );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,6 +38,8 @@ class MyApp extends StatelessWidget {
           SizeConfig.initWithConstraints(constraints, orientation);
 
           return GetMaterialApp(
+            // locale: DevicePreview.locale(context), // 👈 Add this
+            // builder: DevicePreview.appBuilder, // 👈 And this
             debugShowCheckedModeBanner: false,
             home: SplashScreen(),
           );

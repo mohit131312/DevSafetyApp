@@ -25,7 +25,7 @@ class SelectInformedPeopleScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -61,146 +61,164 @@ class SelectInformedPeopleScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: SizeConfig.heightMultiplier * 70,
-            child: Column(
+        body: Column(
+          children: [
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: SizeConfig.heightMultiplier * 3,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: SizeConfig.heightMultiplier * 5.8,
-                      width: SizeConfig.widthMultiplier * 92,
-                      child: AppTextFormfeild(
-                        controller:
-                            selectInformedIncidentController.informedController,
-                        hintText: 'Search By  Name..',
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        prefixIcon: Container(
-                          padding: EdgeInsets.all(10.0),
-                          child: Image.asset(
-                            'assets/icons/Search.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          selectInformedIncidentController
-                              .updateIncidentSearchAssigneeQuery(value);
-                        },
+                  height: SizeConfig.heightMultiplier * 5.8,
+                  width: SizeConfig.widthMultiplier * 92,
+                  child: AppTextFormfeild(
+                    controller:
+                        selectInformedIncidentController.informedController,
+                    hintText: 'Search By  Name..',
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/Search.png',
+                        fit: BoxFit.contain,
                       ),
                     ),
-                  ],
+                    onChanged: (value) {
+                      selectInformedIncidentController
+                          .updateIncidentSearchAssigneeQuery(value);
+                    },
+                  ),
                 ),
-                SizedBox(
-                  height: SizeConfig.heightMultiplier * 1.5,
+              ],
+            ),
+            SizedBox(
+              height: SizeConfig.heightMultiplier * 1.5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbVisibility: WidgetStateProperty.all(true),
+                  thickness: WidgetStateProperty.all(3),
+                  radius: const Radius.circular(8),
+                  trackVisibility: WidgetStateProperty.all(true),
+                  thumbColor: WidgetStateProperty.all(AppColors.buttoncolor),
+                  trackColor: WidgetStateProperty.all(
+                      const Color.fromARGB(26, 101, 99, 99)),
+                  trackBorderColor: WidgetStateProperty.all(Colors.transparent),
                 ),
-                Obx(
-                  () {
-                    final filteredList = selectInformedIncidentController
-                        .filteredIncidentAssignee;
+                child: Scrollbar(
+                  interactive: true,
+                  child: SizedBox(
+                    height: SizeConfig.heightMultiplier * 60,
+                    child: Obx(
+                      () {
+                        final filteredList = selectInformedIncidentController
+                            .filteredIncidentAssignee;
 
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: filteredList.length,
-                        itemBuilder: (context, index) {
-                          final assignee = filteredList[index];
+                        return ListView.builder(
+                            itemCount: filteredList.length,
+                            itemBuilder: (context, index) {
+                              final assignee = filteredList[index];
 
-                          return ListTile(
-                            contentPadding: EdgeInsets.only(left: 0, right: 20),
-                            leading: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Transform.scale(
-                                    scale: 1.1,
-                                    child: Obx(
-                                      () => Checkbox(
-                                        side: BorderSide(
-                                            color: AppColors.searchfeild,
-                                            width: 1),
-                                        value: selectInformedIncidentController
-                                            .selectedAssIncidentIds
-                                            .contains(assignee.id),
-                                        onChanged: (value) {
-                                          selectInformedIncidentController
-                                              .toggleIncidentSelection(
-                                                  assignee.id);
-                                        },
-                                        activeColor: AppColors.thirdText,
-                                      ),
-                                    )),
-                                // CircleAvatar(
-                                //   radius: 22,
-                                //   backgroundImage: NetworkImage(
-                                //       "$baseUrl${assignee.profilePhoto}"),
-                                // ),
-                                Stack(
-                                  alignment: Alignment.center,
+                              return ListTile(
+                                contentPadding:
+                                    EdgeInsets.only(left: 0, right: 20),
+                                leading: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    CircleAvatar(
-                                      radius: 28,
-                                      backgroundColor: Colors
-                                          .grey.shade200, // Fallback color
-                                      child: ClipOval(
-                                        child: Image.network(
-                                          "$baseUrl${assignee.profilePhoto}",
-                                          fit: BoxFit.cover,
-                                          width: 56, // Diameter = radius * 2
-                                          height: 56,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 24,
-                                                height: 24,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: AppColors.buttoncolor,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              'assets/icons/image.png',
+                                    Transform.scale(
+                                        scale: 1.1,
+                                        child: Obx(
+                                          () => Checkbox(
+                                            side: BorderSide(
+                                                color: AppColors.searchfeild,
+                                                width: 1),
+                                            value:
+                                                selectInformedIncidentController
+                                                    .selectedAssIncidentIds
+                                                    .contains(assignee.id),
+                                            onChanged: (value) {
+                                              selectInformedIncidentController
+                                                  .toggleIncidentSelection(
+                                                      assignee.id);
+                                            },
+                                            activeColor: AppColors.buttoncolor,
+                                          ),
+                                        )),
+                                    // CircleAvatar(
+                                    //   radius: 22,
+                                    //   backgroundImage: NetworkImage(
+                                    //       "$baseUrl${assignee.profilePhoto}"),
+                                    // ),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors
+                                              .grey.shade200, // Fallback color
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              "$baseUrl${assignee.profilePhoto}",
                                               fit: BoxFit.cover,
-                                            );
-                                          },
+                                              width:
+                                                  56, // Diameter = radius * 2
+                                              height: 56,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null)
+                                                  return child;
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 24,
+                                                    height: 24,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color:
+                                                          AppColors.buttoncolor,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  'assets/icons/image.png',
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            title: AppTextWidget(
-                              text: assignee.firstName.toString(),
-                              fontSize: AppTextSize.textSizeSmall,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primaryText,
-                            ),
-                            subtitle: AppTextWidget(
-                              text: assignee.designation.toString(),
-                              fontSize: AppTextSize.textSizeSmalle,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.secondaryText,
-                            ),
-                          );
-                        });
-                  },
-                )
-              ],
-            ),
-          ),
+                                title: AppTextWidget(
+                                  text: assignee.firstName.toString(),
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryText,
+                                ),
+                                subtitle: AppTextWidget(
+                                  text: assignee.designation.toString(),
+                                  fontSize: AppTextSize.textSizeSmalle,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.secondaryText,
+                                ),
+                              );
+                            });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.symmetric(

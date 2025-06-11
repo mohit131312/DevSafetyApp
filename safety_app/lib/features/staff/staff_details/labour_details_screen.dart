@@ -75,7 +75,7 @@ class LabourDetailsScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 10),
           child: ClipRRect(

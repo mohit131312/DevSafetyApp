@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/features/Labour_add/add_labour_model.dart';
 import 'package:flutter_app/features/induction_training/induction_training_controller.dart';
 import 'package:flutter_app/features/labour_documentation/labour_documentation_controller.dart';
@@ -29,7 +30,15 @@ class AddLabourController extends GetxController {
   var fullnameFocusNode = FocusNode();
   var searchFocusNodeAll = FocusNode();
   TextEditingController searchController = TextEditingController();
-
+  final GlobalKey literacyKey = GlobalKey();
+  final GlobalKey maritalStatusKey = GlobalKey();
+  final GlobalKey bloodGroupKey = GlobalKey();
+  final GlobalKey dob = GlobalKey();
+  final GlobalKey reason = GlobalKey();
+  final GlobalKey currentAdress = GlobalKey();
+  final GlobalKey permamntAddress = GlobalKey();
+  final GlobalKey profilePhotoKey = GlobalKey();
+  final GlobalKey relationkey = GlobalKey();
   var contactFocusNode = FocusNode();
   final List<Map<String, dynamic>> genders = [
     {'label': 'Male', 'icon': 'assets/icons/male.png'},
@@ -46,27 +55,38 @@ class AddLabourController extends GetxController {
   var profilePhotoEroor = ''.obs;
   XFile? selectedImage;
 
-  Future<void> pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      selectedImage = pickedFile;
+  Future<void> pickImage(BuildContext context) async {
+    final image = await ImageHelper.pickAndCropImage(
+      source: ImageSource.camera,
+      context: context,
+    );
 
-      profilePhoto.value = pickedFile.path;
+    if (image != null) {
+      selectedImage = image;
+      profilePhoto.value = image.path;
+      profilePhotoEroor.value = '';
     } else {
-      print("No image selected");
+      profilePhotoEroor.value = 'Invalid image. Please try again.';
     }
   }
+
+  //   // Directly assign cropped image path to profilePhoto
+  //   selectedImage = XFile(croppedFile.path);
+  //   profilePhoto.value = croppedFile.path;
+  // }
 
   var isSameAsCurrent = false.obs; // Checkbox state
 
   var selectedBloodGroup = ''.obs;
   var selectedreasons = ''.obs;
+  var selectedRelation = ''.obs;
   var selectedLiteratre = ''.obs;
   var selectedmarried = ''.obs;
   var selectedDistrict = ''.obs;
   var selectedState = ''.obs;
   var selectedPermanantDistrict = ''.obs;
   var selectedPermanantState = ''.obs;
+  var bloodGroupTouched = false.obs;
 
   var selectedDate = Rxn<DateTime>();
   final TextEditingController dateController = TextEditingController();
@@ -205,6 +225,8 @@ class AddLabourController extends GetxController {
   //----------------------
   var searchType = 'ID'.obs;
   var userFound = false.obs;
+  var userFoundrelation = false.obs;
+
   var selectedLabourData = ''.obs;
   int labourId = 1;
   List<AssignLabourProject> assignedLabourProjects = [];
@@ -276,11 +298,15 @@ class AddLabourController extends GetxController {
       selectedLiteratre.value = labour['literacy'] ?? "";
       selectedmarried.value = labour['marital_status'] ?? "";
       econtactnameController.text = labour['emergency_contact_name'] ?? "";
+
       econtactnumberController.text = labour['emergency_contact_number'] ?? "";
       dateController.text = labour['birth_date'] ?? "";
-      econtactrelationController.text =
-          labour['emergency_contact_relation'] ?? "";
 
+      selectedRelation.value = labour['emergency_contact_relation'] ?? "";
+
+      //------------------------------
+
+      //----------------------
       // profilePhoto.value = labour['user_photo'];
       print(profilePhoto.value);
       labourProfessDetailsController.selectedyoe.value =
@@ -361,6 +387,7 @@ class AddLabourController extends GetxController {
 
         return AssignLabourProject.fromJson(proj, tradeName, contractorName);
       }).toList();
+      userFound.value = true;
 
       // List<dynamic> assignedProjects = [];
 
@@ -398,8 +425,15 @@ class AddLabourController extends GetxController {
       labourDocumentationController.adharnoController.text =
           labour['adhaar_card_no'];
 
-      userFound.value = true;
-
+      if (econtactnameController.text.trim().isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
+      if (econtactnumberController.text.trim().isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
+      if (selectedRelation.value.isEmpty && userFound.value) {
+        userFoundrelation.value = true;
+      }
       print('--- Labour Data ---');
       print('Full Name: ${labournameController.text}');
       print('Contact Number: ${contactnumberController.text}');
@@ -498,6 +532,7 @@ class AddLabourController extends GetxController {
     selectedPermanantState.value = "";
     selectedPermanantDistrict.value = "";
     profilePhoto.value = '';
+    selectedRelation.value = '';
     labourProfessDetailsController.selectedtrade.value = '';
     labourProfessDetailsController.selectedyoe.value = 0;
     labourProfessDetailsController.selectedSkillLevel.value = '';
@@ -513,7 +548,7 @@ class AddLabourController extends GetxController {
     labourPrecautionController.selectedItemInstruction.clear();
     labourPrecautionController.isSelectAll.value = false;
     labourPrecautionController.isSelectAllInstruction.value = false;
-
+    labourProfessDetailsController.skillerror.value = '';
     //dovumentation
     labourDocumentationController.labourotherimg.clear();
     labourDocumentationController.adharnoController.clear();
@@ -542,7 +577,7 @@ class AddLabourController extends GetxController {
       undertaking['isChecked'] = false;
     }
     labourUndertakingController.isCheckedUndertaking.value = false;
-
+    userFoundrelation.value = false;
     assignedLabourProjects.clear();
   }
 
@@ -611,11 +646,16 @@ class AddLabourController extends GetxController {
 
   void clearUserFieldsFinal() {
     userFound.value = false;
+    userFoundrelation.value = false;
 
+    profilePhoto.value = '';
+    profilePhotoEroor.value = '';
+    selectedreasons.value = '';
     labournameController.clear();
     contactnumberController.clear();
     econtactnameController.clear();
     econtactrelationController.clear();
+    selectedRelation.value = '';
     dateController.clear();
     searchController.clear();
     isSameAsCurrent.value = false;
@@ -638,6 +678,7 @@ class AddLabourController extends GetxController {
     labourProfessDetailsController.selectedSkillLevel.value = '';
     labourProfessDetailsController.contractorCompanyName.value = '';
     assignedLabourProjects.clear();
+    labourProfessDetailsController.skillerror.value = '';
 
     for (var controller in addressControllers) {
       controller.clear();

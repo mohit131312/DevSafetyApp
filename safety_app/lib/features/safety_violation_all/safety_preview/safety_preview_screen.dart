@@ -15,8 +15,10 @@ import 'package:flutter_app/features/safety_violation_all/select_involved_person
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -142,7 +144,7 @@ class SafetyPreviewScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -1588,10 +1590,20 @@ class SafetyPreviewScreen extends StatelessWidget {
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
-                  showConfirmationDialogViolation(
-                    context,
-                  );
+                onTap: () async {
+                  if (await CheckInternet.checkInternet()) {
+                    showConfirmationDialogViolation(
+                      context,
+                    );
+                  } else {
+                    await showDialog(
+                      context: Get.context!,
+                      builder: (BuildContext context) {
+                        return CustomValidationPopup(
+                            message: "Please check your internet connection.");
+                      },
+                    );
+                  }
                 },
                 child: AppMediumButton(
                   label: "Submit",

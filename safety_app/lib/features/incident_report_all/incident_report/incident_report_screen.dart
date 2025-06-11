@@ -19,8 +19,10 @@ import 'package:flutter_app/features/incident_report_all/select_injured/select_i
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/check_internet.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -76,7 +78,7 @@ class IncidentReportScreen extends StatelessWidget {
         length: 3,
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -119,59 +121,56 @@ class IncidentReportScreen extends StatelessWidget {
                   horizontal: SizeConfig.widthMultiplier * 4,
                   vertical: SizeConfig.heightMultiplier * 2,
                 ),
-                child: SizedBox(
-                  height: SizeConfig.heightMultiplier * 6.5,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: SizeConfig.heightMultiplier * 6.4,
-                        width: SizeConfig.widthMultiplier * 92,
-                        child: Obx(() {
-                          TextEditingController activeController;
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 6,
+                      width: SizeConfig.widthMultiplier * 92,
+                      child: Obx(() {
+                        switch (incidentReportController.selectedOption.value) {
+                          case 0:
+                            incidentReportController.activeController =
+                                incidentReportController
+                                    .searchIncidentAllController;
+                            break;
+                          case 1:
+                            incidentReportController.activeController =
+                                incidentReportController
+                                    .searchIncidentAssignorController;
+                            break;
+                          case 2:
+                            incidentReportController.activeController =
+                                incidentReportController
+                                    .searchIncidentAssigneeController;
+                            break;
+                          default:
+                            incidentReportController.activeController =
+                                TextEditingController(); // fallback
+                        }
 
-                          switch (
-                              incidentReportController.selectedOption.value) {
-                            case 0:
-                              activeController = incidentReportController
-                                  .searchIncidentAllController;
-                              break;
-                            case 1:
-                              activeController = incidentReportController
-                                  .searchIncidentAssignorController;
-                              break;
-                            case 2:
-                              activeController = incidentReportController
-                                  .searchIncidentAssigneeController;
-                              break;
-                            default:
-                              activeController =
-                                  TextEditingController(); // fallback
-                          }
-
-                          return AppTextFormfeild(
-                            controller: activeController,
-                            hintText: 'Search By Name..',
-                            keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: Container(
-                              padding: EdgeInsets.all(10.0),
-                              child: Image.asset(
-                                'assets/icons/Search.png',
-                                fit: BoxFit.contain,
-                              ),
+                        return AppTextFormfeild(
+                          controller: incidentReportController.activeController,
+                          hintText: 'Search By Name..',
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          prefixIcon: Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Image.asset(
+                              'assets/icons/Search.png',
+                              fit: BoxFit.contain,
                             ),
-                            onChanged: (value) {
-                              incidentReportController.handleSearchByTab(
-                                incidentReportController.selectedOption.value,
-                                value,
-                              );
-                            },
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
+                          ),
+                          onChanged: (value) {
+                            incidentReportController.handleSearchByTab(
+                              incidentReportController.selectedOption.value,
+                              value,
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -236,18 +235,29 @@ class IncidentReportScreen extends StatelessWidget {
                             onTap: () async {
                               log('----------------------------${incidentReportController.selectedOption.value}');
                               incidentReportDetailsAllController.resetData();
-                              await incidentReportDetailsAllController
-                                  .getIncidentReportAllDetails(
-                                      projectId, userId, 1, incident.id);
+                              if (await CheckInternet.checkInternet()) {
+                                await incidentReportDetailsAllController
+                                    .getIncidentReportAllDetails(
+                                        projectId, userId, 1, incident.id);
 
-                              Get.to(IncidentReportDetailsAllScreen(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                                incidentId: incident.id,
-                              ));
+                                Get.to(IncidentReportDetailsAllScreen(
+                                  userId: userId,
+                                  userName: userName,
+                                  userImg: userImg,
+                                  userDesg: userDesg,
+                                  projectId: projectId,
+                                  incidentId: incident.id,
+                                ));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               children: [
@@ -378,23 +388,34 @@ class IncidentReportScreen extends StatelessWidget {
                             onTap: () async {
                               log('----------------------------${incidentReportController.selectedOption.value}');
                               log('----------------------------${incidentReportController.selectedOption.value}');
-                              incidentReportDetailsAssignorCotroller
-                                  .resetData();
-                              incidentReportDetailsAssignorCotroller
-                                  .resetAssigneeForm();
-                              await incidentReportDetailsAssignorCotroller
-                                  .getIncidentReportAssignorDetails(
-                                      projectId, userId, 2, incident.id);
+                              if (await CheckInternet.checkInternet()) {
+                                incidentReportDetailsAssignorCotroller
+                                    .resetData();
+                                incidentReportDetailsAssignorCotroller
+                                    .resetAssigneeForm();
+                                await incidentReportDetailsAssignorCotroller
+                                    .getIncidentReportAssignorDetails(
+                                        projectId, userId, 2, incident.id);
 
-                              Get.to(IncidentReportDetailsAssignor(
-                                  userId: userId,
-                                  userName: userName,
-                                  userImg: userImg,
-                                  userDesg: userDesg,
-                                  projectId: projectId,
-                                  incidentId: incident.id,
-                                  uniqueId:
-                                      incident.incidentUiniqueId.toString()));
+                                Get.to(IncidentReportDetailsAssignor(
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                    incidentId: incident.id,
+                                    uniqueId:
+                                        incident.incidentUiniqueId.toString()));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               children: [
@@ -524,23 +545,34 @@ class IncidentReportScreen extends StatelessWidget {
                           return GestureDetector(
                             onTap: () async {
                               log('----------------------------${incidentReportController.selectedOption.value}');
-                              incidentReportDetailsAssigneeController
-                                  .resetData();
-                              incidentReportDetailsAssigneeController
-                                  .resetAssigneeForm();
-                              await incidentReportDetailsAssigneeController
-                                  .getIncidentReportAssigneeDetails(
-                                      projectId, userId, 3, incident.id);
+                              if (await CheckInternet.checkInternet()) {
+                                incidentReportDetailsAssigneeController
+                                    .resetData();
+                                incidentReportDetailsAssigneeController
+                                    .resetAssigneeForm();
+                                await incidentReportDetailsAssigneeController
+                                    .getIncidentReportAssigneeDetails(
+                                        projectId, userId, 3, incident.id);
 
-                              Get.to(IncidentReportDetailsAssignee(
-                                  userId: userId,
-                                  userName: userName,
-                                  userImg: userImg,
-                                  userDesg: userDesg,
-                                  projectId: projectId,
-                                  incidentId: incident.id,
-                                  uniqueId:
-                                      incident.incidentUiniqueId.toString()));
+                                Get.to(IncidentReportDetailsAssignee(
+                                    userId: userId,
+                                    userName: userName,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                    incidentId: incident.id,
+                                    uniqueId:
+                                        incident.incidentUiniqueId.toString()));
+                              } else {
+                                await showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationPopup(
+                                        message:
+                                            "Please check your internet connection.");
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               children: [

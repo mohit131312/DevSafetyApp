@@ -60,8 +60,8 @@ class AppMediumButton extends StatelessWidget {
           if (imagePath2 != null)
             Image.asset(
               imagePath2!,
-              // height: 24, // Set the size of the image
-              // width: 24,
+              height: 24, // Set the size of the image
+              width: 24,
               fit: BoxFit.contain,
             ),
         ],

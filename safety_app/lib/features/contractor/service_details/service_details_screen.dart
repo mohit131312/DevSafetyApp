@@ -13,6 +13,7 @@ import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
@@ -48,7 +49,7 @@ class ServiceDetailsScreen extends StatelessWidget {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        //  resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -158,7 +159,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                     ),
                     Obx(
                       () => AppSearchDropdown(
-                        //   enabled: !addContractorController.userFound.value, //
+                        enabled: !addContractorController.userFound.value, //
                         items: addContractorController.userFound.value
                             ? serviceDetailsController.activityExist
                                 .map(
@@ -185,6 +186,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                             ? serviceDetailsController.selectedactivity.value
                             : null,
                         hintText: 'Select Activity',
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         onChanged: (value) async {
                           serviceDetailsController.selectedactivity.value =
                               value ?? '';
@@ -192,7 +194,10 @@ class ServiceDetailsScreen extends StatelessWidget {
                             log('User found, skipping API call.');
                             return; // Exit early if user is present
                           }
-
+                          if (serviceDetailsController
+                              .selectedactivity.value.isNotEmpty) {
+                            serviceDetailsController.activityError.value = "";
+                          }
                           if (value != null) {
                             var selectedActivityObj =
                                 inductionTrainingController.activityList
@@ -225,13 +230,14 @@ class ServiceDetailsScreen extends StatelessWidget {
                             }
                           }
                         },
-                        validator: (value) {
-                          if (value == null ||
-                              value.toString().trim().isEmpty) {
-                            return 'Please select a Activity ';
-                          }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   if (value == null ||
+                        //       value.toString().trim().isEmpty) {
+                        //     return 'Please select a Activity ';
+                        //   }
+
+                        //   return null;
+                        // },
                       ),
                     ),
                     Obx(() => serviceDetailsController.activityError.isNotEmpty
@@ -270,7 +276,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                     ),
                     Obx(
                       () => AppSearchDropdown(
-                        //    enabled: !addContractorController.userFound.value, //
+                        enabled: !addContractorController.userFound.value, //
 
                         items: addContractorController.userFound.value
                             ? serviceDetailsController.activityExist
@@ -301,10 +307,15 @@ class ServiceDetailsScreen extends StatelessWidget {
                             ? serviceDetailsController.selectedSubactivity.value
                             : null,
                         hintText: 'Select Sub Activity',
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         onChanged: (value) {
                           serviceDetailsController.selectedSubactivity.value =
                               value ?? '';
-
+                          if (serviceDetailsController
+                              .selectedSubactivity.value.isNotEmpty) {
+                            serviceDetailsController.subActivityError.value =
+                                "";
+                          }
                           if (value != null) {
                             var selectedSubActivityObj =
                                 serviceDetailsController.subActivityMatchedList
@@ -321,17 +332,17 @@ class ServiceDetailsScreen extends StatelessWidget {
                             }
                           }
                         },
-                        validator: (value) {
-                          if (value == null ||
-                              value.toString().trim().isEmpty) {
-                            return 'Please select a SubActivity ';
-                          } else if (serviceDetailsController
-                              .selectSubActivityList
-                              .contains(value)) {
-                            return 'This SubActivity is already selected';
-                          }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   if (value == null ||
+                        //       value.toString().trim().isEmpty) {
+                        //     return 'Please select a SubActivity ';
+                        //   } else if (serviceDetailsController
+                        //       .selectSubActivityList
+                        //       .contains(value)) {
+                        //     return 'This SubActivity is already selected';
+                        //   }
+                        //   return null;
+                        // },
                       ),
                     ),
                     Obx(() =>
@@ -802,12 +813,27 @@ class ServiceDetailsScreen extends StatelessWidget {
                   iconColor: AppColors.buttoncolor,
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttoncolor,
-                  imagePath: 'assets/icons/arrow-narrow-left.png',
+                  imagePath: 'assets/images/leftarrow.png',
                 ),
               ),
               SizedBox(width: SizeConfig.widthMultiplier * 5),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  if (serviceDetailsController
+                          .selectedactivity.value.isNotEmpty &&
+                      serviceDetailsController
+                          .selectedSubactivity.value.isNotEmpty) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomValidationPopup(
+                          message: "Add Service",
+                        );
+                      },
+                    );
+
+                    return;
+                  }
                   if (serviceDetailsController.selectActivityIdList.isEmpty) {
                     serviceDetailsController.activityError.value =
                         "Please select a Activity ";
@@ -846,7 +872,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: AppColors.buttoncolor,
-                  imagePath2: 'assets/icons/arrow-narrow-right.png',
+                  imagePath2: 'assets/images/rightarrow.png',
                 ),
               ),
             ],

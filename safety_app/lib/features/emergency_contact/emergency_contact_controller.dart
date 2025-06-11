@@ -4,13 +4,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EmergencyContactController extends GetxController {
   Future<void> makeCall(String phoneNumber) async {
-    // Ensure the phone number is valid for the 'tel' scheme
     final Uri callUri = Uri.parse('tel:$phoneNumber');
     try {
-      // ignore: deprecated_member_use
-      if (await canLaunch(callUri.toString())) {
-        // ignore: deprecated_member_use
-        await launch(callUri.toString());
+      if (await canLaunchUrl(callUri)) {
+        await launchUrl(callUri);
       } else {
         Get.snackbar(
           'Error',
@@ -22,7 +19,7 @@ class EmergencyContactController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'An error occurred while trying to make a call.',
+        'An error occurred while trying to make a call: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
