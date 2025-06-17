@@ -609,7 +609,8 @@ class AddStaffController extends GetxController {
     for (var controller in permanantAddressController) {
       controller.clear();
     }
-
+    isExpanded.value = false;
+    isExpanded2.value = false;
     //dovumentation
     staffDocumentationController.adharnoController.clear();
     staffDocumentationController.selectedDoctType.value = '';
@@ -631,6 +632,7 @@ class AddStaffController extends GetxController {
 
     staffPrecautionController.searchControllerEquipment.clear();
     staffPrecautionController.searchControllerInstruction.clear();
+    staffDocumentationController.clearAllData();
 
     staffUndertakingController.clearAllCheckboxes();
     printStaffClearedData();

@@ -70,10 +70,11 @@ class ProfileDetailsScreen extends StatelessWidget {
                 roleId: roleId,
               ));
             },
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: SizeConfig.heightMultiplier * 2,
-                  right: SizeConfig.heightMultiplier * 3.5),
+            child: Container(
+              margin: const EdgeInsets.only(top: 15, right: 10),
+              alignment: Alignment.center,
+              height: 50,
+              width: 60,
               child: AppTextWidget(
                 text: AppTexts.edit,
                 fontSize: AppTextSize.textSizeSmall,

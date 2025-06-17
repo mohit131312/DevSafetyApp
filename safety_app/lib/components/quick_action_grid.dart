@@ -116,13 +116,14 @@ class QuickActionsGrid extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) =>
                             CustomLoadingPopup());
+                    workPermitController.clearSearchData();
+
                     await workPermitController.getWorkPermitAllListing(
                         projectId, userId, 1);
                     await workPermitController.getWorkPermitMakerListing(
                         projectId, userId, 2);
                     await workPermitController.getWorkPermitCheckerListing(
                         projectId, userId, 3);
-                    //  workPermitController.clearSearchData();
 
                     Navigator.pop(context);
                     if (logStatus == true) {
@@ -155,7 +156,6 @@ class QuickActionsGrid extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) =>
                             CustomLoadingPopup());
-                    toolboxTrainingController.tabController.animateTo(0);
                     toolboxTrainingController.clearSearchData();
                     await toolboxTrainingController.getToolBoxListingAll(
                         projectId, userId, 1);
@@ -234,7 +234,6 @@ class QuickActionsGrid extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) =>
                             CustomLoadingPopup());
-                    sefetyViolationController.tabController.animateTo(0);
                     sefetyViolationController.resetData();
                     await sefetyViolationController
                         .getSafetyViolationAllListing(projectId, userId, 1);
@@ -281,7 +280,6 @@ class QuickActionsGrid extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) =>
                             CustomLoadingPopup());
-                    incidentReportController.tabController.animateTo(0);
                     incidentReportController.clearSearchData();
                     await incidentReportController.getIncidentReportAllListing(
                         projectId, userId, 1);

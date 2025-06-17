@@ -686,7 +686,8 @@ class AddLabourController extends GetxController {
     for (var controller in permanantAddressController) {
       controller.clear();
     }
-
+    isExpanded.value = false;
+    isExpanded2.value = false;
     //dovumentation
     labourDocumentationController.adharnoController.clear();
     labourDocumentationController.selectedDoctType.value = '';
@@ -710,6 +711,7 @@ class AddLabourController extends GetxController {
     labourPrecautionController.searchControllerInstruction.clear();
 
     labourUndertakingController.clearAllCheckboxes();
+    labourDocumentationController.clearAllData();
     printClearedData();
   }
 

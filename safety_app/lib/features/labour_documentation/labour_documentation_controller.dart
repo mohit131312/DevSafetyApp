@@ -256,4 +256,23 @@ class LabourDocumentationController extends GetxController {
   void enableValidation() {
     shouldValidate.value = false;
   }
+
+  //---------------------
+  void clearAllData() {
+    clearAll(); // Clears labourotherimg, selectedDoctType, idnoController, validityController, and otherImageCount
+    removeByAll(); // Clears labourimg, documentType, documentTypeName, idNumber, and validity
+    labourAdharcard.clear(); // Clears Aadhaar images
+    adharnoController.clear(); // Clears Aadhaar number input
+    adharImageCount.value = 0; // Resets Aadhaar image count
+    selectedIdProofId.value = 0; // Resets selected document ID
+    selectedreasons.value = ''; // Resets selected reasons
+    selectedDateValidity.value = null; // Resets selected validity date
+    dateController.clear(); // Clears date input
+    aadhaarError.value = ''; // Clears Aadhaar error
+    documentError.value = ''; // Clears document error
+    photoError.value = ''; // Clears photo error
+    validityError.value = ''; // Clears validity error
+    idNumberError.value = ''; // Clears ID number error
+    // shouldValidate.value = false; // Resets validation state
+  }
 }

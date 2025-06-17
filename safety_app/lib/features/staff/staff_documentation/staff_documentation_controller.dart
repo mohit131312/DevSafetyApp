@@ -241,4 +241,23 @@ class StaffDocumentationController extends GetxController {
   void enableValidation() {
     shouldValidate.value = false;
   }
+
+  void clearAllData() {
+    clearAll(); // Clears staffotherimg, selectedDoctType, idnoController, validityController, and otherImageCount
+    removeByAll(); // Clears staffimg, documentType, documentTypeName, idNumber, and validity
+    staffAdharcard.clear(); // Clears Aadhaar images
+    adharnoController.clear(); // Clears Aadhaar number input
+    adharImageCount.value = 0; // Resets Aadhaar image count
+    allstaffimgData.clear(); // Clears all staff image data
+    allstaffimgDataCount.value = 0; // Resets all staff image data count
+    selectedIdProofId.value = 0; // Resets selected document ID
+    selectedreasons.value = ''; // Resets selected reasons
+    selectedDateValidity.value = null; // Resets selected validity date
+    dateController.clear(); // Clears date input
+    aadhaarError.value = ''; // Clears Aadhaar error
+    documentError.value = ''; // Clears document error
+    photoError.value = ''; // Clears photo error
+    validityError.value = ''; // Clears validity error
+    idNumberError.value = ''; // Clears ID number error
+  }
 }

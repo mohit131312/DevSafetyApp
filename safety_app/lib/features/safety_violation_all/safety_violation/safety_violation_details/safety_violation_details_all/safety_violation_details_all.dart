@@ -1314,7 +1314,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                        text: 'Assignee',
+                        text: 'Checker',
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText,
@@ -1408,7 +1408,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: 'Assignee Comments',
+                          text: 'Checker Comments',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,
@@ -1464,7 +1464,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppTextWidget(
-                        text: 'Assignor',
+                        text: 'Doer',
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText),
@@ -1513,7 +1513,7 @@ class SafetyViolationDetailsAll extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                          text: 'Assignor Comments',
+                          text: 'Doer Comments',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText,

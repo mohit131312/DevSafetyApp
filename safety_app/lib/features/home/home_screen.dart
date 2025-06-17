@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_bottom_navigation.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/components/shimmer_widget.dart';
 import 'package:flutter_app/components/workpermitlist_item.dart';
 import 'package:flutter_app/features/home/home_screen_controller.dart';
 import 'package:flutter_app/features/home/location_controller.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_scr
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
@@ -73,13 +75,33 @@ class HomeScreen extends StatelessWidget {
     return formatter.format(now);
   }
 
-  Future<void> _refreshData() async {
-    await selectProjectController.resetRolesData();
-    await selectProjectController.getRolesDetails(userId, roleId, projectId);
+  // Future<void> _refreshData() async {
+  //   await selectProjectController.resetRolesData();
+  //   await selectProjectController.getRolesDetails(userId, roleId, projectId);
 
-    if (selectProjectController.roleStatus.value != 0) {
-      await homeScreenController.getWorkPermitAllListing(projectId);
-      await homeScreenController.getCardListing(projectId, userId);
+  //   if (selectProjectController.roleStatus.value != 0) {
+  //     await homeScreenController.getWorkPermitAllListing(projectId);
+  //     await homeScreenController.getCardListing(projectId, userId);
+  //   }
+  // }
+  Future<void> refreshData() async {
+    homeScreenController.isRefreshing.value = true; // Start shimmer effect
+
+    try {
+      await selectProjectController.resetRolesData();
+      await selectProjectController.getRolesDetails(userId, roleId, projectId);
+
+      if (selectProjectController.roleStatus.value != 0) {
+        await homeScreenController.getWorkPermitAllListing(projectId);
+        await homeScreenController.getCardListing(projectId, userId);
+      }
+    } catch (e) {
+      log('Error during refresh: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(content: Text('Failed to refresh data: $e')),
+      );
+    } finally {
+      homeScreenController.isRefreshing.value = false;
     }
   }
 
@@ -106,14 +128,34 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        size: 20,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    SizedBox(
+                      width: SizeConfig.widthMultiplier * 3,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppTextWidget(
-                          text: 'Hello!  $userName',
-                          fontSize: AppTextSize.textSizeMediumL,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                        Obx(
+                          () => SizedBox(
+                            width: SizeConfig.widthMultiplier * 70,
+                            child: AppTextWidget(
+                              text: 'Hello!  ${usernameLogin.value}',
+                              fontSize: AppTextSize.textSizeMediumL,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ),
                         SizedBox(
                           height: SizeConfig.heightMultiplier * 0.5,
@@ -212,383 +254,408 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           triggerMode: RefreshIndicatorTriggerMode.anywhere,
           displacement: 40.0, // Distance to pull before triggering refresh
-          onRefresh: _refreshData,
-          child: ListView(children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+          onRefresh: refreshData,
+          child: Obx(() {
+            if (homeScreenController.isRefreshing.value) {
+              return ShimmerLoading(); // Show shimmer during refresh
+            }
+            return ListView(children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: SizeConfig.heightMultiplier * 2.5),
 
-                //------------------------
-                SizedBox(
-                  height: SizeConfig.heightMultiplier * 14.5,
-                  child: Obx(() {
-                    if (homeScreenController.workCard.isEmpty) {
-                      return const Center(
-                        child: CircularProgressIndicator(
+                  //------------------------
+                  SizedBox(
+                    height: SizeConfig.heightMultiplier * 14.5,
+                    child: Obx(() {
+                      if (homeScreenController.workCard.isEmpty) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.buttoncolor),
+                          ),
+                        );
+                      }
+                      // Log entitlementIds and workCard for debugging
+                      log('Entitlement IDs: ${selectProjectController.entitlementIds}');
+                      log('Work Cards: ${homeScreenController.workCard}');
+
+                      // Filter workCard based on entitlementIds
+                      final filteredWorkCards =
+                          homeScreenController.workCard.where((card) {
+                        final title =
+                            card['title']?.toString().toLowerCase().trim() ??
+                                '';
+                        log('Processing card title: $title'); // Debug title
+                        // Map title to entitlement_id
+                        int? entitlementId;
+                        switch (title) {
+                          case 'work permit':
+                            entitlementId = 6;
+                            break;
+                          case 'toolbox training':
+                            entitlementId = 5;
+                            break;
+                          case 'induction training':
+                            entitlementId = 3;
+                            break;
+                          case 'safety violation':
+                            entitlementId = 23;
+                            break;
+                          case 'incident report':
+                            entitlementId = 25;
+                            break;
+                          case 'project labour':
+                            entitlementId =
+                                null; // No entitlementId, hide unless specified
+                            break;
+                          default:
+                            log('Unknown title: $title, hiding card');
+                            return false; // Hide unknown titles
+                        }
+                        if (entitlementId == null) {
+                          log('No entitlementId for title: $title, hiding card');
+                          return false; // Hide cards with null entitlementId (e.g., Project Labour)
+                        }
+                        final isIncluded = selectProjectController
+                            .entitlementIds
+                            .contains(entitlementId);
+                        log('Entitlement ID: $entitlementId, Included: $isIncluded');
+                        return isIncluded;
+                      }).toList();
+
+                      // Log filtered results
+                      log('Filtered Work Cards: $filteredWorkCards');
+
+                      // Handle empty filtered list
+                      if (filteredWorkCards.isEmpty) {
+                        return const Center(
+                            child: Text(
+                          'No Cards available for this Role ..',
+                          style: TextStyle(
+                            fontSize: AppTextSize.textSizeSmalle,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.primaryText,
+                          ),
+                          textAlign: TextAlign.center,
+                        ));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        // itemCount: homeScreenController.workCard.length,
+                        itemCount: filteredWorkCards.length,
+                        itemBuilder: (context, index) {
+                          // final card = homeScreenController.workCard[index];
+                          final card = filteredWorkCards[index];
+                          final title = card['title'] ?? 'Unknown';
+                          final Map<String, dynamic> data = card['data'] ?? {};
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 14.0),
+                              width: 300,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF6E90B8),
+                                    Color(0xFF004A94)
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  stops: [0.25, 0.6],
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 180,
+                                            child: AppTextWidget(
+                                              text: title,
+                                              fontSize:
+                                                  AppTextSize.textSizeSmall,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.appwhitecolor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              if (data.containsKey('open')) ...[
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const AppTextWidget(
+                                                      text: 'Open',
+                                                      fontSize: AppTextSize
+                                                          .textSizeExtraSmall,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      data['open'].toString(),
+                                                      style: GoogleFonts.inter(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                              if (data
+                                                  .containsKey('closed')) ...[
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const AppTextWidget(
+                                                      text: 'Closed',
+                                                      fontSize: AppTextSize
+                                                          .textSizeExtraSmall,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      data['closed'].toString(),
+                                                      style: GoogleFonts.inter(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              if (data
+                                                  .containsKey('accepted')) ...[
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const AppTextWidget(
+                                                      text: 'Accepted',
+                                                      fontSize: AppTextSize
+                                                          .textSizeExtraSmall,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      data['accepted']
+                                                          .toString(),
+                                                      style: GoogleFonts.inter(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                              if (data
+                                                  .containsKey('rejected')) ...[
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const AppTextWidget(
+                                                      text: 'Rejected',
+                                                      fontSize: AppTextSize
+                                                          .textSizeExtraSmall,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      data['rejected']
+                                                          .toString(),
+                                                      style: GoogleFonts.inter(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                              if (data
+                                                  .containsKey('resolved')) ...[
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const AppTextWidget(
+                                                      text: 'Resolved',
+                                                      fontSize: AppTextSize
+                                                          .textSizeExtraSmall,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      data['resolved']
+                                                          .toString(),
+                                                      style: GoogleFonts.inter(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+
+                  SizedBox(height: SizeConfig.heightMultiplier * 2),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 2.5,
+                        width: SizeConfig.widthMultiplier * 10,
+                        child: LinearProgressIndicator(
+                          value: 1,
+                          backgroundColor: AppColors.searchfeildcolor,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
                           valueColor: AlwaysStoppedAnimation<Color>(
                               AppColors.buttoncolor),
                         ),
-                      );
-                    }
-                    // Log entitlementIds and workCard for debugging
-                    log('Entitlement IDs: ${selectProjectController.entitlementIds}');
-                    log('Work Cards: ${homeScreenController.workCard}');
-
-                    // Filter workCard based on entitlementIds
-                    final filteredWorkCards =
-                        homeScreenController.workCard.where((card) {
-                      final title =
-                          card['title']?.toString().toLowerCase().trim() ?? '';
-                      log('Processing card title: $title'); // Debug title
-                      // Map title to entitlement_id
-                      int? entitlementId;
-                      switch (title) {
-                        case 'work permit':
-                          entitlementId = 6;
-                          break;
-                        case 'toolbox training':
-                          entitlementId = 5;
-                          break;
-                        case 'induction training':
-                          entitlementId = 3;
-                          break;
-                        case 'safety violation':
-                          entitlementId = 23;
-                          break;
-                        case 'incident report':
-                          entitlementId = 25;
-                          break;
-                        case 'project labour':
-                          entitlementId =
-                              null; // No entitlementId, hide unless specified
-                          break;
-                        default:
-                          log('Unknown title: $title, hiding card');
-                          return false; // Hide unknown titles
-                      }
-                      if (entitlementId == null) {
-                        log('No entitlementId for title: $title, hiding card');
-                        return false; // Hide cards with null entitlementId (e.g., Project Labour)
-                      }
-                      final isIncluded = selectProjectController.entitlementIds
-                          .contains(entitlementId);
-                      log('Entitlement ID: $entitlementId, Included: $isIncluded');
-                      return isIncluded;
-                    }).toList();
-
-                    // Log filtered results
-                    log('Filtered Work Cards: $filteredWorkCards');
-
-                    // Handle empty filtered list
-                    if (filteredWorkCards.isEmpty) {
-                      return const Center(
-                          child: Text(
-                        'No Cards available for this Role ..',
-                        style: TextStyle(
-                          fontSize: AppTextSize.textSizeSmalle,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.primaryText,
-                        ),
-                        textAlign: TextAlign.center,
-                      ));
-                    }
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      // itemCount: homeScreenController.workCard.length,
-                      itemCount: filteredWorkCards.length,
-                      itemBuilder: (context, index) {
-                        // final card = homeScreenController.workCard[index];
-                        final card = filteredWorkCards[index];
-                        final title = card['title'] ?? 'Unknown';
-                        final Map<String, dynamic> data = card['data'] ?? {};
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 14.0),
-                            width: 300,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF6E90B8), Color(0xFF004A94)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                stops: [0.25, 0.6],
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 20),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 180,
-                                          child: AppTextWidget(
-                                            text: title,
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.appwhitecolor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            if (data.containsKey('open')) ...[
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const AppTextWidget(
-                                                    text: 'Open',
-                                                    fontSize: AppTextSize
-                                                        .textSizeExtraSmall,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    data['open'].toString(),
-                                                    style: GoogleFonts.inter(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                            if (data.containsKey('closed')) ...[
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const AppTextWidget(
-                                                    text: 'Closed',
-                                                    fontSize: AppTextSize
-                                                        .textSizeExtraSmall,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    data['closed'].toString(),
-                                                    style: GoogleFonts.inter(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            if (data
-                                                .containsKey('accepted')) ...[
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const AppTextWidget(
-                                                    text: 'Accepted',
-                                                    fontSize: AppTextSize
-                                                        .textSizeExtraSmall,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    data['accepted'].toString(),
-                                                    style: GoogleFonts.inter(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                            if (data
-                                                .containsKey('rejected')) ...[
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const AppTextWidget(
-                                                    text: 'Rejected',
-                                                    fontSize: AppTextSize
-                                                        .textSizeExtraSmall,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    data['rejected'].toString(),
-                                                    style: GoogleFonts.inter(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                            if (data
-                                                .containsKey('resolved')) ...[
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const AppTextWidget(
-                                                    text: 'Resolved',
-                                                    fontSize: AppTextSize
-                                                        .textSizeExtraSmall,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    data['resolved'].toString(),
-                                                    style: GoogleFonts.inter(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                ),
-
-                SizedBox(height: SizeConfig.heightMultiplier * 2),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 2.5,
-                      width: SizeConfig.widthMultiplier * 10,
-                      child: LinearProgressIndicator(
-                        value: 1,
-                        backgroundColor: AppColors.searchfeildcolor,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.buttoncolor),
-                      ),
-                    ),
-                  ],
-                ),
-                //-------------------------------
-                SizedBox(height: SizeConfig.heightMultiplier * 2),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.widthMultiplier * 4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          print("Selected Project: $projectId");
-                        },
-                        child: AppTextWidget(
-                            text: AppTexts.quickaction,
-                            fontSize: AppTextSize.textSizeSmallm,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primaryText),
-                      ),
-                      SizedBox(height: SizeConfig.heightMultiplier * 2),
-                      QuickActionsGrid(
-                          userId: userId,
-                          userName: userName,
-                          projectId: projectId,
-                          userImg: userImg,
-                          userDesg: userDesg,
-                          selectedproject: selectedproject),
-                      SizedBox(height: SizeConfig.heightMultiplier * 2),
-                      Obx(() {
-                        if (selectProjectController.entitlementIds
-                            .contains(6)) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AppTextWidget(
-                                text: AppTexts.todaywork,
-                                fontSize: AppTextSize.textSizeSmallm,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primaryText,
-                              ),
-                              WorkPermitListItem(
-                                userId: userId,
-                                userName: userName,
-                                userImg: userImg,
-                                userDesg: userDesg,
-                                projectId: projectId,
-                              ),
-                            ],
-                          );
-                        } else {
-                          // If entitlementIds does not contain 6 → return empty SizedBox (hide)
-                          return SizedBox.shrink();
-                        }
-                      }),
-                      SizedBox(
-                        height: SizeConfig.heightMultiplier * 5,
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
-          ]),
+                  //-------------------------------
+                  SizedBox(height: SizeConfig.heightMultiplier * 2),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SizeConfig.widthMultiplier * 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            print("Selected Project: $projectId");
+                          },
+                          child: AppTextWidget(
+                              text: AppTexts.quickaction,
+                              fontSize: AppTextSize.textSizeSmallm,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText),
+                        ),
+                        SizedBox(height: SizeConfig.heightMultiplier * 2),
+                        Obx(
+                          () => QuickActionsGrid(
+                              userId: userId,
+                              userName: usernameLogin.value,
+                              projectId: projectId,
+                              userImg: userImg,
+                              userDesg: userDesg,
+                              selectedproject: selectedproject),
+                        ),
+                        SizedBox(height: SizeConfig.heightMultiplier * 2),
+                        Obx(() {
+                          if (selectProjectController.entitlementIds
+                              .contains(6)) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppTextWidget(
+                                  text: AppTexts.todaywork,
+                                  fontSize: AppTextSize.textSizeSmallm,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primaryText,
+                                ),
+                                Obx(
+                                  () => WorkPermitListItem(
+                                    userId: userId,
+                                    userName: usernameLogin.value,
+                                    userImg: userImg,
+                                    userDesg: userDesg,
+                                    projectId: projectId,
+                                  ),
+                                )
+                              ],
+                            );
+                          } else {
+                            // If entitlementIds does not contain 6 → return empty SizedBox (hide)
+                            return SizedBox.shrink();
+                          }
+                        }),
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 5,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ]);
+          }),
         ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: AppColors.appwhitecolor,
@@ -619,7 +686,7 @@ class HomeScreen extends StatelessWidget {
                     selectedproject: selectedproject,
                     userId: userId,
                     roleId: roleId,
-                    userName: userName,
+                    userName: usernameLogin.value,
                     userImg: userImg,
                     userDesg: userDesg,
                   ));
@@ -638,10 +705,11 @@ class HomeScreen extends StatelessWidget {
           unselectedItemColor: AppColors.fourtText,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Obx(() => buildFloatingActionButton(context)));
+        floatingActionButton:
+            Obx(() => buildFloatingActionButton(context, usernameLogin.value)));
   }
 
-  Widget buildFloatingActionButton(BuildContext context) {
+  Widget buildFloatingActionButton(BuildContext context, usernamenew) {
     log('FAB Entitlement IDs: ${selectProjectController.entitlementIds}');
     log('FAB Items: $fabItems');
 
@@ -766,14 +834,15 @@ class HomeScreen extends StatelessWidget {
                                               if (logStatus == true) {
                                                 Get.to(() => WorkPermitScreen(
                                                     userId: userId,
-                                                    userName: userName,
+                                                    userName: usernamenew,
                                                     userImg: userImg,
                                                     userDesg: userDesg,
                                                     projectId: projectId));
                                                 print(
                                                     "Navigating to WorkPermitScreen with:");
                                                 print("User ID: $userId");
-                                                print("User Name: $userName");
+                                                print(
+                                                    "User Name: $usernamenew");
                                                 print("Project ID: $projectId");
                                               } else {
                                                 logout();
@@ -801,14 +870,15 @@ class HomeScreen extends StatelessWidget {
                                                 Get.to(() =>
                                                     ToolboxTrainingScreen(
                                                         userId: userId,
-                                                        userName: userName,
+                                                        userName: usernamenew,
                                                         userImg: userImg,
                                                         userDesg: userDesg,
                                                         projectId: projectId));
                                                 print(
                                                     "Navigating to ToolboxTrainingScreen with:");
                                                 print("User ID: $userId");
-                                                print("User Name: $userName");
+                                                print(
+                                                    "User Name: $usernamenew");
                                                 print("Project ID: $projectId");
                                               } else {
                                                 logout();
@@ -831,7 +901,7 @@ class HomeScreen extends StatelessWidget {
                                                 Get.to(() =>
                                                     InductionTrainingScreen(
                                                       userId: userId,
-                                                      userName: userName,
+                                                      userName: usernamenew,
                                                       userImg: userImg,
                                                       userDesg: userDesg,
                                                       projectId: projectId,
@@ -839,7 +909,8 @@ class HomeScreen extends StatelessWidget {
                                                 print(
                                                     "Navigating to InductionTrainingScreen with:");
                                                 print("User ID: $userId");
-                                                print("User Name: $userName");
+                                                print(
+                                                    "User Name: $usernamenew");
                                                 print("Project ID: $projectId");
                                               } else {
                                                 logout();
@@ -866,7 +937,7 @@ class HomeScreen extends StatelessWidget {
                                                 Get.to(
                                                     () => SefetyViolationScreen(
                                                           userId: userId,
-                                                          userName: userName,
+                                                          userName: usernamenew,
                                                           userImg: userImg,
                                                           userDesg: userDesg,
                                                           projectId: projectId,
@@ -874,7 +945,8 @@ class HomeScreen extends StatelessWidget {
                                                 print(
                                                     "Navigating to SefetyViolationScreen with:");
                                                 print("User ID: $userId");
-                                                print("User Name: $userName");
+                                                print(
+                                                    "User Name: $usernamenew");
                                               } else {
                                                 logout();
                                               }
@@ -906,14 +978,15 @@ class HomeScreen extends StatelessWidget {
                                                 Get.to(() =>
                                                     IncidentReportScreen(
                                                         userId: userId,
-                                                        userName: userName,
+                                                        userName: usernamenew,
                                                         userImg: userImg,
                                                         userDesg: userDesg,
                                                         projectId: projectId));
                                                 print(
                                                     "Navigating to IncidentReportScreen with:");
                                                 print("User ID: $userId");
-                                                print("User Name: $userName");
+                                                print(
+                                                    "User Name: $usernamenew");
                                               } else {
                                                 logout();
                                               }

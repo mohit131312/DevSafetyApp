@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/features/login/login_controller.dart';
 import 'package:flutter_app/features/splash/splash_screen.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -13,8 +12,8 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
   await GetStorage.init();
-  final LoginController loginController = Get.put(LoginController());
 
   runApp(MyApp());
   // runApp(

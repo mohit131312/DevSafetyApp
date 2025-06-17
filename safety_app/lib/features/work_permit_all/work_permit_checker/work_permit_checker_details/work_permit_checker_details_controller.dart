@@ -183,6 +183,9 @@ class WorkPermitCheckerDetailsController extends GetxController {
         signatureFile.path,
       ));
       request.fields['status'] = status.toString();
+      if (workPermitsCheckerDetails[0].statusCodeAdmin == 1) {
+        request.fields['statusClosedForAdmin'] = "3";
+      }
 
       log("Final Request Fields: ${jsonEncode(request.fields)}");
       log("Final Request Files: ${request.files.map((file) => file.filename).toList()}");

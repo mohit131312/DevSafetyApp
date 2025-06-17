@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter_app/features/select_role/select_role_controller.dart';
 import 'package:flutter_app/remote_services.dart';
 import 'package:flutter_app/utils/api_client.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/validation.dart';
 import 'package:flutter_app/utils/validation_invalid.dart';
@@ -48,9 +50,9 @@ class LoginController extends GetxController {
 
   Map<String, dynamic> selectRoleMap = {};
   String validationmsg = '';
+  var userId = 0.obs;
+  var userimg = ''.obs;
   Future login() async {
-    // First, check if the device is connected to the internet
-
     try {
       Map<String, dynamic> map = {
         "email": usernameController.text,
@@ -98,8 +100,20 @@ class LoginController extends GetxController {
         log("login is ${ApiClient.gs.read('login')}");
 
         selectRoleMap = await responseData['data'];
-        ApiClient.gs.write('SelectRoleMap', selectRoleMap);
+        usernameLogin.value = await selectRoleMap['user_name'];
+        userId.value = await selectRoleMap['user_id'];
+        userimg.value = await selectRoleMap['user_photo'];
 
+        await ApiClient.gs.write('user_id', userId.value);
+        await ApiClient.gs.write('user_img', userimg.value);
+        print('selectRoleMap: $selectRoleMap');
+        print('usernameLogin.value: ${usernameLogin.value}');
+        await ApiClient.gs.write('username', usernameLogin.value);
+
+        await ApiClient.gs.write('SelectRoleMap', selectRoleMap);
+        final SelectRoleController selectRoleController =
+            Get.put(SelectRoleController());
+        await selectRoleController.getRoles(userId.value);
         log('selectRoleMap: ${selectRoleMap.length}');
         return true;
 
@@ -117,4 +131,19 @@ class LoginController extends GetxController {
       return false;
     }
   }
+
+  // Future<void> userIdAndName() async {
+  //   userId.value = await selectRoleMap['user_id'];
+  //   // username.value = await selectRoleMap['user_name'];
+  //   userimg.value = await selectRoleMap['user_photo'];
+
+  //   await ApiClient.gs.write('user_id', userId.value);
+  //   await ApiClient.gs.write('user_img', userimg.value);
+
+  //   log(" Stored User ID: ${userId.value}");
+  //   log(" Stored usernameLogin: ${usernameLogin.value}");
+  //   log(" Stored User ID: ${userId.value}");
+  //   log(" Stored usernameLogin: ${usernameLogin.value}");
+  //   log(" Stored userphoto ID: ${userimg.value}");
+  // }
 }

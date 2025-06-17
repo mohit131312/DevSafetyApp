@@ -10,27 +10,27 @@ ProjectDetails projectDetailsFromJson(String str) =>
 String projectDetailsToJson(ProjectDetails data) => json.encode(data.toJson());
 
 class ProjectDetails {
-  Data data;
-  String message;
-  bool status;
-  bool token;
+  Data? data;
+  String? message;
+  bool? status;
+  bool? token;
 
   ProjectDetails({
-    required this.data,
-    required this.message,
-    required this.status,
-    required this.token,
+    this.data,
+    this.message,
+    this.status,
+    this.token,
   });
 
   factory ProjectDetails.fromJson(Map<String, dynamic> json) => ProjectDetails(
-        data: Data.fromJson(json["data"]),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
         message: json["message"],
         status: json["status"],
         token: json["token"],
       );
 
   Map<String, dynamic> toJson() => {
-        "data": data.toJson(),
+        "data": data?.toJson(),
         "message": message,
         "status": status,
         "token": token,
@@ -38,74 +38,81 @@ class ProjectDetails {
 }
 
 class Data {
-  List<LaboursDetail> laboursDetails;
-  List<LaboursProjectDetail> laboursProjectDetails;
-  List<DocumentDetail> documentDetails;
+  List<LaboursDetail>? laboursDetails;
+  List<LaboursProjectDetail>? laboursProjectDetails;
+  List<DocumentDetail>? documentDetails;
 
   Data({
-    required this.laboursDetails,
-    required this.laboursProjectDetails,
-    required this.documentDetails,
+    this.laboursDetails,
+    this.laboursProjectDetails,
+    this.documentDetails,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        laboursDetails: List<LaboursDetail>.from(
-            json["labours_details"].map((x) => LaboursDetail.fromJson(x))),
-        laboursProjectDetails: List<LaboursProjectDetail>.from(
-            json["labours_project_details"]
+        laboursDetails: json["labours_details"] == null
+            ? []
+            : List<LaboursDetail>.from(
+                json["labours_details"]!.map((x) => LaboursDetail.fromJson(x))),
+        laboursProjectDetails: json["labours_project_details"] == null
+            ? []
+            : List<LaboursProjectDetail>.from(json["labours_project_details"]!
                 .map((x) => LaboursProjectDetail.fromJson(x))),
-        documentDetails: List<DocumentDetail>.from(
-            json["document_details"].map((x) => DocumentDetail.fromJson(x))),
+        documentDetails: json["document_details"] == null
+            ? []
+            : List<DocumentDetail>.from(json["document_details"]!
+                .map((x) => DocumentDetail.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "labours_details":
-            List<dynamic>.from(laboursDetails.map((x) => x.toJson())),
-        "labours_project_details":
-            List<dynamic>.from(laboursProjectDetails.map((x) => x.toJson())),
-        "document_details":
-            List<dynamic>.from(documentDetails.map((x) => x.toJson())),
+        "labours_details": laboursDetails == null
+            ? []
+            : List<dynamic>.from(laboursDetails!.map((x) => x.toJson())),
+        "labours_project_details": laboursProjectDetails == null
+            ? []
+            : List<dynamic>.from(laboursProjectDetails!.map((x) => x.toJson())),
+        "document_details": documentDetails == null
+            ? []
+            : List<dynamic>.from(documentDetails!.map((x) => x.toJson())),
       };
 }
 
 class DocumentDetail {
-  String docmentType;
-  String idNumber;
-  DateTime validity;
-  String photos;
+  String? docmentType;
+  String? idNumber;
+  String? validity;
+  String? photos;
 
   DocumentDetail({
-    required this.docmentType,
-    required this.idNumber,
-    required this.validity,
-    required this.photos,
+    this.docmentType,
+    this.idNumber,
+    this.validity,
+    this.photos,
   });
 
   factory DocumentDetail.fromJson(Map<String, dynamic> json) => DocumentDetail(
         docmentType: json["docment_type"],
         idNumber: json["id_number"],
-        validity: DateTime.parse(json["validity"]),
+        validity: json["validity"],
         photos: json["photos"],
       );
 
   Map<String, dynamic> toJson() => {
         "docment_type": docmentType,
         "id_number": idNumber,
-        "validity":
-            "${validity.year.toString().padLeft(4, '0')}-${validity.month.toString().padLeft(2, '0')}-${validity.day.toString().padLeft(2, '0')}",
+        "validity": validity,
         "photos": photos,
       };
 }
 
 class LaboursDetail {
-  int id;
-  String inducteeId;
+  int? id;
+  String? inducteeId;
   String? labourName;
   String? gender;
   String? literacy;
   String? maritalStatus;
   String? bloodGroup;
-  DateTime? birthDate;
+  String? birthDate;
   int? age;
   String? contactNumber;
   String? userPhoto;
@@ -122,33 +129,32 @@ class LaboursDetail {
   int? permanentState;
   String? permanentPincode;
   int? experienceInYears;
+  String? uanNumber;
+  String? bocwNumber;
+  String? bankName;
+  String? ifscNumber;
+  String? accountNumber;
+  String? branchAddress;
+  String? groupInsuranceLimit;
+  String? insuranceNumber;
+  String? insuranceType;
+  String? insuranceValidity;
+  String? emergencyContactName;
+  String? emergencyContactNumber;
+  String? emergencyContactRelation;
+  String? isActive;
+  dynamic deletedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? adhaarCardNo;
+  String? qrCode;
+  dynamic idCardExpiryDate;
   String? stateName;
   String? districtName;
 
-  // dynamic uanNumber;
-  // dynamic bocwNumber;
-  // dynamic bankName;
-  // dynamic ifscNumber;
-  // dynamic accountNumber;
-  // dynamic branchAddress;
-  // dynamic groupInsuranceLimit;
-  // dynamic insuranceNumber;
-  // dynamic insuranceType;
-  // dynamic insuranceValidity;
-  String emergencyContactName;
-  String emergencyContactNumber;
-  String emergencyContactRelation;
-  // String isActive;
-  // dynamic deletedAt;
-  // DateTime createdAt;
-  // DateTime updatedAt;
-  // String adhaarCardNo;
-  // dynamic qrCode;
-  // dynamic idCardExpiryDate;
-
   LaboursDetail({
-    required this.id,
-    required this.inducteeId,
+    this.id,
+    this.inducteeId,
     this.labourName,
     this.gender,
     this.literacy,
@@ -171,79 +177,81 @@ class LaboursDetail {
     this.permanentState,
     this.permanentPincode,
     this.experienceInYears,
-    // required this.uanNumber,
-    // required this.bocwNumber,
-    // required this.bankName,
-    // required this.ifscNumber,
-    // required this.accountNumber,
-    // required this.branchAddress,
-    // required this.groupInsuranceLimit,
-    // required this.insuranceNumber,
-    // required this.insuranceType,
-    // required this.insuranceValidity,
-    required this.emergencyContactName,
-    required this.emergencyContactNumber,
-    required this.emergencyContactRelation,
-    // required this.isActive,
-    // required this.deletedAt,
-    // required this.createdAt,
-    // required this.updatedAt,
-    // required this.adhaarCardNo,
-    // required this.qrCode,
-    // required this.idCardExpiryDate,
-    this.districtName,
+    this.uanNumber,
+    this.bocwNumber,
+    this.bankName,
+    this.ifscNumber,
+    this.accountNumber,
+    this.branchAddress,
+    this.groupInsuranceLimit,
+    this.insuranceNumber,
+    this.insuranceType,
+    this.insuranceValidity,
+    this.emergencyContactName,
+    this.emergencyContactNumber,
+    this.emergencyContactRelation,
+    this.isActive,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.adhaarCardNo,
+    this.qrCode,
+    this.idCardExpiryDate,
     this.stateName,
+    this.districtName,
   });
 
   factory LaboursDetail.fromJson(Map<String, dynamic> json) => LaboursDetail(
         id: json["id"],
         inducteeId: json["inductee_id"],
-        labourName: json["labour_name"] ?? "",
-        gender: json["gender"] ?? "",
-        literacy: json["literacy"] ?? "",
-        maritalStatus: json["marital_status"] ?? "",
-        bloodGroup: json["blood_group"] ?? "",
-        birthDate: json["birth_date"] != null
-            ? DateTime.tryParse(json["birth_date"]) ?? DateTime(1900, 1, 1)
-            : null, // Defaulting to null or a fallback date
-        age: json["age"] ?? "",
-        contactNumber: json["contact_number"] ?? "",
-        userPhoto: json["user_photo"] ?? "",
-        currentStreetName: json["current_street_name"] ?? "",
-        currentCity: json["current_city"] ?? "",
-        currentTaluka: json["current_taluka"] ?? "",
-        currentDistrict: json["current_district"] ?? "",
-        currentState: json["current_state"] ?? "",
-        currentPincode: json["current_pincode"] ?? "",
-        permanentStreetName: json["permanent_street_name"] ?? "",
-        permanentCity: json["permanent_city"] ?? "",
-        permanentTaluka: json["permanent_taluka"] ?? "",
-        permanentDistrict: json["permanent_district"] ?? "",
-        permanentState: json["permanent_state"] ?? "",
-        permanentPincode: json["permanent_pincode"] ?? "",
-        experienceInYears: json["experience_in_years"] ?? "",
-        // uanNumber: json["uan_number"],
-        // bocwNumber: json["bocw_number"],
-        // bankName: json["bank_name"],
-        // ifscNumber: json["ifsc_number"],
-        // accountNumber: json["account_number"],
-        // branchAddress: json["branch_address"],
-        // groupInsuranceLimit: json["group_insurance_limit"],
-        // insuranceNumber: json["insurance_number"],
-        // insuranceType: json["insurance_type"],
-        // insuranceValidity: json["insurance_validity"],
-        emergencyContactName: json["emergency_contact_name"] ?? "",
-        emergencyContactNumber: json["emergency_contact_number"] ?? "",
-        emergencyContactRelation: json["emergency_contact_relation"] ?? "",
-        // isActive: json["is_active"],
-        // deletedAt: json["deleted_at"],
-        // createdAt: DateTime.parse(json["created_at"]),
-        // updatedAt: DateTime.parse(json["updated_at"]),
-        // adhaarCardNo: json["adhaar_card_no"],
-        // qrCode: json["qr_code"],
-        // idCardExpiryDate: json["id_card_expiry_date"],
-        stateName: json["state_name"] ?? "",
-        districtName: json["district_name"] ?? "",
+        labourName: json["labour_name"],
+        gender: json["gender"],
+        literacy: json["literacy"],
+        maritalStatus: json["marital_status"],
+        bloodGroup: json["blood_group"],
+        birthDate: json["birth_date"],
+        age: json["age"],
+        contactNumber: json["contact_number"],
+        userPhoto: json["user_photo"],
+        currentStreetName: json["current_street_name"],
+        currentCity: json["current_city"],
+        currentTaluka: json["current_taluka"],
+        currentDistrict: json["current_district"],
+        currentState: json["current_state"],
+        currentPincode: json["current_pincode"],
+        permanentStreetName: json["permanent_street_name"],
+        permanentCity: json["permanent_city"],
+        permanentTaluka: json["permanent_taluka"],
+        permanentDistrict: json["permanent_district"],
+        permanentState: json["permanent_state"],
+        permanentPincode: json["permanent_pincode"],
+        experienceInYears: json["experience_in_years"],
+        uanNumber: json["uan_number"],
+        bocwNumber: json["bocw_number"],
+        bankName: json["bank_name"],
+        ifscNumber: json["ifsc_number"],
+        accountNumber: json["account_number"],
+        branchAddress: json["branch_address"],
+        groupInsuranceLimit: json["group_insurance_limit"],
+        insuranceNumber: json["insurance_number"],
+        insuranceType: json["insurance_type"],
+        insuranceValidity: json["insurance_validity"],
+        emergencyContactName: json["emergency_contact_name"],
+        emergencyContactNumber: json["emergency_contact_number"],
+        emergencyContactRelation: json["emergency_contact_relation"],
+        isActive: json["is_active"],
+        deletedAt: json["deleted_at"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        adhaarCardNo: json["adhaar_card_no"],
+        qrCode: json["qr_code"],
+        idCardExpiryDate: json["id_card_expiry_date"],
+        stateName: json["state_name"],
+        districtName: json["district_name"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -254,8 +262,7 @@ class LaboursDetail {
         "literacy": literacy,
         "marital_status": maritalStatus,
         "blood_group": bloodGroup,
-        "birth_date":
-            "${birthDate!.year.toString().padLeft(4, '0')}-${birthDate!.month.toString().padLeft(2, '0')}-${birthDate?.day.toString().padLeft(2, '0')}",
+        "birth_date": birthDate,
         "age": age,
         "contact_number": contactNumber,
         "user_photo": userPhoto,
@@ -272,60 +279,62 @@ class LaboursDetail {
         "permanent_state": permanentState,
         "permanent_pincode": permanentPincode,
         "experience_in_years": experienceInYears,
-        // "uan_number": uanNumber,
-        // "bocw_number": bocwNumber,
-        // "bank_name": bankName,
-        // "ifsc_number": ifscNumber,
-        // "account_number": accountNumber,
-        // "branch_address": branchAddress,
-        // "group_insurance_limit": groupInsuranceLimit,
-        // "insurance_number": insuranceNumber,
-        // "insurance_type": insuranceType,
-        // "insurance_validity": insuranceValidity,
-        // "emergency_contact_name": emergencyContactName,
-        // "emergency_contact_number": emergencyContactNumber,
-        // "emergency_contact_relation": emergencyContactRelation,
-        // "is_active": isActive,
-        // "deleted_at": deletedAt,
-        // "created_at": createdAt.toIso8601String(),
-        // "updated_at": updatedAt.toIso8601String(),
-        // "adhaar_card_no": adhaarCardNo,
-        // "qr_code": qrCode,
-        // "id_card_expiry_date": idCardExpiryDate,
+        "uan_number": uanNumber,
+        "bocw_number": bocwNumber,
+        "bank_name": bankName,
+        "ifsc_number": ifscNumber,
+        "account_number": accountNumber,
+        "branch_address": branchAddress,
+        "group_insurance_limit": groupInsuranceLimit,
+        "insurance_number": insuranceNumber,
+        "insurance_type": insuranceType,
+        "insurance_validity": insuranceValidity,
+        "emergency_contact_name": emergencyContactName,
+        "emergency_contact_number": emergencyContactNumber,
+        "emergency_contact_relation": emergencyContactRelation,
+        "is_active": isActive,
+        "deleted_at": deletedAt,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+        "adhaar_card_no": adhaarCardNo,
+        "qr_code": qrCode,
+        "id_card_expiry_date": idCardExpiryDate,
+        "state_name": stateName,
+        "district_name": districtName,
       };
 }
 
 class LaboursProjectDetail {
-  int id;
-  int labourId;
-  int projectId;
-  int tradeId;
-  String isActive;
+  int? id;
+  int? labourId;
+  int? projectId;
+  int? tradeId;
+  String? isActive;
   dynamic deletedAt;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String skillType;
-  int contractorId;
-  String firmName;
-  String tradeName;
-  String contractorContactPersonName;
-  String contractorPhoneNo;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? skillType;
+  int? contractorId;
+  String? firmName;
+  String? tradeName;
+  String? contractorContactPersonName;
+  String? contractorPhoneNo;
 
   LaboursProjectDetail({
-    required this.id,
-    required this.labourId,
-    required this.projectId,
-    required this.tradeId,
-    required this.isActive,
-    required this.deletedAt,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.skillType,
-    required this.contractorId,
-    required this.firmName,
-    required this.tradeName,
-    required this.contractorContactPersonName,
-    required this.contractorPhoneNo,
+    this.id,
+    this.labourId,
+    this.projectId,
+    this.tradeId,
+    this.isActive,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.skillType,
+    this.contractorId,
+    this.firmName,
+    this.tradeName,
+    this.contractorContactPersonName,
+    this.contractorPhoneNo,
   });
 
   factory LaboursProjectDetail.fromJson(Map<String, dynamic> json) =>
@@ -336,12 +345,16 @@ class LaboursProjectDetail {
         tradeId: json["trade_id"],
         isActive: json["is_active"],
         deletedAt: json["deleted_at"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
         skillType: json["skill_type"],
         contractorId: json["contractor_id"],
-        tradeName: json["trade_name"],
         firmName: json["firm_name"],
+        tradeName: json["trade_name"],
         contractorContactPersonName: json["contractor_contact_person_name"],
         contractorPhoneNo: json["contractor_phone_no"],
       );
@@ -353,8 +366,8 @@ class LaboursProjectDetail {
         "trade_id": tradeId,
         "is_active": isActive,
         "deleted_at": deletedAt,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
         "skill_type": skillType,
         "contractor_id": contractorId,
         "firm_name": firmName,

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 // or entitlement_modeule_id safety module entitle list id
 class HomeScreenController extends GetxController {
   RxList<WorkPermitListingAll> workPermitListing = <WorkPermitListingAll>[].obs;
-
+  RxBool isRefreshing = false.obs; // Add loading state
   Future getWorkPermitAllListing(projcetId) async {
     try {
       Map<String, dynamic> map = {
@@ -23,12 +23,22 @@ class HomeScreenController extends GetxController {
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      workPermitListing.value = (responseData['data'] as List<dynamic>?)
-              ?.map((e) =>
-                  WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [];
+      // workPermitListing.value = (responseData['data'] as List<dynamic>?)
+      //         ?.map((e) =>
+      //             WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+      //         .toList() ??
+      //     [];
+      final data = responseData['data'];
 
+      if (data is List) {
+        workPermitListing.value = data
+            .map(
+                (e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+            .toList();
+        log('✅ workPermitListing length: ${workPermitListing.length}');
+      } else {
+        log('⚠️ No list data found in response.');
+      }
       log('----------=workPermitListing: ${(workPermitListing.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -49,6 +59,7 @@ class HomeScreenController extends GetxController {
 
       var responseData =
           await globApiCall('get_projectwise_status', requestBody);
+      log('Response Data: $responseData');
 
       if (responseData['status'] == true && responseData['data'] != null) {
         final dataMap = Map<String, dynamic>.from(responseData['data']);
@@ -97,6 +108,8 @@ class HomeScreenController extends GetxController {
           };
         }).toList();
         log("✅ Card Data Loaded: ${workCard.length}");
+
+        log("✅ Card Data Loaded: ${workCard.length}");
       } else {
         log("⚠️ No data found or invalid response.");
       }
@@ -104,4 +117,6 @@ class HomeScreenController extends GetxController {
       log("❌ Error fetching work permits: $e\n$stackTrace");
     }
   }
+
+  //----------------------------
 }

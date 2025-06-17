@@ -194,10 +194,16 @@ class WorkPermitAllDetails extends StatelessWidget {
                                           ),
                                           AppTextWidget(
                                               text: workPermitAllController
-                                                      .workPermitsMakerDetails[
-                                                          0]
-                                                      .nameOfWorkpermit
-                                                      .isNotEmpty
+                                                          .workPermitsMakerDetails[
+                                                              0]
+                                                          .nameOfWorkpermit
+                                                          .isNotEmpty &&
+                                                      workPermitAllController
+                                                              .workPermitsMakerDetails[
+                                                                  0]
+                                                              // ignore: unnecessary_null_comparison
+                                                              .nameOfWorkpermit !=
+                                                          null
                                                   ? workPermitAllController
                                                       .workPermitsMakerDetails[
                                                           0]
@@ -264,7 +270,7 @@ class WorkPermitAllDetails extends StatelessWidget {
                                                             .id !=
                                                         null
                                                 ? '${workPermitAllController.selectedToolboxTrainingMaker[0].id.toString()} / ${workPermitAllController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
-                                                : "",
+                                                : "NA",
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.primaryText,

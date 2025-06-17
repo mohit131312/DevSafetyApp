@@ -110,15 +110,8 @@ class ContractorSubmit extends StatelessWidget {
                           projectId, userId);
 
                       Navigator.pop(context);
-                      InductionTrainingScreen inductionTrainingScreen =
-                          Get.put(InductionTrainingScreen(
-                        userId: userId,
-                        userName: userName,
-                        userImg: userImg,
-                        userDesg: userDesg,
-                        projectId: projectId,
-                      ));
-                      inductionTrainingScreen.isFabExpanded.value = true;
+
+                      inductionTrainingController.isFabExpanded.value = true;
                       Get.offUntil(
                         GetPageRoute(
                             page: () => InductionTrainingScreen(

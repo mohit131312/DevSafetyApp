@@ -6,66 +6,19 @@ import 'package:flutter_app/features/work_permit_all/work_permit/work_permit_mod
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
-class WorkPermitController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class WorkPermitController extends GetxController {
   var searchQuery = ''.obs;
   var personalDetails = <Map<String, dynamic>>[].obs;
   var filteredDetails = <Map<String, dynamic>>[].obs;
 
-  late TabController tabController;
-
-  var selectedOption = 0.obs;
-
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(length: 3, vsync: this);
-    tabController.addListener(() {
-      selectedOption.value = tabController.index;
-      print("Selected Tab Index: ${selectedOption.value}");
-    });
-  }
-
-  @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
-  }
-
-  void changeSelection(int index) {
-    selectedOption.value = index;
-    applyFilters();
-  }
-
-  void searchLabor(String query) {
-    searchQuery.value = query;
-    applyFilters();
-  }
-
-  /// **Apply both search and selection filters**
-  void applyFilters() {
-    List<Map<String, dynamic>> filtered = List.from(personalDetails);
-
-    // **Search Filter**
-    if (searchQuery.value.isNotEmpty) {
-      filtered = filtered
-          .where((item) => item['title']!
-              .toLowerCase()
-              .contains(searchQuery.value.toLowerCase()))
-          .toList();
-    }
-
-    // **Status Filter**
-    if (selectedOption.value == 1) {
-      filtered = filtered.where((item) => item['text'] == "Open").toList();
-    } else if (selectedOption.value == 2) {
-      filtered = filtered.where((item) => item['text'] == "Closed").toList();
-    } else if (selectedOption.value == 3) {
-      filtered = filtered.where((item) => item['text'] == "Accepted").toList();
-    }
-
-    // **Update filtered list**
-    filteredDetails.value = filtered;
+    // tabController = TabController(length: 3, vsync: this);
+    // tabController.addListener(() {
+    //   selectedOption.value = tabController.index;
+    //   print("Selected Tab Index: ${selectedOption.value}");
+    // });
   }
 
   List<CategoryList> categoryWorkList = [];
@@ -149,12 +102,22 @@ class WorkPermitController extends GetxController
 
       var responseData = await globApiCall('get_work_permit_all_list', map);
       //  log("Request body: $data");
+      final data = responseData['data'];
 
       // //-------------------------------------------------
-      workPermitListingAll.value = (await responseData['data'] as List<dynamic>)
-          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
-          .toList();
-
+      // workPermitListingAll.value = (await responseData['data'] as List<dynamic>)
+      //     .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      if (data is List) {
+        workPermitListingAll.value = data
+            .map(
+                (e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        // Handle empty or invalid list response
+        workPermitListingAll.clear(); // or leave it unchanged if needed
+        log("No work permit data found.");
+      }
       log('----------=workPermitListingAll: ${(workPermitListingAll.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -164,12 +127,11 @@ class WorkPermitController extends GetxController
 
   var searchQueryworkpermit = ''.obs;
   TextEditingController searchWorkAllController = TextEditingController();
+  FocusNode searchAllFocusNode = FocusNode();
+  FocusNode searchmakerFocusNode = FocusNode();
+  FocusNode searchcheckerFocusNode = FocusNode();
   TextEditingController searchWorkMakerController = TextEditingController();
   TextEditingController searchWorkCheckerController = TextEditingController();
-
-  void updateSearchworkPermitQuery(String query) {
-    searchQueryworkpermit.value = query;
-  }
 
   List<WorkPermitListingAll> get filteredworkAllList {
     final query = searchQueryworkpermit.value.toLowerCase();
@@ -201,10 +163,25 @@ class WorkPermitController extends GetxController
       // workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
       //     .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
       //     .toList();
-      workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
-          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
-          .where((item) => item.status != "0") // status is a String
-          .toList();
+
+      final data = responseData['data'];
+
+      if (data is List) {
+        workPermitMakerList.value = data
+            .map(
+                (e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+            .where((item) => item.status != "0")
+            .toList();
+
+        log('----------=workPermitMakerList: ${workPermitMakerList.length}');
+      } else {
+        workPermitMakerList.clear(); // Safe fallback
+        log("No valid list data received for workPermitMakerList.");
+      }
+      // workPermitMakerList.value = (await responseData['data'] as List<dynamic>)
+      //     .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+      //     .where((item) => item.status != "0") // status is a String
+      //     .toList();
 
       log('----------=workPermitMakerList: ${(workPermitMakerList.length)}');
       //-------------------------------------------------
@@ -214,10 +191,6 @@ class WorkPermitController extends GetxController
   }
 
   var searchQuerywpMaker = ''.obs;
-
-  void updateSearchwpMakerQuery(String query) {
-    searchQuerywpMaker.value = query;
-  }
 
   List<WorkPermitListingAll> get filteredwpMakerList {
     final query = searchQuerywpMaker.value.toLowerCase();
@@ -246,11 +219,23 @@ class WorkPermitController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      workPermitCheckerList.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // workPermitCheckerList.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      final data = responseData['data'];
 
+      if (data is List) {
+        workPermitCheckerList.value = data
+            .map(
+                (e) => WorkPermitListingAll.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=workPermitCheckerList: ${workPermitCheckerList.length}');
+      } else {
+        workPermitCheckerList.clear(); // Safe fallback on bad or empty data
+        log("No valid list data received for workPermitCheckerList.");
+      }
       log('----------=workPermitCheckerList: ${(workPermitCheckerList.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -259,10 +244,6 @@ class WorkPermitController extends GetxController
   }
 
   var searchQuerywpChecker = ''.obs;
-
-  void updateSearchwpCheckerQuery(String query) {
-    searchQuerywpChecker.value = query;
-  }
 
   List<WorkPermitListingAll> get filteredwpCheckerList {
     final query = searchQuerywpChecker.value.toLowerCase();
@@ -273,13 +254,28 @@ class WorkPermitController extends GetxController
         .toList();
   }
 
-  void handleSearchByTab(int index, String query) {
-    if (index == 0) {
-      searchQueryworkpermit.value = query;
-    } else if (index == 1) {
-      searchQuerywpMaker.value = query;
-    } else if (index == 2) {
-      searchQuerywpChecker.value = query;
-    }
+  void clearSearchData() {
+    // Clear text in all search controllers
+    searchWorkAllController.clear();
+    searchWorkMakerController.clear();
+    searchWorkCheckerController.clear();
+    searchQueryworkpermit.value = '';
+    searchQuerywpMaker.value = '';
+    searchQuerywpChecker.value = '';
+    // Reset active controller text
+  }
+
+  //---------------------------
+
+  void handleSearchAll(String query) {
+    searchQueryworkpermit.value = query;
+  }
+
+  void handleSearchDoer(String query) {
+    searchQuerywpMaker.value = query;
+  }
+
+  void handleSearchChecker(String query) {
+    searchQuerywpChecker.value = query;
   }
 }

@@ -904,7 +904,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                          text: 'Reviewer',
+                          text: 'Checker',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.secondaryText),
@@ -953,7 +953,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: 'Reviwer Comments',
+                            text: 'Checker Comments',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,

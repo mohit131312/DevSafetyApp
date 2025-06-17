@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 class InductionTrainingController extends GetxController {
   final TextEditingController searchController = TextEditingController();
+  final RxBool isFabExpanded = true.obs;
 
   var selectedOption = 0.obs;
   var searchQuery = ''.obs;

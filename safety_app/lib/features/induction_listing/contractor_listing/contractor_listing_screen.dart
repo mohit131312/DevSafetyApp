@@ -264,7 +264,11 @@ class ContractorListingScreen extends StatelessWidget {
                                           ]),
                                     ),
                                     SizedBox(
-                                      width: SizeConfig.widthMultiplier * 40,
+                                      width: 20,
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      width: SizeConfig.widthMultiplier * 36,
                                       child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

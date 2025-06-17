@@ -89,4 +89,13 @@ class SelectAssigneController extends GetxController {
       );
     }
   }
+
+  void clearSelectedData() {
+    selectedassigneeDataIds.clear();
+    selectedassigneeDataIdsFinal.clear();
+    print(
+        "Cleared selected assignee data: ${selectedassigneeDataIds.toList()}");
+    print(
+        "Cleared final assignee data: ${selectedassigneeDataIdsFinal.toList()}");
+  }
 }

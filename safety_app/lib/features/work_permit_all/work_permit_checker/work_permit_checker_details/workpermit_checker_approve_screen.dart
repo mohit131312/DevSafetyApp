@@ -14,12 +14,14 @@ class WorkpermitCheckerApproveScreen extends StatelessWidget {
   final int userId;
   final int projectId;
   final String uniqueId;
+  final int isStatusAdmit;
 
   WorkpermitCheckerApproveScreen(
       {super.key,
       required this.userId,
       required this.projectId,
-      required this.uniqueId});
+      required this.uniqueId,
+      required this.isStatusAdmit});
   final WorkPermitController workPermitController =
       Get.put(WorkPermitController());
   @override
@@ -52,7 +54,9 @@ class WorkpermitCheckerApproveScreen extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 7,
                       ),
                       AppTextWidget(
-                        text: 'Approved Successfully!',
+                        text: isStatusAdmit == 1
+                            ? 'Closed Successfully!'
+                            : 'Approved Successfully!',
                         fontSize: AppTextSize.textSizeMediumm,
                         fontWeight: FontWeight.w500,
                         color: Colors.black,

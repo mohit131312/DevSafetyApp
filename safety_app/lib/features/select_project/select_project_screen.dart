@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
+import 'package:flutter_app/components/shimmer_project.dart';
 import 'package:flutter_app/features/home/home_screen.dart';
 import 'package:flutter_app/features/home/home_screen_controller.dart';
 import 'package:flutter_app/features/select_project/select_project_controller.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/check_internet.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/size_config.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
@@ -48,6 +50,19 @@ class SelectProjectScreen extends StatelessWidget {
             bottom: Radius.circular(20),
           ),
         ),
+        leading: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.heightMultiplier * 2),
+          child: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: SizeConfig.heightMultiplier * 2.5,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
         automaticallyImplyLeading: false,
 
         scrolledUnderElevation: 0.0,
@@ -82,8 +97,11 @@ class SelectProjectScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         triggerMode: RefreshIndicatorTriggerMode.anywhere,
         onRefresh: _refreshData,
-        child: Obx(
-          () => ListView.builder(
+        child: Obx(() {
+          if (selectProjectController.isRefreshing.value) {
+            return ShimmerProject(); // Show shimmer during refresh
+          }
+          return ListView.builder(
               itemCount: selectProjectController.selectProject.length,
               itemBuilder: (context, index) {
                 return Column(
@@ -122,7 +140,7 @@ class SelectProjectScreen extends StatelessWidget {
                               userImg: userImg,
                               selectedproject: selectProjectController
                                   .selectProject[index].projectName,
-                              userName: userName,
+                              userName: usernameLogin.value,
                               projectId: selectProjectController
                                   .selectProject[index].projectId,
                               userDesg: userDesg,
@@ -230,8 +248,8 @@ class SelectProjectScreen extends StatelessWidget {
                     ),
                   ],
                 );
-              }),
-        ),
+              });
+        }),
       ),
     );
   }

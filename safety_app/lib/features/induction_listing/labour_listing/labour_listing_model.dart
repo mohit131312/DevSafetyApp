@@ -397,7 +397,7 @@ class LabourDetail {
   String? literacy;
   String? maritalStatus;
   String? bloodGroup;
-  DateTime? birthDate;
+  String? birthDate;
   int? age;
   String? contactNumber;
   String? userPhoto;
@@ -494,9 +494,7 @@ class LabourDetail {
         literacy: json["literacy"] ?? "",
         maritalStatus: json["marital_status"] ?? "",
         bloodGroup: json["blood_group"] ?? "",
-        birthDate: json["birth_date"] != null
-            ? DateTime.parse(json["birth_date"])
-            : null,
+        birthDate: json["birth_date"] ?? "",
         age: json["age"] ?? "",
         contactNumber: json["contact_number"] ?? "",
         userPhoto: json["user_photo"] ?? "",
@@ -548,8 +546,7 @@ class LabourDetail {
         "literacy": literacy,
         "marital_status": maritalStatus,
         "blood_group": bloodGroup,
-        "birth_date":
-            "${birthDate!.year.toString().padLeft(4, '0')}-${birthDate!.month.toString().padLeft(2, '0')}-${birthDate!.day.toString().padLeft(2, '0')}",
+
         "age": age,
         "contact_number": contactNumber,
         "user_photo": userPhoto,

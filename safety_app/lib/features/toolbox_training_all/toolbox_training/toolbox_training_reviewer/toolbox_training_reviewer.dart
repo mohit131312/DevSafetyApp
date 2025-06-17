@@ -963,7 +963,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: 'Reviewer Comments',
+                            text: 'Checker Comments',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -1014,7 +1014,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                           Row(
                             children: [
                               AppTextWidget(
-                                text: "Reviewer Signature",
+                                text: "Checker Signature",
                                 fontSize: AppTextSize.textSizeSmall,
                                 fontWeight: FontWeight.w500,
                                 color: const Color.fromRGBO(40, 40, 40, 0.941),
@@ -1187,7 +1187,7 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                         height: SizeConfig.heightMultiplier * 2,
                       ),
                       AppTextWidget(
-                          text: 'Reviewer',
+                          text: 'Checker',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.secondaryText),

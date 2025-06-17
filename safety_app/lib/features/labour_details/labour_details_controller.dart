@@ -18,6 +18,8 @@ class LabourDetailsController extends GetxController {
       print("Request body: $map");
 
       var responseData = await globApiCall('get_project_labour_details', map);
+      log("responseData body: $responseData");
+
       var data = await responseData['data'];
       if (responseData == null || responseData['data'] == null) {
         log("Error: responseData or data is null");

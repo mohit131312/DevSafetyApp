@@ -1532,13 +1532,13 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                         height: SizeConfig.heightMultiplier * 3,
                                       ),
                                       incidentReportDetailsAssigneeController
-                                              .informedPersonsList.isNotEmpty
+                                              .preventionMeasures.isNotEmpty
                                           ? Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: List.generate(
                                                 incidentReportDetailsAssigneeController
-                                                    .informedPersonsList.length,
+                                                    .preventionMeasures.length,
                                                 (index) {
                                                   return Padding(
                                                     padding: EdgeInsets.only(
@@ -1547,7 +1547,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                             1.5),
                                                     child: AppTextWidget(
                                                       text:
-                                                          "${index + 1}. ${incidentReportDetailsAssigneeController.informedPersonsList[index].firstName}", // Adjust the field you want to display from InformedPersonsList
+                                                          "${index + 1}. ${incidentReportDetailsAssigneeController.preventionMeasures[index].incidentDetails}", // Adjust the field you want to display from InformedPersonsList
                                                       fontSize: AppTextSize
                                                           .textSizeSmall,
                                                       fontWeight:
@@ -1634,7 +1634,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                          text: 'Assignor',
+                          text: 'Doer',
                           fontSize: AppTextSize.textSizeSmall,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryText),
@@ -2088,7 +2088,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: 'Assignee Comments',
+                            text: 'Checker Comments',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -2136,7 +2136,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                       Row(
                         children: [
                           AppTextWidget(
-                            text: "Assignee Signature",
+                            text: "Checker Signature",
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText,
@@ -2287,7 +2287,7 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                        text: 'Assignee',
+                        text: 'Checker',
                         fontSize: AppTextSize.textSizeSmall,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primaryText,

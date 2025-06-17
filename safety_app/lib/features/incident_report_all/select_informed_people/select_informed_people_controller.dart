@@ -75,4 +75,13 @@ class SelectInformedIncidentController extends GetxController {
     print(
         "✅ Converted List of Maps: ${selectedAssIncidentIdsFinalMap.toList()}");
   }
+
+  void clearSelectedData() {
+    selectedAssIncidentIds.clear();
+    selectedAssIncidentIdsFinal.clear();
+    selectedAssIncidentIdsFinalMap.clear;
+    print("Cleared selected incident IDs: ${selectedAssIncidentIds.toList()}");
+    print(
+        "Cleared final incident IDs: ${selectedAssIncidentIdsFinal.toList()}");
+  }
 }

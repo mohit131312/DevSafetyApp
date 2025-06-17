@@ -222,9 +222,10 @@ class LabourDetailsScreen extends StatelessWidget {
                               value: (labour.birthDate != null)
                                   ? DateFormat('dd MMMM yyyy').format(
                                       labour.birthDate is String
-                                          ? DateTime.parse(
-                                              labour.birthDate! as String)
-                                          : labour.birthDate as DateTime)
+                                          ? DateFormat('dd-MM-yyyy')
+                                              .parse(labour.birthDate as String)
+                                          : labour.birthDate as DateTime,
+                                    )
                                   : 'N/A',
                             ),
                             LabourRowDetails(
@@ -322,25 +323,26 @@ class LabourDetailsScreen extends StatelessWidget {
                             ),
                             LabourRowDetails(
                               label: "Contact Name",
-                              value:
-                                  labour.emergencyContactName.isNotEmpty == true
-                                      ? labour.emergencyContactName
-                                      : '-',
+                              value: labour.emergencyContactName!.isNotEmpty ==
+                                      true
+                                  ? labour.emergencyContactName
+                                  : '-',
                             ),
                             LabourRowDetails(
                               label: "Relation",
                               value:
-                                  labour.emergencyContactRelation.isNotEmpty ==
+                                  labour.emergencyContactRelation!.isNotEmpty ==
                                           true
                                       ? labour.emergencyContactRelation
                                       : '-',
                             ),
                             LabourRowDetails(
                               label: "Contact Number",
-                              value: labour.emergencyContactNumber.isNotEmpty ==
-                                      true
-                                  ? labour.emergencyContactNumber
-                                  : '-',
+                              value:
+                                  labour.emergencyContactNumber!.isNotEmpty ==
+                                          true
+                                      ? labour.emergencyContactNumber
+                                      : '-',
                             ),
                           ],
                         );
@@ -385,16 +387,16 @@ class LabourDetailsScreen extends StatelessWidget {
                               label: "ID Number",
                               value: item.idNumber.toString(),
                             ),
-                            LabourRowDetails(
-                              label: "Validity",
-                              // ignore: unnecessary_null_comparison
-                              value: (item.validity != null)
-                                  ? DateFormat('dd MMMM yyyy').format(item
-                                          .validity is String
-                                      ? DateTime.parse(item.validity as String)
-                                      : item.validity)
-                                  : '',
-                            ),
+                            // LabourRowDetails(
+                            //   label: "Validity",
+                            //   // ignore: unnecessary_null_comparison
+                            //   value: (item.validity != null)
+                            //       ? DateFormat('dd MMMM yyyy').format(item
+                            //               .validity is String
+                            //           ? DateTime.parse(item.validity as String)
+                            //           : item.validity)
+                            //       : '',
+                            // ),
                             LabourRowDetails(
                               label: "Photos",
                               imgvalue: Padding(

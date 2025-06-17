@@ -6,31 +6,10 @@ import 'package:flutter_app/features/incident_report_all/incident_report/inciden
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
-class IncidentReportController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class IncidentReportController extends GetxController {
   var searchQueryIncident = ''.obs;
   var incidentDetails = <Map<String, dynamic>>[].obs;
   var incidentfilteredDetails = <Map<String, dynamic>>[].obs;
-  TextEditingController activeController = TextEditingController();
-
-  var selectedOption = 0.obs;
-  late TabController tabController;
-
-  @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 3, vsync: this);
-    tabController.addListener(() {
-      selectedOption.value = tabController.index;
-      print("Selected Tab Index: ${selectedOption.value}");
-    });
-  }
-
-  @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
-  }
 
   //-------------------------------------------
   void resetAllLists() {
@@ -134,10 +113,21 @@ class IncidentReportController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      incidentReportListingAll.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // incidentReportListingAll.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      final data = responseData['data'];
+
+      if (data is List) {
+        incidentReportListingAll.value = data
+            .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=incidentReportListingAll: ${incidentReportListingAll.length}');
+      } else {
+        log("No valid list data received for incidentReportListingAll.");
+      }
 
       log('----------=incidentReportListingAll: ${(incidentReportListingAll.length)}');
       //-------------------------------------------------
@@ -152,10 +142,6 @@ class IncidentReportController extends GetxController
       TextEditingController();
   TextEditingController searchIncidentAssigneeController =
       TextEditingController();
-
-  void updateSearchIncidentAllQuery(String query) {
-    searchQueryIncidentAll.value = query;
-  }
 
   List<IncidentReportList> get filteredIncidentAllList {
     final query = searchQueryIncidentAll.value.toLowerCase();
@@ -182,20 +168,24 @@ class IncidentReportController extends GetxController
 
       var responseData =
           await globApiCall('get_safety_incident_report_all_list', map);
-      //  log("Request body: $data");
 
-      // //-------------------------------------------------
       // incidentReportListingAssignor.value = (await responseData['data']
       //         as List<dynamic>)
       //     .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+      //     .where((item) => item.status != 0) // integer comparison
       //     .toList();
+      final data = responseData['data'];
 
-      incidentReportListingAssignor.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
-          .where((item) => item.status != 0) // integer comparison
-          .toList();
+      if (data is List) {
+        incidentReportListingAssignor.value = data
+            .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+            .where((item) => item.status != 0) // filtering by status
+            .toList();
 
+        log('----------=incidentReportListingAssignor: ${incidentReportListingAssignor.length}');
+      } else {
+        log("No valid list data received for incidentReportListingAssignor.");
+      }
       log('----------=incidentReportListingAssignor: ${(incidentReportListingAssignor.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -204,10 +194,6 @@ class IncidentReportController extends GetxController
   }
 
   var searchQueryIncidentAssignor = ''.obs;
-
-  void updateSearchIncidentAssignorQuery(String query) {
-    searchQueryIncidentAssignor.value = query;
-  }
 
   List<IncidentReportList> get filteredIncidentAssignorList {
     final query = searchQueryIncidentAssignor.value.toLowerCase();
@@ -237,11 +223,21 @@ class IncidentReportController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      incidentReportListingAssignee.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // incidentReportListingAssignee.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      final data = responseData['data'];
 
+      if (data is List) {
+        incidentReportListingAssignee.value = data
+            .map((e) => IncidentReportList.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=incidentReportListingAssignee: ${incidentReportListingAssignee.length}');
+      } else {
+        log("No valid list data received for incidentReportListingAssignee.");
+      }
       log('----------=incidentReportListingAssignee: ${(incidentReportListingAssignee.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -250,10 +246,6 @@ class IncidentReportController extends GetxController
   }
 
   var searchQueryIncidentAssignee = ''.obs;
-
-  void updateSearchIncidentAssigneeQuery(String query) {
-    searchQueryIncidentAssignee.value = query;
-  }
 
   List<IncidentReportList> get filteredIncidentAssigneeList {
     final query = searchQueryIncidentAssignee.value.toLowerCase();
@@ -264,7 +256,10 @@ class IncidentReportController extends GetxController
         .toList();
   }
 
-  void handleSearchByTab(int index, String query) {
+  FocusNode searchAllFocusNode = FocusNode();
+  FocusNode searchmakerFocusNode = FocusNode();
+  FocusNode searchcheckerFocusNode = FocusNode();
+  void d(int index, String query) {
     if (index == 0) {
       searchQueryIncidentAll.value = query;
     } else if (index == 1) {
@@ -272,6 +267,18 @@ class IncidentReportController extends GetxController
     } else if (index == 2) {
       searchQueryIncidentAssignee.value = query;
     }
+  }
+
+  void handleSearchAll(query) {
+    searchQueryIncidentAll.value = query;
+  }
+
+  void handleSearchAssignor(query) {
+    searchQueryIncidentAssignor.value = query;
+  }
+
+  void handleSearchAssignee(query) {
+    searchQueryIncidentAssignee.value = query;
   }
 
   void resetIncidentData() {
@@ -298,7 +305,6 @@ class IncidentReportController extends GetxController
     searchIncidentAllController.clear();
     searchIncidentAssignorController.clear();
     searchIncidentAssigneeController.clear();
-    activeController.clear();
     // Reset search query variables
     searchQueryIncidentAll.value = '';
     searchQueryIncidentAssignor.value = '';

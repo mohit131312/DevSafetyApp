@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/api_client.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:flutter_app/utils/validation_pop_chang.dart';
 import 'package:flutter_app/utils/validation_popup.dart';
@@ -35,6 +37,13 @@ class EditProfileController extends GetxController {
         );
       } else {
         validationmsg = responseData['message'];
+
+        await ApiClient.gs.remove('username');
+        var data = await responseData['data'];
+        usernameLogin.value = await data['user_name'];
+        await ApiClient.gs.write('username', usernameLogin.value);
+        log('Updated usernameLogin.value: ${usernameLogin.value}');
+        log('Stored usernameLogin in gs: ${ApiClient.gs.read('username')}');
 
         print('successmsg-------------$validationmsg');
         // Show success message popup

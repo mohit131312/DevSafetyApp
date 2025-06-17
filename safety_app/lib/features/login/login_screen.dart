@@ -186,7 +186,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Get.back();
 
                                       if (success) {
-                                        Get.offAll(() => SelectRole());
+                                        Get.offAll(() => SelectRole(
+                                              userId:
+                                                  loginController.userId.value,
+                                              userImg:
+                                                  loginController.userimg.value,
+                                            ));
+
+                                        // userId.value =
+                                        //     ApiClient.gs.read('user_id');
+                                        // userimg.value =
+                                        //     ApiClient.gs.read('user_img');
+                                        // await selectRoleController
+                                        //     .getRoles(userId.value);
                                         // Get.snackbar(
                                         //   'Welcome to Safety App',
                                         //   "You have successfully logged in.",

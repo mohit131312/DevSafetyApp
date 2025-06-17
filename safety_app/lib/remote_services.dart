@@ -3,10 +3,10 @@ import 'package:flutter_app/utils/api_client.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteServices {
-  static const String baseUrl =
-      "http://192.168.1.72/Kumar/KumarProperties/api/v1/"; // WIFI
   // static const String baseUrl =
-  //     "http://34.133.129.206/stagging/api/v1/"; //stagging
+  //     "http://192.168.1.72/Kumar/KumarProperties/api/v1/"; // WIFI
+  static const String baseUrl =
+      "http://34.133.129.206/stagging/api/v1/"; //stagging
 
   // Method to get headers with or without token
   static Map<String, String> getHeaders({bool includeAuth = true}) {

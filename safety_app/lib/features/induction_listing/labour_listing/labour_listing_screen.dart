@@ -309,26 +309,9 @@ class LabourListingScreen extends StatelessWidget {
                                                                       0]
                                                                   .birthDate !=
                                                               null)
-                                                      ? DateFormat(
-                                                              'dd MMMM yyyy')
-                                                          .format(
-                                                          labourListingController
-                                                                      .labourDetailsList[
-                                                                          0]
-                                                                      .birthDate
-                                                                  is String
-                                                              ? DateTime.parse(
-                                                                  labourListingController
-                                                                          .labourDetailsList[
-                                                                              0]
-                                                                          .birthDate
-                                                                      as String)
-                                                              : labourListingController
-                                                                      .labourDetailsList[
-                                                                          0]
-                                                                      .birthDate
-                                                                  as DateTime,
-                                                        )
+                                                      ? labourListingController
+                                                          .labourDetailsList[0]
+                                                          .birthDate!
                                                       : "",
                                                   fontSize:
                                                       AppTextSize.textSizeSmall,

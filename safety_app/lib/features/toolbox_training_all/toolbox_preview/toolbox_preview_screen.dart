@@ -279,7 +279,7 @@ class ToolboxPreviewScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       AppTextWidget(
-                                          text: 'Name of Work Permit',
+                                          text: 'Name of Toolbox',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w400,
                                           color: AppColors.searchfeild),

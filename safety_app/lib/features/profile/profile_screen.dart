@@ -12,10 +12,12 @@ import 'package:flutter_app/features/login/login_screen.dart';
 import 'package:flutter_app/features/profile_details/profile_details_controller.dart';
 import 'package:flutter_app/features/profile_details/profile_details_screen.dart';
 import 'package:flutter_app/features/select_role/select_role.dart';
+import 'package:flutter_app/features/select_role/select_role_controller.dart';
 import 'package:flutter_app/utils/app_color.dart';
 import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/check_internet.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
 import 'package:flutter_app/utils/loader_screen.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
@@ -23,7 +25,7 @@ import 'package:flutter_app/utils/validation_popup.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final int? userId, roleId;
+  final int userId, roleId;
   final String? selectedproject;
 
   String userName;
@@ -32,8 +34,8 @@ class ProfileScreen extends StatelessWidget {
 
   ProfileScreen({
     super.key,
-    this.userId,
-    this.roleId,
+    required this.userId,
+    required this.roleId,
     this.selectedproject,
     required this.userName,
     required this.userImg,
@@ -116,95 +118,93 @@ class ProfileScreen extends StatelessWidget {
     log('print $userId');
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.heightMultiplier * 32),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          color: Colors.white,
+          icon: Icon(
+            Icons.arrow_back_ios,
           ),
-          child: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              color: Colors.white,
-              icon: Icon(
-                Icons.arrow_back_ios,
+          padding: EdgeInsets.only(
+              bottom: SizeConfig.heightMultiplier * 18.5,
+              left: 4), // Align to start
+        ),
+        scrolledUnderElevation: 0.0,
+        centerTitle: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        toolbarHeight: SizeConfig.heightMultiplier * 32,
+        backgroundColor: AppColors.buttoncolor,
+        title: Padding(
+          padding: EdgeInsets.only(right: 15),
+          child: Column(
+            children: [
+              AppTextWidget(
+                text: AppTexts.myprofile,
+                fontSize: AppTextSize.textSizeMediumm,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primary,
               ),
-              padding: EdgeInsets.only(
-                  bottom: SizeConfig.heightMultiplier * 18.5,
-                  left: 4), // Align to start
-            ),
-            scrolledUnderElevation: 0.0,
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-            toolbarHeight: SizeConfig.heightMultiplier * 32,
-            backgroundColor: AppColors.buttoncolor,
-            title: SizedBox(
-              child: Column(
-                children: [
-                  AppTextWidget(
-                    text: AppTexts.myprofile,
-                    fontSize: AppTextSize.textSizeMediumm,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.primary,
-                  ),
-                  SizedBox(
-                    height: SizeConfig.imageSizeMultiplier * 5,
-                  ),
-                  CircleAvatar(
-                    radius: 40, // Adjust radius to make the circle bigger
-                    backgroundColor: Colors.grey.shade200, // Fallback color
-                    child: ClipOval(
-                      child: Image.network(
-                        "$baseUrl${userImg}",
+              SizedBox(
+                height: SizeConfig.imageSizeMultiplier * 5,
+              ),
+              CircleAvatar(
+                radius: 40, // Adjust radius to make the circle bigger
+                backgroundColor: Colors.grey.shade200, // Fallback color
+                child: ClipOval(
+                  child: Image.network(
+                    "$baseUrl${userImg}",
+                    fit: BoxFit.cover,
+                    width: 80, // Increased width (diameter = 2 * radius)
+                    height: 80, // Increased height (diameter = 2 * radius)
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.buttoncolor,
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/icons/image.png',
                         fit: BoxFit.cover,
-                        width: 80, // Increased width (diameter = 2 * radius)
-                        height: 80, // Increased height (diameter = 2 * radius)
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: SizedBox(
-                              width: 36,
-                              height: 36,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.buttoncolor,
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/icons/image.png',
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                  SizedBox(
-                    height: SizeConfig.imageSizeMultiplier * 2,
-                  ),
-                  AppTextWidget(
-                    text: userName,
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.imageSizeMultiplier * 2,
+              ),
+              Obx(() => AppTextWidget(
+                    text: usernameLogin.value,
                     fontSize: AppTextSize.textSizeMediumm,
                     fontWeight: FontWeight.w500,
                     color: AppColors.primary,
-                  ),
-                  SizedBox(
-                    height: SizeConfig.imageSizeMultiplier * 1.5,
-                  ),
-                  AppTextWidget(
-                    text: userDesg,
-                    fontSize: AppTextSize.textSizeSmall,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.primary,
-                  ),
-                ],
+                    textAlign: TextAlign.center,
+                  )),
+              SizedBox(
+                height: SizeConfig.imageSizeMultiplier * 1.5,
               ),
-            ),
+              AppTextWidget(
+                text: userDesg,
+                fontSize: AppTextSize.textSizeSmall,
+                fontWeight: FontWeight.w300,
+                color: AppColors.primary,
+              ),
+            ],
           ),
         ),
       ),
@@ -286,7 +286,17 @@ class ProfileScreen extends StatelessWidget {
               title: AppTexts.changerole,
               onTap: () async {
                 if (await CheckInternet.checkInternet()) {
-                  Get.offAll(() => SelectRole());
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => CustomLoadingPopup());
+                  final SelectRoleController selectRoleController =
+                      Get.put(SelectRoleController());
+                  await selectRoleController.getRoles(userId);
+                  Get.back();
+                  Get.offAll(() => SelectRole(
+                        userId: userId,
+                        userImg: userImg,
+                      ));
                 } else {
                   await showDialog(
                     context: Get.context!,

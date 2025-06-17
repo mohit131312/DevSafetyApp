@@ -5,108 +5,13 @@ import 'package:flutter_app/features/safety_violation_all/safety_violation/safet
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
-class SefetyViolationController extends GetxController
-    with GetSingleTickerProviderStateMixin {
-  late TabController tabController;
+class SefetyViolationController extends GetxController {
   TextEditingController activeController = TextEditingController();
   var searchQueryIncident = ''.obs;
   var incidentDetails = <Map<String, dynamic>>[].obs;
   var incidentfilteredDetails = <Map<String, dynamic>>[].obs;
 
-  var selectedOption = 0.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 3, vsync: this);
-    incidentDetails.value = incidentDetailData;
-    incidentfilteredDetails.value = incidentDetailData;
-    tabController.addListener(() {
-      selectedOption.value = tabController.index;
-      print("Selected Tab Index: ${selectedOption.value}");
-    });
-  }
-
-  @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
-  }
-
-  final List<Map<String, dynamic>> incidentDetailData = [
-    {
-      'text2': "Critical",
-      'title': "Safety Violation ID",
-      "subtitle": "Safety detail",
-      "text": "Open",
-      'date': 'Creation Date',
-    },
-    {
-      'text2': "Critical",
-      'title': "Safety Violation ID",
-      "subtitle": "Safety detail",
-      "text": "Open",
-      'date': 'Creation Date',
-    },
-    {
-      'text2': "Critical",
-      'title': "Safety Violation ID",
-      "subtitle": "Safety detail",
-      "text": "Open",
-      'date': 'Creation Date',
-    },
-    {
-      'text2': "Critical",
-      'title': "Safety Violation ID",
-      "subtitle": "Safety detail",
-      "text": "Open",
-      'date': 'Creation Date',
-    },
-    {
-      'text2': "Critical",
-      'title': "Safety Violation ID",
-      "subtitle": "Safety detail",
-      "text": "Open",
-      'date': 'Creation Date',
-    },
-  ];
-
-  void changeSelection(int index) {
-    selectedOption.value = index;
-    print("Selected option changed to: $index"); // ✅ Debugging
-    applyFilters();
-  }
-
-  void searchLabor(String query) {
-    searchQueryIncident.value = query;
-    applyFilters();
-  }
-
-  /// **Apply both search and selection filters**
-  void applyFilters() {
-    List<Map<String, dynamic>> filtered = List.from(incidentDetails);
-
-    // **Search Filter**
-    if (searchQueryIncident.value.isNotEmpty) {
-      filtered = filtered
-          .where((item) => item['title']!
-              .toLowerCase()
-              .contains(searchQueryIncident.value.toLowerCase()))
-          .toList();
-    }
-
-    // **Status Filter**
-    if (selectedOption.value == 1) {
-      filtered = filtered.where((item) => item['text'] == "Open").toList();
-    } else if (selectedOption.value == 2) {
-      filtered = filtered.where((item) => item['text'] == "Closed").toList();
-    } else if (selectedOption.value == 3) {
-      filtered = filtered.where((item) => item['text'] == "Accepted").toList();
-    }
-
-    // **Update filtered list**
-    incidentfilteredDetails.value = filtered;
-  }
+  // **Status Filter**
 
   //-----------------------------------------------------------------
 
@@ -128,11 +33,22 @@ class SefetyViolationController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      safetyViolationListingAll.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // safetyViolationListingAll.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      final data = responseData['data'];
 
+      if (data is List) {
+        safetyViolationListingAll.value = data
+            .map(
+                (e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=safetyViolationListingAll: ${safetyViolationListingAll.length}');
+      } else {
+        log("No valid list data received for safetyViolationListingAll.");
+      }
       log('----------=SafetyViolationModel: ${(safetyViolationListingAll.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -146,10 +62,6 @@ class SefetyViolationController extends GetxController
       TextEditingController();
   TextEditingController searchSafetyAssigneeController =
       TextEditingController();
-
-  void updateSearchSafetyAllQuery(String query) {
-    searchQuerySafetyAll.value = query;
-  }
 
   List<SafetyViolationModel> get filteredSafetyAllList {
     final query = searchQuerySafetyAll.value.toLowerCase();
@@ -184,11 +96,26 @@ class SefetyViolationController extends GetxController
       //         as List<dynamic>)
       //     .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
       //     .toList();
-      safetyViolationAssignor.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
-          .where((item) => item.status != 0) // integer comparison
-          .toList();
+      // safetyViolationAssignor.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+      //     .where((item) => item.status != 0) // integer comparison
+      //     .toList();
+
+      final data = responseData['data'];
+
+      if (data is List) {
+        safetyViolationAssignor.value = data
+            .map(
+                (e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+            .where((item) => item.status != 0) // integer comparison
+            .toList();
+
+        log('----------=safetyViolationAssignor: ${safetyViolationAssignor.length}');
+      } else {
+        log("No valid list data received for safetyViolationAssignor.");
+      }
+
       log('----------=safetyViolationAssignor: ${(safetyViolationAssignor.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -197,10 +124,6 @@ class SefetyViolationController extends GetxController
   }
 
   var searchQuerySafetyAssignor = ''.obs;
-
-  void updateSearchSafetyAssignorQuery(String query) {
-    searchQuerySafetyAssignor.value = query;
-  }
 
   List<SafetyViolationModel> get filteredSafetyAssignorList {
     final query = searchQuerySafetyAssignor.value.toLowerCase();
@@ -230,11 +153,22 @@ class SefetyViolationController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      safetyViolationAssignee.value = (await responseData['data']
-              as List<dynamic>)
-          .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // safetyViolationAssignee.value = (await responseData['data']
+      //         as List<dynamic>)
+      //     .map((e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+      //     .toList();
+      final data = responseData['data'];
 
+      if (data is List) {
+        safetyViolationAssignee.value = data
+            .map(
+                (e) => SafetyViolationModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=safetyViolationAssignee: ${safetyViolationAssignee.length}');
+      } else {
+        log("No valid list data received for safetyViolationAssignee.");
+      }
       log('----------=safetyViolationAssignee: ${(safetyViolationAssignee.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -243,10 +177,6 @@ class SefetyViolationController extends GetxController
   }
 
   var searchQuerySafetyAssignee = ''.obs;
-
-  void updateSearchSafetyAssigneeQuery(String query) {
-    searchQuerySafetyAssignee.value = query;
-  }
 
   List<SafetyViolationModel> get filteredSafetyAssigneeList {
     final query = searchQuerySafetyAssignee.value.toLowerCase();
@@ -257,7 +187,11 @@ class SefetyViolationController extends GetxController
         .toList();
   }
 
-  void handleSearchByTab(int index, String query) {
+  FocusNode searchAllFocusNode = FocusNode();
+  FocusNode searchmakerFocusNode = FocusNode();
+  FocusNode searchcheckerFocusNode = FocusNode();
+
+  void handleSfsfearchByTab(int index, String query) {
     if (index == 0) {
       searchQuerySafetyAll.value = query;
     } else if (index == 1) {
@@ -265,6 +199,18 @@ class SefetyViolationController extends GetxController
     } else if (index == 2) {
       searchQuerySafetyAssignee.value = query;
     }
+  }
+
+  void handlesearchAll(String query) {
+    searchQuerySafetyAll.value = query;
+  }
+
+  void handlesearchAssignor(String query) {
+    searchQuerySafetyAssignor.value = query;
+  }
+
+  void handlesearchAssignee(String query) {
+    searchQuerySafetyAssignee.value = query;
   }
 
   void resetData() {
@@ -275,22 +221,4 @@ class SefetyViolationController extends GetxController
     searchQuerySafetyAssignor.value = "";
     searchQuerySafetyAssignee.value = "";
   }
-  // void resetIncidentData() {
-  //   // Clear all listings
-  //   incidentReportListingAll.clear();
-  //   incidentReportListingAssignor.clear();
-  //   incidentReportListingAssignee.clear();
-
-  //   // Reset search queries
-  //   searchQueryIncidentAll.value = '';
-  //   searchQueryIncidentAssignor.value = '';
-  //   searchQueryIncidentAssignee.value = '';
-
-  //   // Clear text fields
-  //   searchIncidentAllController.clear();
-  //   searchIncidentAssignorController.clear();
-  //   searchIncidentAssigneeController.clear();
-
-  //   log("Incident data reset completed.");
-  // }
 }

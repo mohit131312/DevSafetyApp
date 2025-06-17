@@ -334,6 +334,7 @@ class WorkPermit {
   dynamic makerComment;
   String? status;
   String? uniqueId;
+  int? statusCodeAdmin;
   DateTime createdAt;
 
   // DateTime updatedAt;
@@ -358,6 +359,7 @@ class WorkPermit {
     this.makerComment,
     this.status,
     this.uniqueId,
+    this.statusCodeAdmin,
     required this.createdAt,
     // required this.updatedAt,
     // required this.deletedAt,
@@ -386,6 +388,7 @@ class WorkPermit {
         makerComment: json["maker_comment"],
         status: json["status"] ?? "",
         uniqueId: json['workpermit_unique_id'] ?? "",
+        statusCodeAdmin: json['is_created_by_admin'] ?? 10,
         createdAt: json["created_at_ind"] != null
             ? DateTime.parse(json["created_at_ind"])
             : DateTime.now(),

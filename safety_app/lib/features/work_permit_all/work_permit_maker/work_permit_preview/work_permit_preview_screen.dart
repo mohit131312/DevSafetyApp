@@ -354,7 +354,7 @@ class WorkPermitPreviewScreen extends StatelessWidget {
                                                     ? newWorkPermitController
                                                         .selectedtoolboxtrainig
                                                         .value
-                                                    : "Not available",
+                                                    : "NA",
                                                 fontSize:
                                                     AppTextSize.textSizeSmall,
                                                 fontWeight: FontWeight.w400,

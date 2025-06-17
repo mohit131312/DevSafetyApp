@@ -42,7 +42,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
       Get.put(WorkPermitCheckerDetailsController());
   final LocationController locationController = Get.find();
 
-  void showConfirmationDialogClosed(BuildContext context, status) {
+  void showConfirmationDialogClosed(
+      BuildContext context, status, isStatusAdmin) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -98,6 +99,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                   .workPermitsCheckerDetails[0].uniqueId
                                   ?.toString() ??
                               '0',
+                          isStatusAdmit: isStatusAdmin,
                         ));
                       } else if (status == 2) {
                         Get.to(WorkpermitCheckerRejectScreen(
@@ -377,7 +379,7 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                           .selectedToolboxTrainingMaker
                                                           .isNotEmpty
                                                   ? '${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].id} / ${workPermitCheckerDetailsController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
-                                                  : '',
+                                                  : 'NA',
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
                                               fontWeight: FontWeight.w400,
@@ -1276,66 +1278,27 @@ class WorkPermitCheckersDetails extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: SizeConfig.heightMultiplier * 1,
-            horizontal: SizeConfig.widthMultiplier * 4,
-          ),
-          child: workPermitCheckerDetailsController.userFound.value
-              ? AppElevatedButton(
-                  text: 'Close',
-                  onPressed: () async {
-                    Get.back();
-                  })
-              : Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        if (formKey.currentState!.validate()) {
-                          await workPermitCheckerDetailsController
-                              .saveSafetyCheckerSignature();
-
-                          if (workPermitCheckerDetailsController
-                              .signatureCheckerController.isEmpty) {
-                            workPermitCheckerDetailsController
-                                .signatureattestationError
-                                .value = "Please fill in the signature.";
-                            return;
-                          }
-                          if (workPermitCheckerDetailsController
-                                  .signatureCheckerController.isNotEmpty &&
-                              workPermitCheckerDetailsController
-                                  .workPermitRemarksController
-                                  .text
-                                  .isNotEmpty) {
-                            if (await CheckInternet.checkInternet()) {
-                              // ignore: use_build_context_synchronously
-                              showConfirmationDialogClosed(context, 2);
-                              //   Get.to(WorkPermitPrecautionScreen());
-                            } else {
-                              await showDialog(
-                                context: Get.context!,
-                                builder: (BuildContext context) {
-                                  return CustomValidationPopup(
-                                      message:
-                                          "Please check your internet connection.");
-                                },
-                              );
-                            }
-                          }
-                        }
-                      },
-                      child: AppMediumButton(
-                        label: "Reject",
-                        borderColor: AppColors.buttoncolor,
-                        iconColor: AppColors.buttoncolor,
-                        backgroundColor: Colors.white,
-                        textColor: AppColors.buttoncolor,
-                        imagePath: 'assets/images/leftarrow.png',
-                      ),
+        bottomNavigationBar: workPermitCheckerDetailsController
+                    .workPermitsCheckerDetails[0].statusCodeAdmin ==
+                1
+            ? workPermitCheckerDetailsController.userFound.value
+                ? Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.heightMultiplier * 0.8,
+                      horizontal: SizeConfig.widthMultiplier * 4,
                     ),
-                    SizedBox(width: SizeConfig.widthMultiplier * 5),
-                    GestureDetector(
+                    child: AppElevatedButton(
+                        text: 'Close',
+                        onPressed: () async {
+                          Get.back();
+                        }),
+                  )
+                : Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.heightMultiplier * 0.8,
+                      horizontal: SizeConfig.widthMultiplier * 4,
+                    ),
+                    child: GestureDetector(
                       onTap: () async {
                         validateAndFocusFirstInvalidField();
                         if (workPermitCheckerDetailsController
@@ -1362,7 +1325,12 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                   .text
                                   .isNotEmpty) {
                             if (await CheckInternet.checkInternet()) {
-                              showConfirmationDialogClosed(context, 1);
+                              showConfirmationDialogClosed(
+                                  context,
+                                  1,
+                                  workPermitCheckerDetailsController
+                                      .workPermitsCheckerDetails[0]
+                                      .statusCodeAdmin);
                             } else {
                               await showDialog(
                                 context: Get.context!,
@@ -1378,17 +1346,140 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         }
                       },
                       child: AppMediumButton(
-                        label: "Approve",
+                        label: "Accept & Close",
                         borderColor: AppColors.backbuttoncolor,
                         iconColor: Colors.white,
                         textColor: Colors.white,
                         backgroundColor: AppColors.buttoncolor,
-                        imagePath2: 'assets/images/rightarrow.png',
+                        // imagePath2: 'assets/images/rightarrow.png',
                       ),
                     ),
-                  ],
+                  )
+            : Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: SizeConfig.heightMultiplier * 1,
+                  horizontal: SizeConfig.widthMultiplier * 4,
                 ),
-        ),
+                child: workPermitCheckerDetailsController.userFound.value
+                    ? AppElevatedButton(
+                        text: 'Close',
+                        onPressed: () async {
+                          Get.back();
+                        })
+                    : Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              if (formKey.currentState!.validate()) {
+                                await workPermitCheckerDetailsController
+                                    .saveSafetyCheckerSignature();
+
+                                if (workPermitCheckerDetailsController
+                                    .signatureCheckerController.isEmpty) {
+                                  workPermitCheckerDetailsController
+                                      .signatureattestationError
+                                      .value = "Please fill in the signature.";
+                                  return;
+                                }
+                                if (workPermitCheckerDetailsController
+                                        .signatureCheckerController
+                                        .isNotEmpty &&
+                                    workPermitCheckerDetailsController
+                                        .workPermitRemarksController
+                                        .text
+                                        .isNotEmpty) {
+                                  if (await CheckInternet.checkInternet()) {
+                                    // ignore: use_build_context_synchronously
+                                    showConfirmationDialogClosed(
+                                        context,
+                                        2,
+                                        workPermitCheckerDetailsController
+                                            .workPermitsCheckerDetails[0]
+                                            .statusCodeAdmin);
+                                    //   Get.to(WorkPermitPrecautionScreen());
+                                  } else {
+                                    await showDialog(
+                                      context: Get.context!,
+                                      builder: (BuildContext context) {
+                                        return CustomValidationPopup(
+                                            message:
+                                                "Please check your internet connection.");
+                                      },
+                                    );
+                                  }
+                                }
+                              }
+                            },
+                            child: AppMediumButton(
+                              label: "Reject",
+                              borderColor: AppColors.buttoncolor,
+                              iconColor: AppColors.buttoncolor,
+                              backgroundColor: Colors.white,
+                              textColor: AppColors.buttoncolor,
+                              imagePath: 'assets/images/leftarrow.png',
+                            ),
+                          ),
+                          SizedBox(width: SizeConfig.widthMultiplier * 5),
+                          GestureDetector(
+                            onTap: () async {
+                              validateAndFocusFirstInvalidField();
+                              if (workPermitCheckerDetailsController
+                                  .signatureCheckerController.isEmpty) {
+                                workPermitCheckerDetailsController
+                                    .signatureattestationError
+                                    .value = "Please fill in the signature.";
+                              }
+                              if (formKey.currentState!.validate()) {
+                                await workPermitCheckerDetailsController
+                                    .saveSafetyCheckerSignature();
+
+                                if (workPermitCheckerDetailsController
+                                    .signatureCheckerController.isEmpty) {
+                                  workPermitCheckerDetailsController
+                                      .signatureattestationError
+                                      .value = "Please fill in the signature.";
+                                  return;
+                                }
+                                if (workPermitCheckerDetailsController
+                                        .signatureCheckerController
+                                        .isNotEmpty &&
+                                    workPermitCheckerDetailsController
+                                        .workPermitRemarksController
+                                        .text
+                                        .isNotEmpty) {
+                                  if (await CheckInternet.checkInternet()) {
+                                    showConfirmationDialogClosed(
+                                        context,
+                                        1,
+                                        workPermitCheckerDetailsController
+                                            .workPermitsCheckerDetails[0]
+                                            .statusCodeAdmin);
+                                  } else {
+                                    await showDialog(
+                                      context: Get.context!,
+                                      builder: (BuildContext context) {
+                                        return CustomValidationPopup(
+                                            message:
+                                                "Please check your internet connection.");
+                                      },
+                                    );
+                                  }
+                                  //   Get.to(WorkPermitPrecautionScreen());
+                                }
+                              }
+                            },
+                            child: AppMediumButton(
+                              label: "Approve",
+                              borderColor: AppColors.backbuttoncolor,
+                              iconColor: Colors.white,
+                              textColor: Colors.white,
+                              backgroundColor: AppColors.buttoncolor,
+                              imagePath2: 'assets/images/rightarrow.png',
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/features/home/home_screen_controller.dart';
@@ -31,6 +33,7 @@ class WorkPermitListItem extends StatelessWidget {
       Get.put(WorkPermitDetailsController());
   @override
   Widget build(BuildContext context) {
+    log("userName $userName");
     return Obx(() {
       final filteredList = homeScreenController.workPermitListing;
       return SizedBox(

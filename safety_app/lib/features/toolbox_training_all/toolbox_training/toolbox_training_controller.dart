@@ -6,28 +6,7 @@ import 'package:flutter_app/features/toolbox_training_all/toolbox_training/toolb
 import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
-class ToolboxTrainingController extends GetxController
-    with GetSingleTickerProviderStateMixin {
-  late TabController tabController;
-  TextEditingController activeController = TextEditingController();
-  var selectedOption = 0.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 3, vsync: this);
-    tabController.addListener(() {
-      selectedOption.value = tabController.index;
-      print("Selected Tab Index: ${selectedOption.value}");
-    });
-  }
-
-  @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
-  }
-
+class ToolboxTrainingController extends GetxController {
   List<ToolboxCategoryList> toolboxCategoryList = [];
   List<TraineesList> traineesLaboursList = [];
   List<TraineesListStaff> traineesstaffList = [];
@@ -116,10 +95,21 @@ class ToolboxTrainingController extends GetxController
       //  log("Request body: $data");
 
       // //-------------------------------------------------
-      toolboxListingAll.value = (await responseData['data'] as List<dynamic>)
-          .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
-          .toList();
+      // toolboxListingAll.value = (await responseData['data'] as List<dynamic>)
+      //     .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+      //     .toList();
 
+      final data = responseData['data'];
+
+      if (data is List) {
+        toolboxListingAll.value = data
+            .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        log('----------=toolboxListingAll: ${toolboxListingAll.length}');
+      } else {
+        log("No toolbox data found.");
+      }
       log('----------=toolboxListingAll: ${(toolboxListingAll.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -131,9 +121,9 @@ class ToolboxTrainingController extends GetxController
   TextEditingController searchtoolAllController = TextEditingController();
   TextEditingController searchtoolMakerController = TextEditingController();
   TextEditingController searchtoolReviwerController = TextEditingController();
-  void updateSearchworkPermitQuery(String query) {
-    searchQuerylistingall.value = query;
-  }
+  FocusNode searchAllListFocusNode = FocusNode();
+  FocusNode searchMakerFocusNode = FocusNode();
+  FocusNode searchReviewerFocusNode = FocusNode();
 
   List<ToolboxDetails> get filteredtoolboxAllList {
     final query = searchQuerylistingall.value.toLowerCase();
@@ -160,17 +150,24 @@ class ToolboxTrainingController extends GetxController
 
       var responseData =
           await globApiCall('get_toolbox_training_all_list', map);
-      //  log("Request body: $data");
 
-      // //-------------------------------------------------
       // toolboxListingMaker.value = (await responseData['data'] as List<dynamic>)
       //     .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+      //     .where((item) => item.status != 0) // integer comparison
       //     .toList();
 
-      toolboxListingMaker.value = (await responseData['data'] as List<dynamic>)
-          .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
-          .where((item) => item.status != 0) // integer comparison
-          .toList();
+      final data = responseData['data'];
+
+      if (data is List) {
+        toolboxListingMaker.value = data
+            .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+            .where((item) => item.status != 0) // integer status check
+            .toList();
+
+        log('----------=toolboxListingMaker: ${toolboxListingMaker.length}');
+      } else {
+        log("No toolbox data found.");
+      }
 
       log('----------=toolboxListingMaker: ${(toolboxListingMaker.length)}');
       //-------------------------------------------------
@@ -180,11 +177,6 @@ class ToolboxTrainingController extends GetxController
   }
 
   var searchQuerylistingMaker = ''.obs;
-  // TextEditingController searchlistingMakerController = TextEditingController();
-
-  void updateSearchMakerQuery(String query) {
-    searchQuerylistingMaker.value = query;
-  }
 
   List<ToolboxDetails> get filteredtoolboxListMaker {
     final query = searchQuerylistingMaker.value.toLowerCase();
@@ -210,16 +202,21 @@ class ToolboxTrainingController extends GetxController
 
       var responseData =
           await globApiCall('get_toolbox_training_all_list', map);
-      //  log("Request body: $data");
 
       // //-------------------------------------------------
-      toolboxListingReviewer.value =
-          (await responseData['data'] as List<dynamic>)
-              .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
-              .toList();
-      log('----------=toolboxListingAll: ${(toolboxListingAll.length)}');
-      log('----------=toolboxListingMaker: ${(toolboxListingMaker.length)}');
+      // toolboxListingReviewer.value =
+      //     (await responseData['data'] as List<dynamic>)
+      //         .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+      //         .toList();
+      final data = responseData['data'];
 
+      if (data is List) {
+        toolboxListingReviewer.value = data
+            .map((e) => ToolboxDetails.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        log("No valid list data received for toolboxListingReviewer.");
+      }
       log('----------=toolboxListingReviewer: ${(toolboxListingReviewer.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -228,13 +225,6 @@ class ToolboxTrainingController extends GetxController
   }
 
   var searchQuerylistingReviewer = ''.obs;
-  // TextEditingController searchlistingReviwerController =
-  //     TextEditingController();
-
-  void updateSearchReviewerQuery(String query) {
-    searchQuerylistingReviewer.value = query;
-  }
-
   List<ToolboxDetails> get filteredtoolboxListReviewer {
     final query = searchQuerylistingReviewer.value.toLowerCase();
     return toolboxListingReviewer
@@ -244,21 +234,22 @@ class ToolboxTrainingController extends GetxController
         .toList();
   }
 
-  void handleSearchByTab(int index, String query) {
-    if (index == 0) {
-      searchQuerylistingall.value = query;
-    } else if (index == 1) {
-      searchQuerylistingMaker.value = query;
-    } else if (index == 2) {
-      searchQuerylistingReviewer.value = query;
-    }
+  void handleSearchAll(String query) {
+    searchQuerylistingall.value = query;
+  }
+
+  void handleSearchDoer(String query) {
+    searchQuerylistingMaker.value = query;
+  }
+
+  void handleSearchChecker(String query) {
+    searchQuerylistingReviewer.value = query;
   }
 
   void clearSearchData() {
     searchtoolAllController.clear();
     searchtoolMakerController.clear();
     searchtoolReviwerController.clear();
-    activeController.clear();
     searchQuerylistingall.value = '';
     searchQuerylistingMaker.value = '';
     searchQuerylistingReviewer.value = '';

@@ -360,7 +360,7 @@ class WorkPermitPreviewMakerScreen extends StatelessWidget {
                                                               .id !=
                                                           null
                                                   ? '${workPermitPreviewMakerController.selectedToolboxTrainingMaker[0].id.toString()} / ${workPermitPreviewMakerController.selectedToolboxTrainingMaker[0].nameOfTbTraining}'
-                                                  : "",
+                                                  : "NA",
                                               fontSize:
                                                   AppTextSize.textSizeSmall,
                                               fontWeight: FontWeight.w400,

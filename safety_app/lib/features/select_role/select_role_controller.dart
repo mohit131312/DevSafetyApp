@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_app/utils/api_client.dart';
+import 'package:flutter_app/utils/gloabal_var.dart';
+import 'package:flutter_app/utils/global_api_call.dart';
 import 'package:get/get.dart';
 
 import 'select_role_model.dart';
@@ -8,53 +10,42 @@ import 'select_role_model.dart';
 class SelectRoleController extends GetxController {
   var selectedIndex = (-1).obs;
   var roleId = 0.obs;
-  var userId = 0.obs;
-  var username = ''.obs;
-  var userimg = ''.obs;
+  var rolename = ''.obs;
+
   var userDesg = ''.obs;
 
   void selectItem(int index) {
     selectedIndex.value = index;
   }
 
-  List<RolesArray> roleArray = [];
+  RxList<RolesArray> roleArray = <RolesArray>[].obs;
+
   Map<String, dynamic> selectRoleMap = {};
 
-  @override
-  void onInit() {
-    super.onInit();
+  RxBool isRefreshing = false.obs;
 
-    selectRoleMap = ApiClient.gs.read('SelectRoleMap') ?? {};
+  Future<void> getRoles(userId) async {
+    shimmerrole.value = roleArray.length;
+    isRefreshing.value = true;
+    try {
+      Map<String, dynamic> map = {"user_id": userId};
 
-    print(" method call ==============================================");
+      var responseData = await globApiCall('safety_roles', map);
+      log("📥 Raw Response: $responseData");
+      final rolesArrayJson =
+          await responseData['data']['roles_array'] as List<dynamic>;
 
-    if (selectRoleMap.isNotEmpty) {
-      log('SelectRoleMap: ${selectRoleMap.toString()}');
-      log('selectRoleMap lenght ${selectRoleMap.length}');
-      userIdAndName();
-      roleArray = (selectRoleMap['roles_array'] as List<dynamic>)
-          .map((e) => RolesArray.fromJson(e as Map<String, dynamic>))
+      final roles = await rolesArrayJson
+          .map((roleJson) => RolesArray.fromJson(roleJson))
           .toList();
 
-      log('selectRolearray lenght ${roleArray.length}');
+      roleArray.assignAll(roles);
+      log('safety_roles     selectRolearray lenght ${roleArray.length}');
+    } catch (e) {
+      print("Error: $e");
+    } finally {
+      isRefreshing.value = false;
     }
-  }
-
-  void userIdAndName() async {
-    userId.value = await selectRoleMap['user_id'];
-    username.value = await selectRoleMap['user_name'];
-    userimg.value = await selectRoleMap['user_photo'];
-
-    await ApiClient.gs.write('user_id', userId.value);
-    await ApiClient.gs.write('username', username.value);
-    await ApiClient.gs.write('user_img', userimg.value);
-
-    log(" Stored User ID: ${userId.value}");
-    log(" Stored Username: ${username.value}");
-    log(" Stored User ID: ${userId.value}");
-    log(" Stored Username: ${username.value}");
-    log(" Stored Role ID: ${roleId.value}");
-    log(" Stored userphoto ID: ${userimg.value}");
   }
 
   Future<void> selectRole(int index) async {
@@ -62,18 +53,23 @@ class SelectRoleController extends GetxController {
       await ApiClient.gs.remove('selected_index');
       await ApiClient.gs.remove('role_id');
       await ApiClient.gs.remove('role_name');
+      await ApiClient.gs.remove('userDesg');
       selectedIndex.value = index;
       roleId.value = roleArray[index].id;
+      rolename.value = roleArray[index].roleName;
       userDesg.value = roleArray[index].roleName;
       await ApiClient.gs.write('selected_index', selectedIndex.value);
       await ApiClient.gs.write('role_id', roleId.value);
-      await ApiClient.gs.write('role_name', userDesg.value);
+      await ApiClient.gs.write('role_name', rolename.value);
+      await ApiClient.gs.write('userDesg', rolename.value);
 
       log(" Stored Selected Index: ${selectedIndex.value}");
       log(" Stored Role ID: ${roleId.value}");
-      log(" Stored Role name: ${userDesg.value}");
+      log(" Stored Role name: ${rolename.value}");
     } else {
       log(" Invalid role index");
     }
   }
+
+  //--------------------------------
 }
