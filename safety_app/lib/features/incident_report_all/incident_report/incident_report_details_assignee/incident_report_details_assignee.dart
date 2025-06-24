@@ -797,31 +797,30 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                       SizedBox(
                                         height: SizeConfig.heightMultiplier * 1,
                                       ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          AppTextWidget(
+                                            text: 'Labour',
+                                            fontSize: AppTextSize.textSizeSmall,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.primaryText,
+                                          ),
+                                        ],
+                                      ),
                                       incidentReportDetailsAssigneeController
-                                              .involvedLaboursList.isNotEmpty
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                AppTextWidget(
-                                                  text: 'Labour',
-                                                  fontSize:
-                                                      AppTextSize.textSizeSmall,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: AppColors.primaryText,
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox(),
-
-                                      incidentReportDetailsAssigneeController
-                                              .involvedLaboursList.isNotEmpty
+                                              .involvedLaboursList.isEmpty
                                           ? SizedBox(
                                               height:
                                                   SizeConfig.heightMultiplier *
-                                                      1,
+                                                      5,
                                             )
-                                          : SizedBox(),
+                                          : SizedBox(
+                                              height:
+                                                  SizeConfig.heightMultiplier *
+                                                      1,
+                                            ),
 
                                       incidentReportDetailsAssigneeController
                                               .involvedLaboursList.isNotEmpty
@@ -971,12 +970,14 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                           .length,
                                                   itemBuilder:
                                                       (context, index) {
-                                                    final entry =
+                                                    // incidentReportDetailsAssigneeController
+                                                    //     .involvedStaffList
+                                                    //     .entries
+                                                    //     .elementAt(index);
+                                                    final staff =
                                                         incidentReportDetailsAssigneeController
-                                                            .involvedStaffList
-                                                            .entries
-                                                            .elementAt(index);
-                                                    final staff = entry.value;
+                                                                .involvedStaffList[
+                                                            index];
 
                                                     return ListTile(
                                                       contentPadding:
@@ -1093,14 +1094,16 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                               .length,
                                                       itemBuilder:
                                                           (context, index) {
-                                                        final entry =
-                                                            incidentReportDetailsAssigneeController
-                                                                .involvedContractorUserList
-                                                                .entries
-                                                                .elementAt(
-                                                                    index);
+                                                        // final entry =
+                                                        //     incidentReportDetailsAssigneeController
+                                                        //         .involvedContractorUserList
+                                                        //         .entries
+                                                        //         .elementAt(
+                                                        //             index);
                                                         final contractor =
-                                                            entry.value;
+                                                            incidentReportDetailsAssigneeController
+                                                                    .involvedContractorUserList[
+                                                                index];
 
                                                         return ListTile(
                                                           contentPadding:
@@ -1110,9 +1113,10 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                           leading: CircleAvatar(
                                                             radius: 22,
                                                             backgroundImage:
-                                                                NetworkImage(
-                                                              "$baseUrl${contractor.documentPath}",
-                                                            ),
+                                                                AssetImage(
+                                                                    'assets/icons/image.png'),
+                                                            backgroundColor: Colors
+                                                                .transparent, // Optional: helps if image has transparency
                                                           ),
                                                           title: AppTextWidget(
                                                             text: contractor
@@ -1364,8 +1368,9 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                                                             .textSizeSmalle,
                                                         fontWeight:
                                                             FontWeight.w400,
-                                                        color: AppColors
-                                                            .secondaryText,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            239, 2, 1, 1),
                                                       ),
                                                     );
                                                   },

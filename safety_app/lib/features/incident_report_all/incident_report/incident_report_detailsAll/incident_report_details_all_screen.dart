@@ -671,30 +671,29 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                     SizedBox(
                                       height: SizeConfig.heightMultiplier * 1,
                                     ),
-                                    incidentReportDetailsAllController
-                                            .involvedLaboursList.isNotEmpty
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              AppTextWidget(
-                                                text: 'Labour',
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w500,
-                                                color: AppColors.primaryText,
-                                              ),
-                                            ],
-                                          )
-                                        : SizedBox(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        AppTextWidget(
+                                          text: 'Labour',
+                                          fontSize: AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.primaryText,
+                                        ),
+                                      ],
+                                    ),
 
                                     incidentReportDetailsAllController
-                                            .involvedLaboursList.isNotEmpty
+                                            .involvedLaboursList.isEmpty
                                         ? SizedBox(
                                             height:
-                                                SizeConfig.heightMultiplier * 1,
+                                                SizeConfig.heightMultiplier * 5,
                                           )
-                                        : SizedBox(),
+                                        : SizedBox(
+                                            height:
+                                                SizeConfig.heightMultiplier * 1,
+                                          ),
 
                                     incidentReportDetailsAllController
                                             .involvedLaboursList.isNotEmpty
@@ -839,12 +838,15 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                                         .involvedStaffList
                                                         .length,
                                                 itemBuilder: (context, index) {
-                                                  final entry =
+                                                  // final entry =
+                                                  //     incidentReportDetailsAllController
+                                                  //         .involvedStaffList
+                                                  //         .entries
+                                                  //         .elementAt(index);
+                                                  final staff =
                                                       incidentReportDetailsAllController
-                                                          .involvedStaffList
-                                                          .entries
-                                                          .elementAt(index);
-                                                  final staff = entry.value;
+                                                              .involvedStaffList[
+                                                          index];
 
                                                   return ListTile(
                                                     contentPadding:
@@ -956,13 +958,15 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                                             .length,
                                                     itemBuilder:
                                                         (context, index) {
-                                                      final entry =
-                                                          incidentReportDetailsAllController
-                                                              .involvedContractorUserList
-                                                              .entries
-                                                              .elementAt(index);
+                                                      // final entry =
+                                                      //     incidentReportDetailsAllController
+                                                      //         .involvedContractorUserList
+                                                      //         .entries
+                                                      //         .elementAt(index);
                                                       final contractor =
-                                                          entry.value;
+                                                          incidentReportDetailsAllController
+                                                                  .involvedContractorUserList[
+                                                              index];
 
                                                       return ListTile(
                                                         contentPadding:
@@ -972,9 +976,10 @@ class IncidentReportDetailsAllScreen extends StatelessWidget {
                                                         leading: CircleAvatar(
                                                           radius: 22,
                                                           backgroundImage:
-                                                              NetworkImage(
-                                                            "$baseUrl${contractor.documentPath}",
-                                                          ),
+                                                              AssetImage(
+                                                                  'assets/icons/image.png'),
+                                                          backgroundColor: Colors
+                                                              .transparent, // Optional: helps if image has transparency
                                                         ),
                                                         title: AppTextWidget(
                                                           text: contractor

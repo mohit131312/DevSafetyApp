@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
           SizeConfig.initWithConstraints(constraints, orientation);
 
           return GetMaterialApp(
-            // locale: DevicePreview.locale(context), // 👈 Add this
-            // builder: DevicePreview.appBuilder, // 👈 And this
+            // locale: DevicePreview.locale(context), //  Add this
+            // builder: DevicePreview.appBuilder, //  And this
             debugShowCheckedModeBanner: false,
             home: SplashScreen(),
           );

@@ -752,7 +752,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                                   .involvedLaboursList
                                                   .isNotEmpty ||
                                               safetyViolationDetailsAssigneeCont
-                                                  .involvedStaffList
+                                                  .involvedstaffList
                                                   .isNotEmpty ||
                                               safetyViolationDetailsAssigneeCont
                                                   .involvedContractorUserList
@@ -770,31 +770,31 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                       SizedBox(
                                         height: SizeConfig.heightMultiplier * 1,
                                       ),
-                                      safetyViolationDetailsAssigneeCont
-                                              .involvedLaboursList.isNotEmpty
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                AppTextWidget(
-                                                  text: 'Labour',
-                                                  fontSize:
-                                                      AppTextSize.textSizeSmall,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: AppColors.primaryText,
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          AppTextWidget(
+                                            text: 'Labour',
+                                            fontSize: AppTextSize.textSizeSmall,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.primaryText,
+                                          ),
+                                        ],
+                                      ),
 
                                       safetyViolationDetailsAssigneeCont
-                                              .involvedLaboursList.isNotEmpty
+                                              .involvedLaboursList.isEmpty
                                           ? SizedBox(
                                               height:
                                                   SizeConfig.heightMultiplier *
-                                                      1,
+                                                      5,
                                             )
-                                          : SizedBox(),
+                                          : SizedBox(
+                                              height:
+                                                  SizeConfig.heightMultiplier *
+                                                      1,
+                                            ),
 
                                       safetyViolationDetailsAssigneeCont
                                               .involvedLaboursList.isNotEmpty
@@ -910,7 +910,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                           : SizedBox(),
 
                                       safetyViolationDetailsAssigneeCont
-                                              .involvedStaffList.isNotEmpty
+                                              .involvedstaffList.isNotEmpty
                                           ? Container(
                                               padding: EdgeInsets.only(
                                                   left: 8, right: 8, top: 8),
@@ -924,7 +924,7 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                               ),
                                               height:
                                                   safetyViolationDetailsAssigneeCont
-                                                              .involvedStaffList
+                                                              .involvedstaffList
                                                               .length >
                                                           1
                                                       ? SizeConfig
@@ -940,16 +940,19 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                                           .scrollStaffController,
                                                   itemCount:
                                                       safetyViolationDetailsAssigneeCont
-                                                          .involvedStaffList
+                                                          .involvedstaffList
                                                           .length,
                                                   itemBuilder:
                                                       (context, index) {
-                                                    final entry =
+                                                    // final entry =
+                                                    //     safetyViolationDetailsAssigneeCont
+                                                    //         .involvedStaffList
+                                                    //         .entries
+                                                    //         .elementAt(index);
+                                                    final staff =
                                                         safetyViolationDetailsAssigneeCont
-                                                            .involvedStaffList
-                                                            .entries
-                                                            .elementAt(index);
-                                                    final staff = entry.value;
+                                                                .involvedstaffList[
+                                                            index];
 
                                                     return ListTile(
                                                       contentPadding:
@@ -1066,14 +1069,16 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                                               .length,
                                                       itemBuilder:
                                                           (context, index) {
-                                                        final entry =
-                                                            safetyViolationDetailsAssigneeCont
-                                                                .involvedContractorUserList
-                                                                .entries
-                                                                .elementAt(
-                                                                    index);
+                                                        // final entry =
+                                                        //     safetyViolationDetailsAssigneeCont
+                                                        //         .involvedContractorUserList
+                                                        //         .entries
+                                                        //         .elementAt(
+                                                        //             index);
                                                         final contractor =
-                                                            entry.value;
+                                                            safetyViolationDetailsAssigneeCont
+                                                                    .involvedContractorUserList[
+                                                                index];
 
                                                         return ListTile(
                                                           contentPadding:
@@ -1083,9 +1088,10 @@ class SafetyViolationDetailsAssignee extends StatelessWidget {
                                                           leading: CircleAvatar(
                                                             radius: 22,
                                                             backgroundImage:
-                                                                NetworkImage(
-                                                              "$baseUrl${contractor.documentPath}",
-                                                            ),
+                                                                AssetImage(
+                                                                    'assets/icons/image.png'),
+                                                            backgroundColor: Colors
+                                                                .transparent, // Optional: helps if image has transparency
                                                           ),
                                                           title: AppTextWidget(
                                                             text: contractor

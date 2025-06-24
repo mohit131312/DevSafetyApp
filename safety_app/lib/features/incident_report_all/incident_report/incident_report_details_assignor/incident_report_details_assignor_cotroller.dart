@@ -66,8 +66,8 @@ class IncidentReportDetailsAssignorCotroller extends GetxController {
   List<ContractorCompany> contractorCompany = [];
   List<BuildingList> buildingList = [];
   List<InvolvedList> involvedLaboursList = [];
-  Map<String, Staff> involvedStaffList = {};
-  Map<String, InvolvedContractorUserList> involvedContractorUserList = {};
+  List<Staff> involvedStaffList = [];
+  List<InvolvedContractorUserList> involvedContractorUserList = [];
   List<InformedPersonsList> informedPersonsList = [];
   List<PreventionMeasure> preventionMeasures = [];
   List<Photo> photos = [];
@@ -119,21 +119,14 @@ class IncidentReportDetailsAssignorCotroller extends GetxController {
           .map((e) => InvolvedList.fromJson(e))
           .toList();
 
-      involvedStaffList = {};
-      if (data['involved_staff_list'] is Map<String, dynamic>) {
-        involvedStaffList =
-            (data['involved_staff_list'] as Map<String, dynamic>)
-                .map((key, value) => MapEntry(key, Staff.fromJson(value)));
-      }
+      involvedStaffList = (data['involved_staff_list'] as List<dynamic>)
+          .map((e) => Staff.fromJson(e))
+          .toList();
 
-      // Safely parse involved_contractor_user_list (handles null)
-      involvedContractorUserList = {};
-      if (data['involved_contractor_user_list'] is Map<String, dynamic>) {
-        involvedContractorUserList =
-            (data['involved_contractor_user_list'] as Map<String, dynamic>).map(
-                (key, value) =>
-                    MapEntry(key, InvolvedContractorUserList.fromJson(value)));
-      }
+      involvedContractorUserList =
+          (data['involved_contractor_user_list'] as List<dynamic>)
+              .map((e) => InvolvedContractorUserList.fromJson(e))
+              .toList();
 
       preventionMeasures = (data['prevention_measures'] as List<dynamic>)
           .map((e) => PreventionMeasure.fromJson(e))

@@ -7,8 +7,8 @@ import 'dart:convert';
 IncidentReportListingDetails incidentReportListingDetailsFromJson(String str) =>
     IncidentReportListingDetails.fromJson(json.decode(str));
 
-String incidentReportListingDetailsToJson(IncidentReportListingDetails data) =>
-    json.encode(data.toJson());
+// String incidentReportListingDetailsToJson(IncidentReportListingDetails data) =>
+//     json.encode(data.toJson());
 
 class IncidentReportListingDetails {
   final Data data;
@@ -31,12 +31,12 @@ class IncidentReportListingDetails {
         token: json["token"],
       );
 
-  Map<String, dynamic> toJson() => {
-        "data": data.toJson(),
-        "message": message,
-        "status": status,
-        "token": token,
-      };
+  // Map<String, dynamic> toJson() => {
+  //       "data": data.toJson(),
+  //       "message": message,
+  //       "status": status,
+  //       "token": token,
+  //     };
 }
 
 class Data {
@@ -46,8 +46,8 @@ class Data {
   final List<ContractorCompany> contractorCompany;
   final List<BuildingList> buildingList;
   final List<InvolvedList> involvedLaboursList;
-  final Map<String, Staff> involvedStaffList;
-  final Map<String, InvolvedContractorUserList> involvedContractorUserList;
+  List<Staff>? involvedStaffList;
+  List<InvolvedContractorUserList>? involvedContractorUserList;
   final List<InformedPersonsList> informedPersonsList;
   final List<PreventionMeasure> preventionMeasures;
   final List<Photo> photos;
@@ -87,12 +87,16 @@ class Data {
             json["building_list"].map((x) => BuildingList.fromJson(x))),
         involvedLaboursList: List<InvolvedList>.from(
             json["involved_labours_list"].map((x) => InvolvedList.fromJson(x))),
-        involvedStaffList: Map.from(json["involved_staff_list"])
-            .map((k, v) => MapEntry<String, Staff>(k, Staff.fromJson(v))),
+        involvedStaffList: json["involved_staff_list"] == null
+            ? []
+            : List<Staff>.from(
+                json["involved_staff_list"]!.map((x) => Staff.fromJson(x))),
         involvedContractorUserList:
-            Map.from(json["involved_contractor_user_list"]).map((k, v) =>
-                MapEntry<String, InvolvedContractorUserList>(
-                    k, InvolvedContractorUserList.fromJson(v))),
+            json["involved_contractor_user_list"] == null
+                ? []
+                : List<InvolvedContractorUserList>.from(
+                    json["involved_contractor_user_list"]!
+                        .map((x) => InvolvedContractorUserList.fromJson(x))),
         informedPersonsList: List<InformedPersonsList>.from(
             json["informedPersonsList"]
                 .map((x) => InformedPersonsList.fromJson(x))),
@@ -108,35 +112,35 @@ class Data {
             json["asginee_add_photos"].map((x) => AsgineeAddPhoto.fromJson(x))),
       );
 
-  Map<String, dynamic> toJson() => {
-        "safety_incident_report":
-            List<dynamic>.from(safetyIncidentReport.map((x) => x.toJson())),
-        "severity_level":
-            List<dynamic>.from(severityLevel.map((x) => x.toJson())),
-        "floor_area_of_work":
-            List<dynamic>.from(floorAreaOfWork.map((x) => x.toJson())),
-        "contractor_company":
-            List<dynamic>.from(contractorCompany.map((x) => x.toJson())),
-        "building_list":
-            List<dynamic>.from(buildingList.map((x) => x.toJson())),
-        "involved_labours_list":
-            List<dynamic>.from(involvedLaboursList.map((x) => x.toJson())),
-        "involved_staff_list": Map.from(involvedStaffList)
-            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
-        "involved_contractor_user_list": Map.from(involvedContractorUserList)
-            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
-        "informedPersonsList":
-            List<dynamic>.from(informedPersonsList.map((x) => x.toJson())),
-        "prevention_measures":
-            List<dynamic>.from(preventionMeasures.map((x) => x.toJson())),
-        "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
-        "asginee_user_list":
-            List<dynamic>.from(asgineeUserList.map((x) => x.toJson())),
-        "asginer_user_list":
-            List<dynamic>.from(asginerUserList.map((x) => x.toJson())),
-        "asginee_add_photos":
-            List<dynamic>.from(asgineeAddPhotos.map((x) => x.toJson())),
-      };
+  // Map<String, dynamic> toJson() => {
+  //       "safety_incident_report":
+  //           List<dynamic>.from(safetyIncidentReport.map((x) => x.toJson())),
+  //       "severity_level":
+  //           List<dynamic>.from(severityLevel.map((x) => x.toJson())),
+  //       "floor_area_of_work":
+  //           List<dynamic>.from(floorAreaOfWork.map((x) => x.toJson())),
+  //       "contractor_company":
+  //           List<dynamic>.from(contractorCompany.map((x) => x.toJson())),
+  //       "building_list":
+  //           List<dynamic>.from(buildingList.map((x) => x.toJson())),
+  //       "involved_labours_list":
+  //           List<dynamic>.from(involvedLaboursList.map((x) => x.toJson())),
+  //       "involved_staff_list": Map.from(involvedStaffList)
+  //           .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+  //       "involved_contractor_user_list": Map.from(involvedContractorUserList)
+  //           .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+  //       "informedPersonsList":
+  //           List<dynamic>.from(informedPersonsList.map((x) => x.toJson())),
+  //       "prevention_measures":
+  //           List<dynamic>.from(preventionMeasures.map((x) => x.toJson())),
+  //       "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
+  //       "asginee_user_list":
+  //           List<dynamic>.from(asgineeUserList.map((x) => x.toJson())),
+  //       "asginer_user_list":
+  //           List<dynamic>.from(asginerUserList.map((x) => x.toJson())),
+  //       "asginee_add_photos":
+  //           List<dynamic>.from(asgineeAddPhotos.map((x) => x.toJson())),
+  //     };
 }
 
 class InvolvedContractorUserList {

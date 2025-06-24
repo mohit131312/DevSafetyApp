@@ -196,6 +196,7 @@ class WorkPermitCheckerDetailsController extends GetxController {
         await http.Response.fromStream(response).then((onValue) async {
           try {
             Map<String, dynamic> decoded = await jsonDecode(onValue.body);
+            log("Response Body: ${onValue.body}");
 
             log('-------------------------decoded----------------$decoded');
             if (decoded.containsKey('validation-message')) {

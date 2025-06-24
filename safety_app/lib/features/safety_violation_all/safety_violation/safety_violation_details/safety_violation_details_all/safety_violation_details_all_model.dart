@@ -46,8 +46,8 @@ class Data {
   final List<Category> riskLevel;
   final List<Category> sourceOfObservation;
   final List<InvolvedLaboursList> involvedLaboursList;
-  final Map<String, InvolvedStaff> involvedStaffList;
-  final Map<String, InvolvedContractorUserList> involvedContractorUserList;
+  final List<InvolvedStaffList> involvedStaffList;
+  final List<InvolvedContractorUserList>? involvedContractorUserList;
   final List<InformedPersonsList> informedPersonsList;
   final List<Photo> photos;
   final List<AsgineUserList> asgineeUserList;
@@ -85,15 +85,16 @@ class Data {
         involvedLaboursList: List<InvolvedLaboursList>.from(
             json["involved_labours_list"]
                 .map((x) => InvolvedLaboursList.fromJson(x))),
-        involvedStaffList: Map<String, InvolvedStaff>.from(
-          json["involved_staff_list"]
-              .map((k, v) => MapEntry(k, InvolvedStaff.fromJson(v))),
-        ),
+        involvedStaffList: json["involved_staff_list"] == null
+            ? []
+            : List<InvolvedStaffList>.from(json["involved_staff_list"]!
+                .map((x) => InvolvedStaffList.fromJson(x))),
         involvedContractorUserList:
-            Map<String, InvolvedContractorUserList>.from(
-          json["involved_contractor_user_list"].map(
-              (k, v) => MapEntry(k, InvolvedContractorUserList.fromJson(v))),
-        ),
+            json["involved_contractor_user_list"] == null
+                ? []
+                : List<InvolvedContractorUserList>.from(
+                    json["involved_contractor_user_list"]!
+                        .map((x) => InvolvedContractorUserList.fromJson(x))),
         informedPersonsList: List<InformedPersonsList>.from(
             json["informedPersonsList"]
                 .map((x) => InformedPersonsList.fromJson(x))),
@@ -117,14 +118,14 @@ class Data {
             List<dynamic>.from(sourceOfObservation.map((x) => x.toJson())),
         "involved_labours_list":
             List<dynamic>.from(involvedLaboursList.map((x) => x.toJson())),
-        "involved_staff_list": involvedStaffList.map(
-          (k, v) => MapEntry(
-              k, v.toJson()), // Correct serialization of involvedStaffList
-        ),
-        "involved_contractor_user_list": involvedContractorUserList.map(
-          (k, v) => MapEntry(k,
-              v.toJson()), // Correct serialization of involvedContractorUserList
-        ),
+        // "involved_staff_list": involvedStaffList.map(
+        //   (k, v) => MapEntry(
+        //       k, v.toJson()), // Correct serialization of involvedStaffList
+        // ),
+        // "involved_contractor_user_list": involvedContractorUserList.map(
+        //   (k, v) => MapEntry(k,
+        //       v.toJson()), // Correct serialization of involvedContractorUserList
+        // ),
         "informedPersonsList":
             List<dynamic>.from(informedPersonsList.map((x) => x.toJson())),
         "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
@@ -500,29 +501,32 @@ class InvolvedLaboursList {
       };
 }
 
-class InvolvedStaff {
-  final int? id; // Nullable
-  final String? staffId; // Nullable
-  final String? staffName; // Nullable
-  // final String gender;
-  // final String bloodGroup;
-  // final String birthDate;
-  // final int age;
-  final String? contactNumber; // Nullable
-  final String? userPhoto; // Nullable
-  // final String currentStreetName;
-  // final String currentCity;
-  // final String currentTaluka;
-  // final int currentDistrict;
-  // final int currentState;
-  // final String currentPincode;
-  // final String permanentStreetName;
-  // final String permanentCity;
-  // final String permanentTaluka;
-  // final int permanentDistrict;
-  // final int permanentState;
-  // final String permanentPincode;
-  // final String adhaarNo;
+class InvolvedStaffList {
+  final int? id;
+  final String? staffId;
+  final String? staffName;
+  // final String? gender;
+  // final String? bloodGroup;
+  // final String? birthDate;
+  // final int? age;
+  final String? contactNumber;
+  final String? userPhoto;
+
+  // final String? currentStreetName;
+  // final String? currentCity;
+  // final String? currentTaluka;
+  // final int? currentDistrict;
+  // final int? currentState;
+  // final String? currentPincode;
+
+  // final String? permanentStreetName;
+  // final String? permanentCity;
+  // final String? permanentTaluka;
+  // final int? permanentDistrict;
+  // final int? permanentState;
+  // final String? permanentPincode;
+
+  // final String? adhaarNo;
   // final String? bankName;
   // final String? ifscNumber;
   // final String? accountNumber;
@@ -531,39 +535,41 @@ class InvolvedStaff {
   // final String? insuranceNumber;
   // final String? insuranceType;
   // final String? insuranceValidity;
-  // final String emergencyContactName;
-  // final String emergencyContactNumber;
-  // final String emergencyContactRelation;
-  // final bool isActive;
+
+  // final String? emergencyContactName;
+  // final String? emergencyContactNumber;
+  // final String? emergencyContactRelation;
+
+  // final String? isActive;
   // final String? deletedAt;
-  // final String createdAt;
-  // final String updatedAt;
+  // final String? createdAt;
+  // final String? updatedAt;
   // final String? qrCode;
   // final String? idCardExpiryDate;
 
-  InvolvedStaff({
-    this.id, // Nullable
-    this.staffId, // Nullable
-    this.staffName, // Nullable
-    // required this.gender,
-    // required this.bloodGroup,
-    // required this.birthDate,
-    // required this.age,
-    this.contactNumber, // Nullable
-    this.userPhoto, // Nullable
-    // required this.currentStreetName,
-    // required this.currentCity,
-    // required this.currentTaluka,
-    // required this.currentDistrict,
-    // required this.currentState,
-    // required this.currentPincode,
-    // required this.permanentStreetName,
-    // required this.permanentCity,
-    // required this.permanentTaluka,
-    // required this.permanentDistrict,
-    // required this.permanentState,
-    // required this.permanentPincode,
-    // required this.adhaarNo,
+  InvolvedStaffList({
+    this.id,
+    this.staffId,
+    this.staffName,
+    // this.gender,
+    // this.bloodGroup,
+    // this.birthDate,
+    // this.age,
+    this.contactNumber,
+    this.userPhoto,
+    // this.currentStreetName,
+    // this.currentCity,
+    // this.currentTaluka,
+    // this.currentDistrict,
+    // this.currentState,
+    // this.currentPincode,
+    // this.permanentStreetName,
+    // this.permanentCity,
+    // this.permanentTaluka,
+    // this.permanentDistrict,
+    // this.permanentState,
+    // this.permanentPincode,
+    // this.adhaarNo,
     // this.bankName,
     // this.ifscNumber,
     // this.accountNumber,
@@ -572,104 +578,102 @@ class InvolvedStaff {
     // this.insuranceNumber,
     // this.insuranceType,
     // this.insuranceValidity,
-    // required this.emergencyContactName,
-    // required this.emergencyContactNumber,
-    // required this.emergencyContactRelation,
-    // required this.isActive,
+    // this.emergencyContactName,
+    // this.emergencyContactNumber,
+    // this.emergencyContactRelation,
+    // this.isActive,
     // this.deletedAt,
-    // required this.createdAt,
-    // required this.updatedAt,
+    // this.createdAt,
+    // this.updatedAt,
     // this.qrCode,
     // this.idCardExpiryDate,
   });
 
-  factory InvolvedStaff.fromJson(Map<String, dynamic> json) {
-    return InvolvedStaff(
-      id: json['id'], // Nullable
-      staffId: json['staff_id'], // Nullable
-      staffName: json['staff_name'], // Nullable
-      // gender: json['gender'],
-      // bloodGroup: json['blood_group'],
-      // birthDate: json['birth_date'],
-      // age: json['age'],
-      contactNumber: json['contact_number'], // Nullable
-      userPhoto: json['user_photo'], // Nullable
-      // currentStreetName: json['current_street_name'],
-      // currentCity: json['current_city'],
-      // currentTaluka: json['current_taluka'],
-      // currentDistrict: json['current_district'],
-      // currentState: json['current_state'],
-      // currentPincode: json['current_pincode'],
-      // permanentStreetName: json['permanent_street_name'],
-      // permanentCity: json['permanent_city'],
-      // permanentTaluka: json['permanent_taluka'],
-      // permanentDistrict: json['permanent_district'],
-      // permanentState: json['permanent_state'],
-      // permanentPincode: json['permanent_pincode'],
-      // adhaarNo: json['adhaar_no'],
-      // bankName: json['bank_name'],
-      // ifscNumber: json['ifsc_number'],
-      // accountNumber: json['account_number'],
-      // branchAddress: json['branch_address'],
-      // groupInsuranceLimit: json['group_insurance_limit'],
-      // insuranceNumber: json['insurance_number'],
-      // insuranceType: json['insurance_type'],
-      // insuranceValidity: json['insurance_validity'],
-      // emergencyContactName: json['emergency_contact_name'],
-      // emergencyContactNumber: json['emergency_contact_number'],
-      // emergencyContactRelation: json['emergency_contact_relation'],
-      // isActive: json['is_active'] == "1", // Assuming this field is a string.
-      // deletedAt: json['deleted_at'],
-      // createdAt: json['created_at'],
-      // updatedAt: json['updated_at'],
-      // qrCode: json['qr_code'],
-      // idCardExpiryDate: json['id_card_expiry_date'],
+  factory InvolvedStaffList.fromJson(Map<String, dynamic> json) {
+    return InvolvedStaffList(
+      id: json["id"] ?? 0,
+      staffId: json["staff_id"] ?? "",
+      staffName: json["staff_name"] ?? "",
+      // gender: json["gender"],
+      // bloodGroup: json["blood_group"],
+      // birthDate: json["birth_date"],
+      // age: json["age"],
+      contactNumber: json["contact_number"] ?? "",
+      userPhoto: json["user_photo"] ?? "",
+      // currentStreetName: json["current_street_name"],
+      // currentCity: json["current_city"],
+      // currentTaluka: json["current_taluka"],
+      // currentDistrict: json["current_district"],
+      // currentState: json["current_state"],
+      // currentPincode: json["current_pincode"],
+      // permanentStreetName: json["permanent_street_name"],
+      // permanentCity: json["permanent_city"],
+      // permanentTaluka: json["permanent_taluka"],
+      // permanentDistrict: json["permanent_district"],
+      // permanentState: json["permanent_state"],
+      // permanentPincode: json["permanent_pincode"],
+      // adhaarNo: json["adhaar_no"],
+      // bankName: json["bank_name"],
+      // ifscNumber: json["ifsc_number"],
+      // accountNumber: json["account_number"],
+      // branchAddress: json["branch_address"],
+      // groupInsuranceLimit: json["group_insurance_limit"],
+      // insuranceNumber: json["insurance_number"],
+      // insuranceType: json["insurance_type"],
+      // insuranceValidity: json["insurance_validity"],
+      // emergencyContactName: json["emergency_contact_name"],
+      // emergencyContactNumber: json["emergency_contact_number"],
+      // emergencyContactRelation: json["emergency_contact_relation"],
+      // isActive: json["is_active"],
+      // deletedAt: json["deleted_at"],
+      // createdAt: json["created_at"],
+      // updatedAt: json["updated_at"],
+      // qrCode: json["qr_code"],
+      // idCardExpiryDate: json["id_card_expiry_date"],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id, // Nullable
-      'staff_id': staffId, // Nullable
-      'staff_name': staffName, // Nullable
-      // 'gender': gender,
-      // 'blood_group': bloodGroup,
-      // 'birth_date': birthDate,
-      // 'age': age,
-      'contact_number': contactNumber, // Nullable
-      'user_photo': userPhoto, // Nullable
-      // 'current_street_name': currentStreetName,
-      // 'current_city': currentCity,
-      // 'current_taluka': currentTaluka,
-      // 'current_district': currentDistrict,
-      // 'current_state': currentState,
-      // 'current_pincode': currentPincode,
-      // 'permanent_street_name': permanentStreetName,
-      // 'permanent_city': permanentCity,
-      // 'permanent_taluka': permanentTaluka,
-      // 'permanent_district': permanentDistrict,
-      // 'permanent_state': permanentState,
-      // 'permanent_pincode': permanentPincode,
-      // 'adhaar_no': adhaarNo,
-      // 'bank_name': bankName,
-      // 'ifsc_number': ifscNumber,
-      // 'account_number': accountNumber,
-      // 'branch_address': branchAddress,
-      // 'group_insurance_limit': groupInsuranceLimit,
-      // 'insurance_number': insuranceNumber,
-      // 'insurance_type': insuranceType,
-      // 'insurance_validity': insuranceValidity,
-      // 'emergency_contact_name': emergencyContactName,
-      // 'emergency_contact_number': emergencyContactNumber,
-      // 'emergency_contact_relation': emergencyContactRelation,
-      // 'is_active': isActive ? "1" : "0",
-      // 'deleted_at': deletedAt,
-      // 'created_at': createdAt,
-      // 'updated_at': updatedAt,
-      // 'qr_code': qrCode,
-      // 'id_card_expiry_date': idCardExpiryDate,
-    };
-  }
+  // Map<String, dynamic> toJson() => {
+  //       "id": id,
+  //       "staff_id": staffId,
+  //       "staff_name": staffName,
+  //       "gender": gender,
+  //       "blood_group": bloodGroup,
+  //       "birth_date": birthDate,
+  //       "age": age,
+  //       "contact_number": contactNumber,
+  //       "user_photo": userPhoto,
+  //       "current_street_name": currentStreetName,
+  //       "current_city": currentCity,
+  //       "current_taluka": currentTaluka,
+  //       "current_district": currentDistrict,
+  //       "current_state": currentState,
+  //       "current_pincode": currentPincode,
+  //       "permanent_street_name": permanentStreetName,
+  //       "permanent_city": permanentCity,
+  //       "permanent_taluka": permanentTaluka,
+  //       "permanent_district": permanentDistrict,
+  //       "permanent_state": permanentState,
+  //       "permanent_pincode": permanentPincode,
+  //       "adhaar_no": adhaarNo,
+  //       "bank_name": bankName,
+  //       "ifsc_number": ifscNumber,
+  //       "account_number": accountNumber,
+  //       "branch_address": branchAddress,
+  //       "group_insurance_limit": groupInsuranceLimit,
+  //       "insurance_number": insuranceNumber,
+  //       "insurance_type": insuranceType,
+  //       "insurance_validity": insuranceValidity,
+  //       "emergency_contact_name": emergencyContactName,
+  //       "emergency_contact_number": emergencyContactNumber,
+  //       "emergency_contact_relation": emergencyContactRelation,
+  //       "is_active": isActive,
+  //       "deleted_at": deletedAt,
+  //       "created_at": createdAt,
+  //       "updated_at": updatedAt,
+  //       "qr_code": qrCode,
+  //       "id_card_expiry_date": idCardExpiryDate,
+  //     };
 }
 
 class AsgineeAddPhoto {
@@ -723,58 +727,66 @@ class AsgineeAddPhoto {
 }
 
 class InvolvedContractorUserList {
-  final int id;
-  final String? contractorName;
-  // final String contractorEmail;
-  final String? contractorPhoneNo;
-  final int? contractorCompanyId;
-  // final int createdBy;
-  // final dynamic deletedAt;
-  // final DateTime createdAt;
-  // final DateTime updatedAt;
-  final String? contractorsCompanyName;
-  // final int idProofType;
-  // final String idProofNumber;
-  final String? documentPath;
-  // final String secondaryContactPersonName;
-  // final String secondaryContactPersonNumber;
-  // final dynamic qrCode;
-  // final dynamic idCardExpiryDate;
-  // final String contractorCompanyName;
+  int? id;
+  String? contractorName;
+  String? contractorEmail;
+  String? contractorPhoneNo;
+  // int? contractorCompanyId;
+  // int? createdBy;
+  // DateTime? deletedAt;
+  // DateTime? createdAt;
+  // DateTime? updatedAt;
+  String? contractorsCompanyName;
+  // int? idProofType;
+  // String? idProofNumber;
+  String? documentPath;
+  // String? secondaryContactPersonName;
+  // String? secondaryContactPersonNumber;
+  // dynamic qrCode;
+  // dynamic idCardExpiryDate;
+  // String? contractorCompanyName;
+  //ContractorCompany? contractorCompany;
 
   InvolvedContractorUserList({
-    required this.id,
+    this.id,
     this.contractorName,
-    // required this.contractorEmail,
+    this.contractorEmail,
     this.contractorPhoneNo,
-    this.contractorCompanyId,
-    // required this.createdBy,
-    // required this.deletedAt,
-    // required this.createdAt,
-    // required this.updatedAt,
+    // this.contractorCompanyId,
+    // this.createdBy,
+    // this.deletedAt,
+    // this.createdAt,
+    // this.updatedAt,
     this.contractorsCompanyName,
-    // required this.idProofType,
-    // required this.idProofNumber,
+    // this.idProofType,
+    // this.idProofNumber,
     this.documentPath,
-    // required this.secondaryContactPersonName,
-    // required this.secondaryContactPersonNumber,
-    // required this.qrCode,
-    // required this.idCardExpiryDate,
-    // required this.contractorCompanyName,
+    // this.secondaryContactPersonName,
+    // this.secondaryContactPersonNumber,
+    // this.qrCode,
+    // this.idCardExpiryDate,
+    // this.contractorCompanyName,
+    // this.contractorCompany,
   });
 
   factory InvolvedContractorUserList.fromJson(Map<String, dynamic> json) =>
       InvolvedContractorUserList(
         id: json["id"],
-        contractorName: json["contractor_name"] ?? "",
-        // contractorEmail: json["contractor_email"],
-        contractorPhoneNo: json["contractor_phone_no"] ?? "",
-        contractorCompanyId: json["contractor_company_id"] ?? 0,
+        contractorName: json["contractor_name"],
+        contractorEmail: json["contractor_email"],
+        contractorPhoneNo: json["contractor_phone_no"],
+        // contractorCompanyId: json["contractor_company_id"],
         // createdBy: json["created_by"],
-        // deletedAt: json["deleted_at"],
-        // createdAt: DateTime.parse(json["created_at"]),
-        // updatedAt: DateTime.parse(json["updated_at"]),
-        contractorsCompanyName: json["contractors_company_name"] ?? "",
+        // deletedAt: json["deleted_at"] == null
+        //     ? null
+        //     : DateTime.parse(json["deleted_at"]),
+        // createdAt: json["created_at"] == null
+        //     ? null
+        //     : DateTime.parse(json["created_at"]),
+        // updatedAt: json["updated_at"] == null
+        //     ? null
+        //     : DateTime.parse(json["updated_at"]),
+        contractorsCompanyName: json["contractors_company_name"],
         // idProofType: json["id_proof_type"],
         // idProofNumber: json["id_proof_number"],
         documentPath: json["document_path"] ?? "",
@@ -783,28 +795,32 @@ class InvolvedContractorUserList {
         // qrCode: json["qr_code"],
         // idCardExpiryDate: json["id_card_expiry_date"],
         // contractorCompanyName: json["contractor_company_name"],
+        // contractorCompany: json["contractor_company"] == null
+        //     ? null
+        //     : ContractorCompany.fromJson(json["contractor_company"]),
       );
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "contractor_name": contractorName,
-        // "contractor_email": contractorEmail,
-        "contractor_phone_no": contractorPhoneNo,
-        "contractor_company_id": contractorCompanyId,
-        // "created_by": createdBy,
-        // "deleted_at": deletedAt,
-        // "created_at": createdAt.toIso8601String(),
-        // "updated_at": updatedAt.toIso8601String(),
-        "contractors_company_name": contractorsCompanyName,
-        // "id_proof_type": idProofType,
-        // "id_proof_number": idProofNumber,
-        // "document_path": documentPath,
-        // "secondary_contact_person_name": secondaryContactPersonName,
-        // "secondary_contact_person_number": secondaryContactPersonNumber,
-        // "qr_code": qrCode,
-        // "id_card_expiry_date": idCardExpiryDate,
-        // "contractor_company_name": contractorCompanyName,
-      };
+  // Map<String, dynamic> toJson() => {
+  //       "id": id,
+  //       "contractor_name": contractorName,
+  //       "contractor_email": contractorEmail,
+  //       "contractor_phone_no": contractorPhoneNo,
+  //       "contractor_company_id": contractorCompanyId,
+  //       "created_by": createdBy,
+  //       "deleted_at": deletedAt?.toIso8601String(),
+  //       "created_at": createdAt?.toIso8601String(),
+  //       "updated_at": updatedAt?.toIso8601String(),
+  //       "contractors_company_name": contractorsCompanyName,
+  //       "id_proof_type": idProofType,
+  //       "id_proof_number": idProofNumber,
+  //       "document_path": documentPath,
+  //       "secondary_contact_person_name": secondaryContactPersonName,
+  //       "secondary_contact_person_number": secondaryContactPersonNumber,
+  //       "qr_code": qrCode,
+  //       "id_card_expiry_date": idCardExpiryDate,
+  //       "contractor_company_name": contractorCompanyName,
+  //       "contractor_company": contractorCompany?.toJson(),
+  //     };
 }
 
 class Photo {

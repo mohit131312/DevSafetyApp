@@ -69,8 +69,8 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
   List<Category> riskLevel = [];
   List<Category> sourceOfObservation = [];
   List<InvolvedLaboursList> involvedLaboursList = [];
-  Map<String, InvolvedStaff> involvedStaffList = {};
-  Map<String, InvolvedContractorUserList> involvedContractorUserList = {};
+  List<InvolvedStaffList> involvedstaffList = [];
+  List<InvolvedContractorUserList> involvedContractorUserList = [];
   List<InformedPersonsList> informedPersonsList = [];
   List<Photo> photos = [];
   List<AsgineUserList> asgineeUserList = [];
@@ -120,21 +120,29 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
           .map((e) => InvolvedLaboursList.fromJson(e))
           .toList();
 
-      involvedStaffList = {};
-      if (data['involved_staff_list'] is Map<String, dynamic>) {
-        involvedStaffList = (data['involved_staff_list']
-                as Map<String, dynamic>)
-            .map((key, value) => MapEntry(key, InvolvedStaff.fromJson(value)));
-      }
+      // involvedStaffList = {};
+      // if (data['involved_staff_list'] is Map<String, dynamic>) {
+      //   involvedStaffList = (data['involved_staff_list']
+      //           as Map<String, dynamic>)
+      //       .map((key, value) => MapEntry(key, InvolvedStaff.fromJson(value)));
+      // }
 
-      // Safely parse involved_contractor_user_list (handles null)
-      involvedContractorUserList = {};
-      if (data['involved_contractor_user_list'] is Map<String, dynamic>) {
-        involvedContractorUserList =
-            (data['involved_contractor_user_list'] as Map<String, dynamic>).map(
-                (key, value) =>
-                    MapEntry(key, InvolvedContractorUserList.fromJson(value)));
-      }
+      // // Safely parse involved_contractor_user_list (handles null)
+      // involvedContractorUserList = {};
+      // if (data['involved_contractor_user_list'] is Map<String, dynamic>) {
+      //   involvedContractorUserList =
+      //       (data['involved_contractor_user_list'] as Map<String, dynamic>).map(
+      //           (key, value) =>
+      //               MapEntry(key, InvolvedContractorUserList.fromJson(value)));
+      // }
+      involvedstaffList = (data['involved_staff_list'] as List<dynamic>)
+          .map((e) => InvolvedStaffList.fromJson(e))
+          .toList();
+
+      involvedContractorUserList =
+          (data['involved_contractor_user_list'] as List<dynamic>)
+              .map((e) => InvolvedContractorUserList.fromJson(e))
+              .toList();
 
       informedPersonsList = (data['informedPersonsList'] as List<dynamic>)
           .map((e) => InformedPersonsList.fromJson(e))
@@ -174,7 +182,7 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
       log('category count: ${category.length}');
       log('riskLevel count: ${riskLevel.length}');
       log('involvedLaboursList count: ${involvedLaboursList.length}');
-      log('involvedStaffList keys count: ${involvedStaffList.length}');
+      log('involvedStaffList keys count: ${involvedstaffList.length}');
       log('involvedContractorUserList keys count: ${involvedContractorUserList.length}');
       log('informedPersonsList count: ${informedPersonsList.length}');
       log('photos count: ${photos.length}');
@@ -455,7 +463,7 @@ class SafetyViolationDetailsAssigneeCont extends GetxController {
     riskLevel.clear();
     sourceOfObservation.clear();
     involvedLaboursList.clear();
-    involvedStaffList.clear();
+    involvedstaffList.clear();
     involvedContractorUserList.clear();
     informedPersonsList.clear();
     photos.clear();

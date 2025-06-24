@@ -204,6 +204,8 @@ class WorkPermitPreviewMakerController extends GetxController {
         log("Response Status Code: ${response.statusCode}");
 
         await http.Response.fromStream(response).then((onValue) async {
+          log("Response Body: ${onValue.body}");
+
           try {
             Map<String, dynamic> decoded = await jsonDecode(onValue.body);
 
