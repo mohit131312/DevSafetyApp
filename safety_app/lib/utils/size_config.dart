@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' show BoxConstraints, BuildContext, MediaQuery, Orientation, debugPrint;
 
 // class SizeConfig {
 //   static double _screenWidth = 0;
