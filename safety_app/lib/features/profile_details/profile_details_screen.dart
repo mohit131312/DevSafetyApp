@@ -96,11 +96,36 @@ class ProfileDetailsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: SizeConfig.imageSizeMultiplier * 30,
-                    width: SizeConfig.imageSizeMultiplier * 30,
-                    child: Image.network(
-                        "$baseUrl${profileDetailsController.profiledetails['profile_photo']}"),
+                  CircleAvatar(
+                    radius: 50, // Adjust radius to make the circle bigger
+                    backgroundColor: Colors.grey.shade200, // Fallback color
+                    child: ClipOval(
+                      child: Image.network(
+                        "$baseUrl${profileDetailsController.profiledetails['profile_photo']}",
+                        fit: BoxFit.cover,
+                        width: 100, // Increased width (diameter = 2 * radius)
+                        height: 100, // Increased height (diameter = 2 * radius)
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: SizedBox(
+                              width: 36,
+                              height: 36,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.buttoncolor,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/icons/image.png',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -1063,6 +1063,7 @@ class SafetyIncidentReport {
   final String? signaturePhotoAfter;
   final String? assignerComment;
   final int? status;
+  final String? uniqueId;
 
   SafetyIncidentReport({
     required this.id,
@@ -1084,6 +1085,7 @@ class SafetyIncidentReport {
     this.signaturePhotoAfter,
     this.assignerComment,
     this.status,
+    this.uniqueId,
   });
 
   factory SafetyIncidentReport.fromJson(Map<String, dynamic> json) =>
@@ -1109,6 +1111,7 @@ class SafetyIncidentReport {
         signaturePhotoAfter: json["signature_photo_after"] ?? "",
         assignerComment: json["assigner_comment"] ?? "",
         status: json["status"] ?? "",
+        uniqueId: json["incident_unique_id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

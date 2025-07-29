@@ -214,8 +214,13 @@ class SafetyViolationDetailsAssignorCont extends GetxController {
 
   Future<void> saveIncidentAssigneeSignature() async {
     try {
-      Uint8List? signatureBytes = await signatureCheckerController.toPngBytes();
+      const int signatureWidth = 360;
+      const int signatureHeight = 206;
 
+      Uint8List? signatureBytes = await signatureCheckerController.toPngBytes(
+        width: signatureWidth,
+        height: signatureHeight,
+      );
       // ignore: unnecessary_null_comparison
       if (signatureBytes != null) {
         // Save as a file

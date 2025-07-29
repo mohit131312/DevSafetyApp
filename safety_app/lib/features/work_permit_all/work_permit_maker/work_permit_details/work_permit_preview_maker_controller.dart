@@ -146,8 +146,14 @@ class WorkPermitPreviewMakerController extends GetxController {
 
   Future<void> saveSafetyattestationSignature() async {
     try {
+      const int signatureWidth = 360;
+      const int signatureHeight = 206;
+
       Uint8List? signatureBytes =
-          await signatureattestationController.toPngBytes();
+          await signatureattestationController.toPngBytes(
+        width: signatureWidth,
+        height: signatureHeight,
+      );
 
       if (signatureBytes != null) {
         // Save as a file

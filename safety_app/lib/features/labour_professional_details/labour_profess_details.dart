@@ -262,13 +262,8 @@ class LabourProfessDetails extends StatelessWidget {
                         selectedItem: addLabourController.userFound.value
                             ? labourProfessDetailsController.selectedyoe.value
                                 .toString()
-                            : labourProfessDetailsController
-                                        .selectedyoe.value ==
-                                    0
-                                ? null
-                                : labourProfessDetailsController
-                                    .selectedyoe.value
-                                    .toString(),
+                            : labourProfessDetailsController.selectedyoe.value
+                                .toString(),
                         hintText: 'Select Year of Experience',
                         onChanged: (value) {
                           final parsed = int.tryParse(value ?? '');

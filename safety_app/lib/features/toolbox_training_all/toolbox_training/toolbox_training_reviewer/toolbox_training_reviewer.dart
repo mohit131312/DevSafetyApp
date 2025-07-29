@@ -115,7 +115,28 @@ class ToolboxTrainingReviewer extends StatelessWidget {
                         color: AppColors.secondaryText,
                       ),
                       SizedBox(
-                        height: SizeConfig.heightMultiplier * 2.5,
+                        height: SizeConfig.heightMultiplier * 0.8,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: "ToolBox Unique ID :  ",
+                            fontSize: AppTextSize.textSizeSmallm,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.secondaryText,
+                          ),
+                          AppTextWidget(
+                            text: toolboxTrainingReviewerController
+                                .safetyToolboxReviwerTraining[0].toolboxUniqueId
+                                .toString(),
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          SizedBox(
+                            height: SizeConfig.heightMultiplier * 2.5,
+                          ),
+                        ],
                       ),
                     ],
                   ),

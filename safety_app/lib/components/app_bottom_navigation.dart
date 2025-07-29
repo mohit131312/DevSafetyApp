@@ -27,23 +27,15 @@ class CustomBottomNavItem extends StatelessWidget {
           children: [
             iconPath != null
                 ? isNetwork
-                    ? Container(
-                        width: 26,
-                        height: 26,
-                        child: Image.network(
-                          iconPath!,
-                          errorBuilder: (_, __, ___) => CircleAvatar(
-                            radius: 24,
-                            child: Image.asset(
-                              'assets/icons/image.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                    ? CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: NetworkImage(iconPath!),
+                        onBackgroundImageError: (_, __) {},
                       )
                     : SizedBox(
-                        width: 28,
-                        height: 28,
+                        width: 30,
+                        height: 30,
                         child: Image.asset(
                           iconPath!,
                           width: width,

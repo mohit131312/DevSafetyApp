@@ -129,7 +129,13 @@ class WorkPermitUnderController extends GetxController {
   File signatureFile = File('');
   Future<void> saveSignature() async {
     try {
-      Uint8List? signatureBytes = await signatureController.toPngBytes();
+      const int signatureWidth = 360;
+      const int signatureHeight = 206;
+
+      Uint8List? signatureBytes = await signatureController.toPngBytes(
+        width: signatureWidth,
+        height: signatureHeight,
+      );
 
       if (signatureBytes != null) {
         // Save as a file

@@ -189,8 +189,26 @@ class SafetyViolationDetailsAssignor extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                         color: AppColors.secondaryText,
                       ),
-                      SizedBox(
-                        height: SizeConfig.heightMultiplier * 2.5,
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: "Safety Violation Unique ID :  ",
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.secondaryText,
+                          ),
+                          AppTextWidget(
+                            text: safetyViolationDetailsAssignorCont
+                                .violationDebitNote[0].violationUniqueId
+                                .toString(),
+                            fontSize: AppTextSize.textSizeSmalle,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          SizedBox(
+                            height: SizeConfig.heightMultiplier * 2.5,
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -199,7 +199,28 @@ class IncidentReportDetailsAssignee extends StatelessWidget {
                         color: AppColors.secondaryText,
                       ),
                       SizedBox(
-                        height: SizeConfig.heightMultiplier * 2.5,
+                        height: SizeConfig.heightMultiplier * 0.8,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: "Incident Report Unique ID :  ",
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.secondaryText,
+                          ),
+                          AppTextWidget(
+                            text: incidentReportDetailsAssigneeController
+                                .safetyIncidentReport[0].uniqueId
+                                .toString(),
+                            fontSize: AppTextSize.textSizeSmalle,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          SizedBox(
+                            height: SizeConfig.heightMultiplier * 2.5,
+                          ),
+                        ],
                       ),
                     ],
                   ),

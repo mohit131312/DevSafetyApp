@@ -132,8 +132,15 @@ class WorkPermitCheckerDetailsController extends GetxController {
   File signatureFile = File('');
 
   Future<void> saveSafetyCheckerSignature() async {
+    const int signatureWidth = 360;
+    const int signatureHeight = 206;
+
+    Uint8List? signatureBytes = await signatureCheckerController.toPngBytes(
+      width: signatureWidth,
+      height: signatureHeight,
+    );
     try {
-      Uint8List? signatureBytes = await signatureCheckerController.toPngBytes();
+      // Uint8List? signatureBytes = await signatureCheckerController.toPngBytes();
 
       if (signatureBytes != null) {
         // Save as a file

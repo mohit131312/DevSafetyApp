@@ -169,9 +169,13 @@ class ToolboxAddTraineeController extends GetxController {
         log("❌ No signature controller found for user $userId");
         return null;
       }
-
+      const int signatureWidth = 360;
+      const int signatureHeight = 206;
       Uint8List? signatureBytes =
-          await signatureControllers[userId]?.toPngBytes();
+          await signatureControllers[userId]?.toPngBytes(
+        width: signatureWidth,
+        height: signatureHeight,
+      );
 
       if (signatureBytes != null && signatureBytes.isNotEmpty) {
         Directory tempDir = await getTemporaryDirectory();

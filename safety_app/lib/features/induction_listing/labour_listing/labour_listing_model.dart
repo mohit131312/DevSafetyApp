@@ -235,7 +235,7 @@ class EquipmentDetail {
 
 class InductionTraining {
   int id;
-  // String inductionId;
+  String inductionId;
   // int userId;
   // String userType;
   // String inducteeName;
@@ -260,7 +260,7 @@ class InductionTraining {
 
   InductionTraining({
     required this.id,
-    // required this.inductionId,
+    required this.inductionId,
     // required this.userId,
     // required this.userType,
     // required this.inducteeName,
@@ -287,7 +287,7 @@ class InductionTraining {
   factory InductionTraining.fromJson(Map<String, dynamic> json) =>
       InductionTraining(
         id: json["id"],
-        // inductionId: json["induction_id"],
+        inductionId: json["induction_id"],
         // userId: json["user_id"],
         // userType: json["user_type"],
         // inducteeName: json["inductee_name"],

@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/components/app_medium_button.dart';
-import 'package:flutter_app/components/app_search_dropdown.dart';
+import 'package:flutter_app/components/app_search_dropdown_astric.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
 import 'package:flutter_app/components/app_textformfeild.dart';
 import 'package:flutter_app/features/Labour_add/add_labour_controller.dart';
@@ -100,19 +100,7 @@ class LabourDocumentation extends StatelessWidget {
                       ),
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
-                        initialDateTime: tempPickedDate.isBefore(DateTime.now())
-                            ? DateTime.now().toLocal().copyWith(
-                                hour: 0,
-                                minute: 0,
-                                second: 0,
-                                millisecond: 0,
-                                microsecond: 0)
-                            : tempPickedDate.toLocal().copyWith(
-                                hour: 0,
-                                minute: 0,
-                                second: 0,
-                                millisecond: 0,
-                                microsecond: 0),
+                        initialDateTime: DateTime.now(),
                         minimumDate: DateTime.now().toLocal().copyWith(
                             hour: 0,
                             minute: 0,
@@ -379,11 +367,11 @@ class LabourDocumentation extends StatelessWidget {
                       height: SizeConfig.heightMultiplier * 1,
                     ),
                     Obx(
-                      () => AppSearchDropdown(
+                      () => AppSearchDropdownAstric(
                         items: inductionTrainingController.idProofList
-                            .map(
-                              (idproof) => idproof.listDetails,
-                            )
+                            .map((idproof) => idproof.compulsory == 1
+                                ? '${idproof.listDetails} *'
+                                : idproof.listDetails)
                             .toList(),
                         selectedItem: labourDocumentationController
                                 .selectedDoctType.value.isNotEmpty
@@ -395,10 +383,17 @@ class LabourDocumentation extends StatelessWidget {
                           labourDocumentationController.selectedDoctType.value =
                               value ?? '';
 
+                          // var selectedProof = inductionTrainingController
+                          //     .idProofList
+                          //     .firstWhereOrNull(
+                          //         (idproof) => idproof.listDetails == value);
+                          String cleanedValue =
+                              value?.replaceAll(' *', '') ?? '';
+
                           var selectedProof = inductionTrainingController
                               .idProofList
-                              .firstWhereOrNull(
-                                  (idproof) => idproof.listDetails == value);
+                              .firstWhereOrNull((idproof) =>
+                                  idproof.listDetails == cleanedValue);
 
                           if (selectedProof != null) {
                             labourDocumentationController
@@ -856,7 +851,7 @@ class LabourDocumentation extends StatelessWidget {
                         ),
                         minimumSize: Size(double.infinity, 42),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         //   labourDocumentationController.removeByAll();
 
                         if (labourDocumentationController
@@ -867,7 +862,32 @@ class LabourDocumentation extends StatelessWidget {
                                 .validityController.text.isNotEmpty &&
                             labourDocumentationController
                                 .idnoController.text.isNotEmpty) {
-                          labourDocumentationController.addImg();
+                          bool res =
+                              await labourDocumentationController.addImg();
+                          if (res) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  "Document Added.",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13, // Slightly smaller font
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                backgroundColor: AppColors
+                                    .buttoncolor, // Material green (success)
+                                duration: const Duration(seconds: 2),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 6,
+                              ),
+                            );
+                          }
                         }
 
                         if (labourDocumentationController
@@ -1288,7 +1308,23 @@ class LabourDocumentation extends StatelessWidget {
                     if (formKey.currentState!.validate()) {
                       log('-------------${addLabourController.profilePhoto.value}');
                       log('-------------${labourDocumentationController.labourimg.length}');
-                      log('-------------${labourDocumentationController.documentTypeName.length}');
+                      log('-------------${labourDocumentationController.documentTypeName.length}'); // Compulsory Document Validation
+                      if (!labourDocumentationController
+                          .areAllCompulsoryDocumentsAdded()) {
+                        final missingDocs = labourDocumentationController
+                            .getMissingCompulsoryDocuments();
+                        String message =
+                            "${missingDocs.join(', ')} ${missingDocs.length > 1 ? 'are' : 'is'} compulsory";
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomValidationPopup(
+                              message: message,
+                            );
+                          },
+                        );
+                        return;
+                      }
                       labourDocumentationController.aadhaarError.value = '';
 
                       Get.to(LabourPrecaustionScreen(

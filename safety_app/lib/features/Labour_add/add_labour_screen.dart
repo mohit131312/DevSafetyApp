@@ -2215,47 +2215,47 @@ class AddLabourScreen extends StatelessWidget {
             child: AppElevatedButton(
                 text: 'Next',
                 onPressed: () {
-                  validateAndFocusFirstInvalidField();
+                  // validateAndFocusFirstInvalidField();
 
-                  bool isValid = true;
+                  // bool isValid = true;
 
-                  if (formKey.currentState!.validate() &&
-                      addLabourController.profilePhoto.value.isNotEmpty) {
-                    addLabourController.updateFormattedAddress();
-                    log('-------------${addLabourController.formattedAddress}');
-                    log('-------------${addLabourController.profilePhoto.value}');
-                    addLabourController.profilePhotoEroor.value = "";
-                    if (addLabourController.selectedState.value.isNotEmpty &&
-                        addLabourController.selectedDistrict.value.isNotEmpty) {
-                      if (addLabourController
-                              .selectedPermanantDistrict.value.isNotEmpty &&
-                          addLabourController
-                              .selectedPermanantState.value.isNotEmpty) {
-                        Get.to(LabourProfessDetails(
-                          categoryId: categoryId,
-                          userId: userId,
-                          userName: userName,
-                          userImg: userImg,
-                          userDesg: userDesg,
-                          projectId: projectId,
-                        ));
-                      } else {
-                        addLabourController.isExpanded2.value = true;
-                      }
-                      print("Navigating to Labourproffessinal with:");
+                  // if (formKey.currentState!.validate() &&
+                  //     addLabourController.profilePhoto.value.isNotEmpty) {
+                  //   addLabourController.updateFormattedAddress();
+                  //   log('-------------${addLabourController.formattedAddress}');
+                  //   log('-------------${addLabourController.profilePhoto.value}');
+                  //   addLabourController.profilePhotoEroor.value = "";
+                  //   if (addLabourController.selectedState.value.isNotEmpty &&
+                  //       addLabourController.selectedDistrict.value.isNotEmpty) {
+                  //     if (addLabourController
+                  //             .selectedPermanantDistrict.value.isNotEmpty &&
+                  //         addLabourController
+                  //             .selectedPermanantState.value.isNotEmpty) {
+                  Get.to(LabourProfessDetails(
+                    categoryId: categoryId,
+                    userId: userId,
+                    userName: userName,
+                    userImg: userImg,
+                    userDesg: userDesg,
+                    projectId: projectId,
+                  ));
+                  //     } else {
+                  //       addLabourController.isExpanded2.value = true;
+                  //     }
+                  //     print("Navigating to Labourproffessinal with:");
 
-                      print("User ID: $userId");
-                      print("User Name: $userName");
-                      print("Project ID: $projectId");
-                      print("categoryId: $categoryId");
-                    } else {
-                      addLabourController.isExpanded.value = true;
-                    }
-                  } else {
-                    addLabourController.profilePhotoEroor.value =
-                        "Please select a Profile photo";
-                    isValid = false;
-                  }
+                  //     print("User ID: $userId");
+                  //     print("User Name: $userName");
+                  //     print("Project ID: $projectId");
+                  //     print("categoryId: $categoryId");
+                  //   } else {
+                  //     addLabourController.isExpanded.value = true;
+                  //   }
+                  // } else {
+                  //   addLabourController.profilePhotoEroor.value =
+                  //       "Please select a Profile photo";
+                  //   isValid = false;
+                  // }
                 }),
           ),
         ),

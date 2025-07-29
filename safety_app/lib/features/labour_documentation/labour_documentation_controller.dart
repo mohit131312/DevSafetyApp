@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/image_helper.dart';
+import 'package:flutter_app/features/induction_training/induction_training_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -46,15 +47,15 @@ class LabourDocumentationController extends GetxController {
   var idNumber = <String>[].obs;
   var validity = <String>[].obs;
 
-  void addImg() {
+  Future<bool> addImg() async {
     if (documentType.contains(selectedIdProofId.value.toString())) {
       documentError.value = "This document type has already been added";
-      return;
+      return false;
     }
     labourimg.addAll(labourotherimg);
     documentType.add(selectedIdProofId.value.toString());
-    documentTypeName.add(selectedDoctType.value.toString());
-
+    documentTypeName.add(selectedDoctType.value
+        .replaceAll(' *', '')); // Remove asterisk for consistency
     idNumber.add(idnoText.value);
     validity.add(
       validityController.text,
@@ -75,6 +76,7 @@ class LabourDocumentationController extends GetxController {
     documentTypeName.refresh();
     idNumber.refresh();
     validity.refresh();
+    return true;
   }
 
   void clearAll() {
@@ -274,5 +276,32 @@ class LabourDocumentationController extends GetxController {
     validityError.value = ''; // Clears validity error
     idNumberError.value = ''; // Clears ID number error
     // shouldValidate.value = false; // Resets validation state
+  }
+
+  //-------------------------------------
+
+  // Method to check if all compulsory documents are added
+  bool areAllCompulsoryDocumentsAdded() {
+    final compulsoryDocs = Get.find<InductionTrainingController>()
+        .idProofList
+        .where((idproof) => idproof.compulsory == 1)
+        .map((idproof) => idproof.listDetails)
+        .toList();
+
+    // Check if all compulsory documents are present in documentTypeName
+    return compulsoryDocs.every((doc) => documentTypeName.contains(doc));
+  }
+
+  // Method to get missing compulsory document names
+  List<String> getMissingCompulsoryDocuments() {
+    final compulsoryDocs = Get.find<InductionTrainingController>()
+        .idProofList
+        .where((idproof) => idproof.compulsory == 1)
+        .map((idproof) => idproof.listDetails)
+        .toList();
+
+    return compulsoryDocs
+        .where((doc) => !documentTypeName.contains(doc))
+        .toList();
   }
 }

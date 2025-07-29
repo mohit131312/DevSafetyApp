@@ -40,6 +40,7 @@ class ContractorListingController extends GetxController {
   List<InductionTraining> contractorInductionTrainingsList = [];
   List<ReasonOfVisit> contractorReasonOfVisitList = [];
   bool statusApi = false;
+  var documentType = '';
   Future getContractorInductionListing(
     userId,
     userType,
@@ -94,6 +95,9 @@ class ContractorListingController extends GetxController {
               ?.map((e) => ReasonOfVisit.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
+
+      documentType = data['document_details'][0]['docment_type'];
+      print('documentType---------------$documentType');
 
 //---------------------- LOG LENGTH OF EACH LIST ----------------------
       log('------------------contractorDetailsList');

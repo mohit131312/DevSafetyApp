@@ -104,7 +104,28 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                       color: AppColors.secondaryText,
                     ),
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 2.5,
+                      height: SizeConfig.heightMultiplier * 0.8,
+                    ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: "ToolBox Unique ID :  ",
+                          fontSize: AppTextSize.textSizeSmallm,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.secondaryText,
+                        ),
+                        AppTextWidget(
+                          text: toolboxTrainingAllListdetController
+                              .safetyToolboxTraining[0].toolboxUniqueId
+                              .toString(),
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryText,
+                        ),
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 2.5,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -596,7 +617,11 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                                 color: AppColors.primaryText,
                                               ),
                                               subtitle: AppTextWidget(
-                                                text: '',
+                                                text:
+                                                    toolboxTrainingAllListdetController
+                                                        .traineeLaboursList[
+                                                            index]
+                                                        .contactNumber!,
                                                 fontSize:
                                                     AppTextSize.textSizeSmalle,
                                                 fontWeight: FontWeight.w400,

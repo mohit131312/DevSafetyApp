@@ -107,6 +107,27 @@ class LabourListingScreen extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2.5,
                     ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: "Induction ID :  ",
+                          fontSize: AppTextSize.textSizeSmallm,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.secondaryText,
+                        ),
+                        AppTextWidget(
+                          text: labourListingController
+                              .inductionTrainingsList[0].inductionId
+                              .toString(),
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryText,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 1,
+                    ),
                   ],
                 ),
               ),

@@ -263,6 +263,7 @@ class IdProofList {
   dynamic deletedAt;
   DateTime createdAt;
   DateTime updatedAt;
+  int compulsory;
 
   IdProofList({
     required this.id,
@@ -271,6 +272,7 @@ class IdProofList {
     this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
+    required this.compulsory,
   });
 
   factory IdProofList.fromJson(Map<String, dynamic> json) => IdProofList(
@@ -280,6 +282,7 @@ class IdProofList {
         deletedAt: json["deleted_at"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        compulsory: json["compulsary"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -289,6 +292,7 @@ class IdProofList {
         "deleted_at": deletedAt,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+        "compulsary": compulsory
       };
 }
 

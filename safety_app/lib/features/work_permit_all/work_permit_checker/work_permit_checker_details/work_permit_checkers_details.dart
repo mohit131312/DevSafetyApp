@@ -210,7 +210,28 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                         color: AppColors.secondaryText,
                       ),
                       SizedBox(
-                        height: SizeConfig.heightMultiplier * 2.5,
+                        height: SizeConfig.heightMultiplier * 0.8,
+                      ),
+                      Row(
+                        children: [
+                          AppTextWidget(
+                            text: "Work Permit Unique ID :  ",
+                            fontSize: AppTextSize.textSizeSmallm,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.secondaryText,
+                          ),
+                          AppTextWidget(
+                            text: workPermitCheckerDetailsController
+                                .workPermitsCheckerDetails[0].uniqueId
+                                .toString(),
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText,
+                          ),
+                          SizedBox(
+                            height: SizeConfig.heightMultiplier * 2.5,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -408,7 +429,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                                 0]
                                                             .fromDateTime !=
                                                         null
-                                                    ? DateFormat('dd MMMM yyyy')
+                                                    ? DateFormat(
+                                                            'dd MMMM yyyy – hh:mm a')
                                                         .format(
                                                         workPermitCheckerDetailsController
                                                                     .workPermitsCheckerDetails[
@@ -454,7 +476,8 @@ class WorkPermitCheckersDetails extends StatelessWidget {
                                                                 0]
                                                             .toDateTime !=
                                                         null
-                                                    ? DateFormat('dd MMMM yyyy')
+                                                    ? DateFormat(
+                                                            'dd MMMM yyyy – hh:mm a')
                                                         .format(
                                                         workPermitCheckerDetailsController
                                                                     .workPermitsCheckerDetails[

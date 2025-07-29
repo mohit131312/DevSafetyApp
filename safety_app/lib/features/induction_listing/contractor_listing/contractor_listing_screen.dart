@@ -103,6 +103,27 @@ class ContractorListingScreen extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2.5,
                     ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: "Induction ID :  ",
+                          fontSize: AppTextSize.textSizeSmallm,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.secondaryText,
+                        ),
+                        AppTextWidget(
+                          text: contractorListingController
+                              .contractorInductionTrainingsList[0].inductionId
+                              .toString(),
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryText,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 1,
+                    ),
                   ],
                 ),
               ),
@@ -589,14 +610,12 @@ class ContractorListingScreen extends StatelessWidget {
                                                 SizeConfig.heightMultiplier * 1,
                                           ),
                                           AppTextWidget(
-                                            text: contractorListingController
-                                                        .contractorDetailsList[
-                                                            0]
-                                                        .idProofType !=
+                                            text: contractorListingController.
+                                                        // ignore: unnecessary_null_comparison
+                                                        documentType !=
                                                     null
                                                 ? contractorListingController
-                                                    .contractorDetailsList[0]
-                                                    .idProofType!
+                                                    .documentType
                                                     .toString()
                                                 : '',
                                             fontSize: AppTextSize.textSizeSmall,
