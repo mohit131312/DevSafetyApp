@@ -46,6 +46,7 @@ class LabourListingController extends GetxController {
   Future getInductionListing(userId, userType, reasonId, inductedById,
       inductTrainingId, projectId, tradeId, contCompId) async {
     try {
+      print("object----induction");
       Map<String, dynamic> map = {
         "user_id": userId,
         "user_type": userType,

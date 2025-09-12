@@ -1,0 +1,2 @@
+C:/Kumar Project/DevSafetyApp/safety_app/android/app/.cxx/Debug/3o2c4q4f/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Kumar Project/DevSafetyApp/safety_app/android/app/.cxx/Debug/3o2c4q4f/armeabi-v7a/CMakeFiles/rebuild_cache.dir

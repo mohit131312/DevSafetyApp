@@ -1,0 +1,2 @@
+C:/Kumar Project/DevSafetyApp/safety_app/android/app/.cxx/RelWithDebInfo/3b426h3i/x86_64/CMakeFiles/edit_cache.dir
+C:/Kumar Project/DevSafetyApp/safety_app/android/app/.cxx/RelWithDebInfo/3b426h3i/x86_64/CMakeFiles/rebuild_cache.dir

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 StaffListing staffListingFromJson(String str) =>
     StaffListing.fromJson(json.decode(str));
 
@@ -367,7 +369,7 @@ class UserDetail {
         gender: json["gender"] ?? "",
         bloodGroup: json["blood_group"] ?? "",
         birthDate: json["birth_date"] != null
-            ? DateTime.parse(json["birth_date"])
+            ? DateFormat("dd-MM-yyyy").parse(json["birth_date"])
             : null,
         age: json["age"],
         contactNumber: json["contact_number"] ?? "",

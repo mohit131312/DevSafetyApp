@@ -270,7 +270,7 @@ class InductionTrainingController extends GetxController {
           .toList();
       log('----------inductionListingList${inductionListingList.length}');
     } catch (e) {
-      print("Error: $e");
+      print("Error:---- $e");
     }
   }
 

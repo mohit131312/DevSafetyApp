@@ -481,14 +481,24 @@ class _InductionTrainingScreenState extends State<InductionTrainingScreen>
 
                           Navigator.pop(context);
                           if (staffListingController.statusApi) {
-                            Get.to(StaffListingScreen(
-                              userId: widget.userId,
-                              userName: widget.userName,
-                              userImg: widget.userImg,
-                              userDesg: widget.userDesg,
-                              projectId: widget.projectId,
-                            ));
+                            print("Navigating to StaffListingScreen with data:");
+                            print("userId: ${widget.userId}");
+                            print("userName: ${widget.userName}");
+                            print("userImg: ${widget.userImg}");
+                            print("userDesg: ${widget.userDesg}");
+                            print("projectId: ${widget.projectId}");
+
+                            Get.to(
+                              StaffListingScreen(
+                                userId: widget.userId,
+                                userName: widget.userName,
+                                userImg: widget.userImg,
+                                userDesg: widget.userDesg,
+                                projectId: widget.projectId,
+                              ),
+                            );
                           }
+
                         }
                       } else {
                         await showDialog(
@@ -595,7 +605,7 @@ class _InductionTrainingScreenState extends State<InductionTrainingScreen>
                       ),
                       trailing: Container(
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(237, 245, 225, 203),
+                          color: const Color.fromARGB(237, 245, 225, 100),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Padding(

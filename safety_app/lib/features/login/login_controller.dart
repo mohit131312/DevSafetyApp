@@ -65,6 +65,7 @@ class LoginController extends GetxController {
       var response = await RemoteServices.postMethod('safety-login', map);
 
       validationmsg = '';
+      print("response is ${jsonDecode(response.body)}");
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         validationmsg = responseData['message'] ?? "";

@@ -48,6 +48,7 @@ class StaffListingController extends GetxController {
     inductTrainingId,
     projectId,
   ) async {
+    print("in get induction list");
     try {
       Map<String, dynamic> map = {
         "user_id": userId,
@@ -63,7 +64,7 @@ class StaffListingController extends GetxController {
       var responseData =
           await globApiCall('get_selected_induction_training_details', map);
       var data = await responseData['data'];
-      log('Response data: $data');
+      log('Response data: ${data['user_details']}');
       statusApi = await responseData['status'];
 
       staffDetailsList = (data['user_details'] as List<dynamic>?)
@@ -104,8 +105,8 @@ class StaffListingController extends GetxController {
       log('equipmentDetailsList length: ${staffEquipmentDetailsList.length}');
       log('instructionDetailsList length: ${staffInstructionDetailsList.length}');
       log('reasonOfVisitList length: ${staffInstructionDetailsList.length}');
-    } catch (e) {
-      print("Error: $e");
+    } catch (e,stackTrace) {
+      print("Error:------------ $e----$stackTrace");
     }
   }
 
