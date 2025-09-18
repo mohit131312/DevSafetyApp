@@ -52,7 +52,8 @@ class LoginController extends GetxController {
   String validationmsg = '';
   var userId = 0.obs;
   var userimg = ''.obs;
-  Future login() async {
+
+  Future<bool> login() async {
     try {
       Map<String, dynamic> map = {
         "email": usernameController.text,
@@ -77,6 +78,7 @@ class LoginController extends GetxController {
                 return CustomValidationPopupInvalid(message: validationmsg);
               },
             );
+            return false; // Prevent login on invalid password
           } else if (validationmsg == "User not found") {
             await showDialog(
               context: Get.context!,
@@ -84,54 +86,151 @@ class LoginController extends GetxController {
                 return CustomValidationPopup(message: validationmsg);
               },
             );
-          } else {
-            // await showDialog(
-            //   context: Get.context!,
-            //   builder: (BuildContext context) {
-            //     return ValidationPopChang(message: validationmsg);
-            //   },
-            // );
+            return false; // Prevent login if user not found
           }
         }
-        String accessToken = responseData['data']['access_token'];
+
+        // Retrieve user details safely
+        String accessToken = responseData['data']['access_token'] as String;
+        selectRoleMap = responseData['data'] as Map<String, dynamic>;
+
+        // Check for null or empty values before assignment
+        final String? userName = selectRoleMap['user_name'] as String?;
+        final int? userId = selectRoleMap['user_id'];
+        final String? userPhoto = selectRoleMap['user_photo'] as String?;
+
+        // Validate required fields
+        if (userName == null || userName.isEmpty ||
+            userId == null ||
+            userPhoto == null || userPhoto.isEmpty) {
+          String missingField = userName == null || userName.isEmpty
+              ? "userName"
+              : userId == null
+              ? "userID"
+              : "Profile Image";
+          await showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              return CustomValidationPopup(
+                message: "Please contact admin, your $missingField is empty, it is required for login",
+              );
+            },
+          );
+          return false; // Prevent login if any field is null or empty
+        }
+
+        // Assign values to reactive variables
+        usernameLogin.value = userName;
+        this.userId.value = userId; // Using 'this.' to avoid shadowing if 'userId' is a class variable
+        userimg.value = userPhoto;
+
+        // Proceed with login
         ApiClient.gs.write('token', accessToken);
         ApiClient.gs.write('login', true);
         logStatus = true;
         log("token is ${ApiClient.gs.read('token')}");
         log("login is ${ApiClient.gs.read('login')}");
 
-        selectRoleMap = await responseData['data'];
-        usernameLogin.value = await selectRoleMap['user_name'];
-        userId.value = await selectRoleMap['user_id'];
-        userimg.value = await selectRoleMap['user_photo'];
-
-        await ApiClient.gs.write('user_id', userId.value);
+        await ApiClient.gs.write('user_id', this.userId.value);
         await ApiClient.gs.write('user_img', userimg.value);
         print('selectRoleMap: $selectRoleMap');
         print('usernameLogin.value: ${usernameLogin.value}');
         await ApiClient.gs.write('username', usernameLogin.value);
 
         await ApiClient.gs.write('SelectRoleMap', selectRoleMap);
-        final SelectRoleController selectRoleController =
-            Get.put(SelectRoleController());
-        await selectRoleController.getRoles(userId.value);
+        final SelectRoleController selectRoleController = Get.put(SelectRoleController());
+        await selectRoleController.getRoles(this.userId.value);
         log('selectRoleMap: ${selectRoleMap.length}');
         return true;
-
-        // if (formKey.currentState?.validate() ?? false) {
-        //   print("Login Success: ${responseData['message']}");
-
-        // }
       } else {
         print("Login Failed: ${response.body}");
-
         return false;
       }
-    } catch (e) {
-      print("Error: $e");
+    } catch (e, stackTrace) {
+      print("Error: $e----$stackTrace");
       return false;
     }
   }
+  // Future login() async {
+  //   try {
+  //     Map<String, dynamic> map = {
+  //       "email": usernameController.text,
+  //       "password": passwordController.text,
+  //       "FCM_token": "fabf21102951024b",
+  //     };
+  //
+  //     print("Request body: $map");
+  //
+  //     var response = await RemoteServices.postMethod('safety-login', map);
+  //
+  //     validationmsg = '';
+  //     print("response is ${jsonDecode(response.body)}");
+  //     if (response.statusCode == 200) {
+  //       Map<String, dynamic> responseData = jsonDecode(response.body);
+  //       validationmsg = responseData['message'] ?? "";
+  //       if (validationmsg.isNotEmpty) {
+  //         if (validationmsg == "Invalid Password") {
+  //           await showDialog(
+  //             context: Get.context!,
+  //             builder: (BuildContext context) {
+  //               return CustomValidationPopupInvalid(message: validationmsg);
+  //             },
+  //           );
+  //         } else if (validationmsg == "User not found") {
+  //           await showDialog(
+  //             context: Get.context!,
+  //             builder: (BuildContext context) {
+  //               return CustomValidationPopup(message: validationmsg);
+  //             },
+  //           );
+  //         } else {
+  //           // await showDialog(
+  //           //   context: Get.context!,
+  //           //   builder: (BuildContext context) {
+  //           //     return ValidationPopChang(message: validationmsg);
+  //           //   },
+  //           // );
+  //         }
+  //       }
+  //       String accessToken = responseData['data']['access_token'];
+  //       ApiClient.gs.write('token', accessToken);
+  //       ApiClient.gs.write('login', true);
+  //       logStatus = true;
+  //       log("token is ${ApiClient.gs.read('token')}");
+  //       log("login is ${ApiClient.gs.read('login')}");
+  //
+  //       selectRoleMap = await responseData['data'];
+  //       usernameLogin.value = await selectRoleMap['user_name'];
+  //       userId.value = await selectRoleMap['user_id'];
+  //       userimg.value = await selectRoleMap['user_photo'];
+  //
+  //       await ApiClient.gs.write('user_id', userId.value);
+  //       await ApiClient.gs.write('user_img', userimg.value);
+  //       print('selectRoleMap: $selectRoleMap');
+  //       print('usernameLogin.value: ${usernameLogin.value}');
+  //       await ApiClient.gs.write('username', usernameLogin.value);
+  //
+  //       await ApiClient.gs.write('SelectRoleMap', selectRoleMap);
+  //       final SelectRoleController selectRoleController =
+  //           Get.put(SelectRoleController());
+  //       await selectRoleController.getRoles(userId.value);
+  //       log('selectRoleMap: ${selectRoleMap.length}');
+  //       return true;
+  //
+  //       // if (formKey.currentState?.validate() ?? false) {
+  //       //   print("Login Success: ${responseData['message']}");
+  //
+  //       // }
+  //     } else {
+  //       print("Login Failed: ${response.body}");
+  //
+  //       return false;
+  //     }
+  //   } catch (e,stackTrace) {
+  //     print("Error: $e----$stackTrace");
+  //     return false;
+  //   }
+  // }
 
   // Future<void> userIdAndName() async {
   //   userId.value = await selectRoleMap['user_id'];

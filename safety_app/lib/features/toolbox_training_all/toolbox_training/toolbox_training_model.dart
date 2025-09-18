@@ -229,6 +229,117 @@ class ToolboxCategoryList {
       };
 }
 
+
+
+class ContractorUserList {
+  final int contractor_id;
+  final String? contractorName;
+  final String? contractorEmail;
+  final String? contractorPhoneNo;
+  final int? contractorCompanyId;
+  final int? createdBy;
+  final String? deletedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? contractorsCompanyName;
+  final int? idProofType;
+  final String? idProofNumber;
+  final String? documentPath;
+  final String? secondaryContactPersonName;
+  final String? secondaryContactPersonNumber;
+  final String? qrCode;
+  final String? idCardExpiryDate;
+  final int? labourId;
+  final int? projectId;
+  final int? tradeId;
+  final String? isActive;
+  final String? skillType;
+  final int? contractorId;
+
+  ContractorUserList({
+    required this.contractor_id,
+    this.contractorName,
+    this.contractorEmail,
+    this.contractorPhoneNo,
+    this.contractorCompanyId,
+    this.createdBy,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.contractorsCompanyName,
+    this.idProofType,
+    this.idProofNumber,
+    this.documentPath,
+    this.secondaryContactPersonName,
+    this.secondaryContactPersonNumber,
+    this.qrCode,
+    this.idCardExpiryDate,
+    this.labourId,
+    this.projectId,
+    this.tradeId,
+    this.isActive,
+    this.skillType,
+    this.contractorId,
+  });
+
+  factory ContractorUserList.fromJson(Map<String, dynamic> json) =>
+      ContractorUserList(
+        contractor_id: json["id"] ?? 0,
+        contractorName: json["contractor_name"] ?? "",
+        contractorEmail: json["contractor_email"] ?? "",
+        contractorPhoneNo: json["contractor_phone_no"] ?? "",
+        contractorCompanyId: json["contractor_company_id"],
+        createdBy: json["created_by"],
+        deletedAt: json["deleted_at"],
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : null,
+        updatedAt: json["updated_at"] != null
+            ? DateTime.parse(json["updated_at"])
+            : null,
+        contractorsCompanyName: json["contractors_company_name"] ?? "",
+        idProofType: json["id_proof_type"],
+        idProofNumber: json["id_proof_number"],
+        documentPath: json["document_path"],
+        secondaryContactPersonName: json["secondary_contact_person_name"],
+        secondaryContactPersonNumber: json["secondary_contact_person_number"],
+        qrCode: json["qr_code"],
+        idCardExpiryDate: json["id_card_expiry_date"],
+        labourId: json["labour_id"],
+        projectId: json["project_id"],
+        tradeId: json["trade_id"],
+        isActive: json["is_active"],
+        skillType: json["skill_type"],
+        contractorId: json["contractor_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": contractor_id,
+    "contractor_name": contractorName,
+    "contractor_email": contractorEmail,
+    "contractor_phone_no": contractorPhoneNo,
+    "contractor_company_id": contractorCompanyId,
+    "created_by": createdBy,
+    "deleted_at": deletedAt,
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
+    "contractors_company_name": contractorsCompanyName,
+    "id_proof_type": idProofType,
+    "id_proof_number": idProofNumber,
+    "document_path": documentPath,
+    "secondary_contact_person_name": secondaryContactPersonName,
+    "secondary_contact_person_number": secondaryContactPersonNumber,
+    "qr_code": qrCode,
+    "id_card_expiry_date": idCardExpiryDate,
+    "labour_id": labourId,
+    "project_id": projectId,
+    "trade_id": tradeId,
+    "is_active": isActive,
+    "skill_type": skillType,
+    "contractor_id": contractorId,
+  };
+}
+
 class TraineesContractorUserList {
   int id;
   String? contractorName;

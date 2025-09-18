@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class ToolboxTrainingController extends GetxController {
   List<TraineesContractorUserList> traineesContractorList = [];
   List<ReviwerUserList> reviewerList = [];
   List<WorkPermit> workPermitList = [];
+  List<ContractorUserList> contractorUserList=[];
 
   Future getToolBoxData(projcetId, userId) async {
     try {
@@ -26,9 +28,17 @@ class ToolboxTrainingController extends GetxController {
       var responseData =
           await globApiCall('get_toolbox_form_primary_data', map);
       var data = await responseData['data'];
-      //  log("Request body: $data");
+       log("Request body: $data");
 
       // //-------------------------------------------------
+      contractorUserList=(data['project_contractor_user_list'] as List<dynamic>)
+          .map((e) => ContractorUserList.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      String jsonString = jsonEncode(contractorUserList.map((e) => e.toJson()).toList());
+
+// Print the JSON string
+      print("contractor list is $jsonString");
 
       toolboxCategoryList = (data['toolbox_category_list'] as List<dynamic>)
           .map((e) => ToolboxCategoryList.fromJson(e as Map<String, dynamic>))
@@ -59,8 +69,8 @@ class ToolboxTrainingController extends GetxController {
       log('----------workPermitList${workPermitList.length}');
 
       //-------------------------------------------------
-    } catch (e) {
-      print("Error: $e");
+    } catch (e,stackTrace) {
+      print("Error: $e-----$stackTrace");
     }
   }
 

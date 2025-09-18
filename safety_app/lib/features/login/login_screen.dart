@@ -307,27 +307,27 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           Positioned(
-            top: SizeConfig.heightMultiplier * 2,
+            top: SizeConfig.heightMultiplier * 5,
             left: SizeConfig.widthMultiplier * 14,
             right: SizeConfig.widthMultiplier * 14,
-            child: Image.asset("assets/images/kumarname.png",
-                fit: BoxFit.contain, height: SizeConfig.heightMultiplier * 10),
+            child: Image.asset("assets/images/Kumar_Color.png",
+                fit: BoxFit.contain, height: SizeConfig.heightMultiplier * 14),
           ),
-          Positioned(
-            top: SizeConfig.heightMultiplier * 12,
-            left: SizeConfig.widthMultiplier * 25,
-            right: SizeConfig.widthMultiplier * 25,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppTextWidget(
-                    text: "SAFETY APP",
-                    fontSize: AppTextSize.textSizeMediumm,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary),
-              ],
-            ),
-          ),
+          // Positioned(
+          //   top: SizeConfig.heightMultiplier * 12,
+          //   left: SizeConfig.widthMultiplier * 25,
+          //   right: SizeConfig.widthMultiplier * 25,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       AppTextWidget(
+          //           text: "SAFETY APP",
+          //           fontSize: AppTextSize.textSizeMediumm,
+          //           fontWeight: FontWeight.bold,
+          //           color: AppColors.primary),
+          //     ],
+          //   ),
+          // ),
           Positioned(
             top: SizeConfig.heightMultiplier * 18,
             left: SizeConfig.widthMultiplier * 10,

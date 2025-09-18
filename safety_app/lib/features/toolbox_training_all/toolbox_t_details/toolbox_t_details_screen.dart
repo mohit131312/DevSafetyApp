@@ -306,6 +306,89 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
+                            text: 'Select Contractor',
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryText),
+                        AppTextWidget(
+                          text: AppTexts.star,
+                          fontSize: AppTextSize.textSizeExtraSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.starcolor,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 1),
+                    Obx(
+                          () => AppSearchDropdown(
+                        key: toolboxTDetailsController.contractorKey,
+                        items: toolboxTrainingController.contractorUserList
+                            .map(
+                              (cat) => cat.contractorName,
+                        )
+                            .whereType<String>()
+                            .toList(),
+                        selectedItem: toolboxTDetailsController
+                            .selectContractor.value.isNotEmpty
+                            ? toolboxTDetailsController.selectContractor.value
+                            : null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        hintText: 'Select Contractor',
+                        onChanged: (value) async {
+                          toolboxTDetailsController.selectContractor.value =
+                              value ?? '';
+                          var selectedCat = toolboxTrainingController
+                              .contractorUserList
+                              .firstWhereOrNull(
+                                  (cat) => cat.contractorName == value);
+
+                          if (selectedCat != null) {
+                            toolboxTDetailsController.selectContractorId.value =
+                                selectedCat.contractor_id;
+                            // if (await CheckInternet.checkInternet()) {
+                            //   toolboxTDetailsController.selectedInstructionIds
+                            //       .clear();
+                            //   showDialog(
+                            //       context: context,
+                            //       builder: (BuildContext context) =>
+                            //           CustomLoadingPopup());
+                            //   await toolboxTDetailsController
+                            //       .getInstructionData(
+                            //     toolboxTDetailsController
+                            //         .selectCategoryId.value,
+                            //     projectId,
+                            //     userId,
+                            //   );
+                            //   Get.back();
+                            //   log(' Selected toolboxTDetailsController.selectCategory.value: ${toolboxTDetailsController.selectCategory.value}');
+                            //   log(' Selected toolboxTDetailsController.selectCategoryId.value: ${toolboxTDetailsController.selectCategoryId.value}');
+                            // } else {
+                            //   await showDialog(
+                            //     context: Get.context!,
+                            //     builder: (BuildContext context) {
+                            //       return CustomValidationPopup(
+                            //           message:
+                            //           "Please check your internet connection.");
+                            //     },
+                            //   );
+                            // }
+                          } else {}
+                        },
+                        validator: (value) {
+                          if (value == null ||
+                              value.toString().trim().isEmpty) {
+                            return 'Please select a contractor';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
+
+                    SizedBox(height: SizeConfig.heightMultiplier * 2.0),
+                    Row(
+                      children: [
+                        AppTextWidget(
                             text: AppTexts.attachworkpermit,
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
@@ -953,6 +1036,10 @@ class ToolboxTDetailsScreen extends StatelessWidget {
   void validateAndFocusFirstInvalidField() {
     if (toolboxTDetailsController.selectCategory.value.isEmpty) {
       scrollToWidget(toolboxTDetailsController.categoryKey);
+      return;
+    }
+    if (toolboxTDetailsController.selectContractor.value.isEmpty) {
+      scrollToWidget(toolboxTDetailsController.contractorKey);
       return;
     }
     if (toolboxTDetailsController.tbtController.text.trim().isEmpty) {

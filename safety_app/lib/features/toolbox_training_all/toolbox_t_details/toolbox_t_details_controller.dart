@@ -43,6 +43,9 @@ class ToolboxTDetailsController extends GetxController {
 
   //-------------------
   var selectCategory = ''.obs;
+  var selectContractor = ''.obs;
+  var selectContractorId = 0.obs;
+
   var selectCategoryId = 0.obs;
   var selectWorkPermit = ''.obs;
   var selectWorkPermitId = 0.obs;
@@ -142,6 +145,7 @@ class ToolboxTDetailsController extends GetxController {
 
   //--------------------------------
   final GlobalKey categoryKey = GlobalKey();
+  final GlobalKey contractorKey=GlobalKey();
   final GlobalKey reviewerKey = GlobalKey();
   final GlobalKey instructionKey = GlobalKey();
 }

@@ -85,7 +85,7 @@ class _ColorLoaderState extends State<ColorLoader>
           // Static image, NOT rotating
           Center(
             child: Image.asset(
-              'assets/icons/ic_launcher.png',
+              'assets/icons/appstore.png',
               width: dotRadius * 5,
               height: dotRadius * 5,
             ),

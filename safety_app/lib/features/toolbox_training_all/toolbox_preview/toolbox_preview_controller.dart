@@ -80,6 +80,8 @@ class ToolboxPreviewController extends GetxController {
 
       request.fields['toolbox_category_id'] =
           toolboxTDetailsController.selectCategoryId.value.toString();
+      request.fields['contractor_id'] =
+          toolboxTDetailsController.selectContractorId.value.toString();
       request.fields['details'] =
           toolboxTDetailsController.detailsController.text;
       request.fields['name_of_tb_training'] =
@@ -187,7 +189,6 @@ class ToolboxPreviewController extends GetxController {
       Navigator.pop(Get.context!, true);
       //Get.back();
 
-      log("----------------------------------------------------------------------Erooorrrrrrrrrrrrrrrrr: $e");
       await showDialog(
         context: Get.context!,
         builder: (BuildContext context) {
