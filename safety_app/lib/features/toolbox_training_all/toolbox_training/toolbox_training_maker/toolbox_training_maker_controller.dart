@@ -51,6 +51,7 @@ class ToolboxTrainingMakerController extends GetxController {
   List<ErUser> makerMakerUser = [];
   List<ErUser> reviewerMakerUser = [];
   List<TbtAddedPhoto> tbtMakerAddedPhotos = [];
+  List<Contractor> contractorList = [];
 
   var savedSignatureUrlfetch = ''.obs;
 
@@ -79,6 +80,10 @@ class ToolboxTrainingMakerController extends GetxController {
       toolboxMakerCategoryList = (await data['toolbox_category_list']
               as List<dynamic>)
           .map((e) => ToolboxCategoryList.fromJson(e as Map<String, dynamic>))
+          .toList();
+      contractorList = (await data['contractor_list']
+      as List<dynamic>)
+          .map((e) => Contractor.fromJson(e as Map<String, dynamic>))
           .toList();
       toolboxMakerInstructionsList =
           (await data['toolbox_instructions_list'] as List<dynamic>)
@@ -286,6 +291,7 @@ class ToolboxTrainingMakerController extends GetxController {
     traineeMakerLaboursList.clear();
     makerMakerUser.clear();
     reviewerMakerUser.clear();
+    contractorList.clear();
     tbtMakerAddedPhotos.clear();
 
     // Reset status and validation

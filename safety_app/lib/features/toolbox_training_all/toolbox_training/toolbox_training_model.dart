@@ -284,7 +284,7 @@ class ContractorUserList {
 
   factory ContractorUserList.fromJson(Map<String, dynamic> json) =>
       ContractorUserList(
-        contractor_id: json["id"] ?? 0,
+        contractor_id: json["contractor_id"] ?? 0,
         contractorName: json["contractor_name"] ?? "",
         contractorEmail: json["contractor_email"] ?? "",
         contractorPhoneNo: json["contractor_phone_no"] ?? "",

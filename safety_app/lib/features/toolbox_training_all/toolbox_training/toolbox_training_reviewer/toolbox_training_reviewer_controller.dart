@@ -45,6 +45,7 @@ class ToolboxTrainingReviewerController extends GetxController {
 
   List<SafetyToolboxTraining> safetyToolboxReviwerTraining = [];
   List<ToolboxCategoryList> toolboxMakerCategoryList = [];
+  List<Contractor> contranctorList = [];
   List<ToolboxInstructionsList> toolboxMakerInstructionsList = [];
   List<TraineeLaboursList> traineeMakerLaboursList = [];
   List<ErUser> makerMakerUser = [];
@@ -79,6 +80,10 @@ class ToolboxTrainingReviewerController extends GetxController {
       toolboxMakerCategoryList = (await data['toolbox_category_list']
               as List<dynamic>)
           .map((e) => ToolboxCategoryList.fromJson(e as Map<String, dynamic>))
+          .toList();
+      contranctorList = (await data['contractor_list']
+      as List<dynamic>)
+          .map((e) => Contractor.fromJson(e as Map<String, dynamic>))
           .toList();
       toolboxMakerInstructionsList =
           (await data['toolbox_instructions_list'] as List<dynamic>)
@@ -284,6 +289,7 @@ class ToolboxTrainingReviewerController extends GetxController {
     // Clear lists
     safetyToolboxReviwerTraining.clear();
     toolboxMakerCategoryList.clear();
+    contranctorList.clear();
     toolboxMakerInstructionsList.clear();
     traineeMakerLaboursList.clear();
     makerMakerUser.clear();

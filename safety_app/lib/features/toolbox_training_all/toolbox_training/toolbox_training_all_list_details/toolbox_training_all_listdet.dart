@@ -168,7 +168,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                   width: 5,
                                 ),
                                 AppTextWidget(
-                                  text: 'Toolbox Training Details',
+                                  text: 'Toolbox Training Detai',
                                   fontSize: AppTextSize.textSizeSmall,
                                   fontWeight: FontWeight.w500,
                                   color: AppColors.buttoncolor,
@@ -258,6 +258,27 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                       SizedBox(
                                         height:
                                             SizeConfig.heightMultiplier * 1.5,
+                                      ),
+                                      AppTextWidget(
+                                          text: 'Contractor',
+                                          fontSize: AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.searchfeild),
+                                      SizedBox(
+                                        height: SizeConfig.heightMultiplier * 1,
+                                      ),
+                                      AppTextWidget(
+                                          text:
+                                          toolboxTrainingAllListdetController
+                                              .contractorList[0].contractorName
+                                              .toString(),
+                                          fontSize: AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.primaryText),
+
+                                      SizedBox(
+                                        height:
+                                        SizeConfig.heightMultiplier * 1.5,
                                       ),
                                       AppTextWidget(
                                           text: 'Details of Training.',

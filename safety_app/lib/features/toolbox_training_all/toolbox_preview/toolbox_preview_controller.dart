@@ -70,6 +70,7 @@ class ToolboxPreviewController extends GetxController {
 
       print("User ID: ${userId.toString()}");
       print("User Name: ${userName.toString()}");
+      log("contractor id is${toolboxTDetailsController.selectContractorId.value.toString()}");
       var request = await http.MultipartRequest("POST",
           Uri.parse('${RemoteServices.baseUrl}save_toolbox_training_assigner'));
 

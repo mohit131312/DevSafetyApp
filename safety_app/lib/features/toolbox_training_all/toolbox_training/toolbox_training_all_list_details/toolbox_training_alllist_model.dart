@@ -384,6 +384,38 @@ class ToolboxInstructionsList {
       };
 }
 
+
+class Contractor {
+  final int id;
+  final String contractorName;
+  final String companyName;
+
+  Contractor({
+    required this.id,
+    required this.contractorName,
+    required this.companyName,
+  });
+
+  // Factory constructor to create object from JSON
+  factory Contractor.fromJson(Map<String, dynamic> json) {
+    return Contractor(
+      id: json['id'] ?? 0,
+      contractorName: json['contractor_name'] ?? '',
+      companyName: json['company_name'] ?? '',
+    );
+  }
+
+  // Convert object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'contractor_name': contractorName,
+      'company_name': companyName,
+    };
+  }
+}
+
+
 class TraineeLaboursList {
   int id;
   String? inducteeId;

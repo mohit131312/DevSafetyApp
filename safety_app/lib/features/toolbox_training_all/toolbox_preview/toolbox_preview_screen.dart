@@ -329,6 +329,36 @@ class ToolboxPreviewScreen extends StatelessWidget {
                                             SizeConfig.heightMultiplier * 1.5,
                                       ),
                                       AppTextWidget(
+                                          text: 'Contractor',
+                                          fontSize: AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.searchfeild),
+                                      SizedBox(
+                                        height: SizeConfig.heightMultiplier * 1,
+                                      ),
+                                      Obx(() {
+                                        return toolboxTDetailsController
+                                            .selectContractor.isNotEmpty
+                                            ? AppTextWidget(
+                                            text: toolboxTDetailsController
+                                                .selectContractor.value,
+                                            fontSize:
+                                            AppTextSize.textSizeSmall,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.primaryText)
+                                            : AppTextWidget(
+                                          text: "",
+                                          fontSize:
+                                          AppTextSize.textSizeSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.red,
+                                        );
+                                      }),
+                                      SizedBox(
+                                        height:
+                                        SizeConfig.heightMultiplier * 1.5,
+                                      ),
+                                      AppTextWidget(
                                           text: 'Details of Training.',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w400,

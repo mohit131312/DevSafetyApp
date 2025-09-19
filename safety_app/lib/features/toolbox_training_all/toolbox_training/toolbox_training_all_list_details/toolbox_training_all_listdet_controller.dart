@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class ToolboxTrainingAllListdetController extends GetxController {
   List<ErUser> makerUser = [];
   List<ErUser> reviewerUser = [];
   List<TbtAddedPhoto> tbtAddedPhotos = [];
+  List<Contractor>contractorList=[];
 
   Future gettoolBoxAllDetails(projcetId, userId, userType, toolBoxId) async {
     try {
@@ -54,7 +56,7 @@ class ToolboxTrainingAllListdetController extends GetxController {
       var responseData =
           await globApiCall('get_selected_toolbox_training_details', map);
       var data = await responseData['data'];
-      log("Request body: $data");
+      log("Request body:tdetails $data");
 
       //-------------------------------------------------
       safetyToolboxTraining = (await data['safety_toolbox_training']
@@ -64,6 +66,11 @@ class ToolboxTrainingAllListdetController extends GetxController {
       toolboxCategoryList = (await data['toolbox_category_list']
               as List<dynamic>)
           .map((e) => ToolboxCategoryList.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      contractorList=(await data['contractor_list']
+      as List<dynamic>)
+          .map((e) => Contractor.fromJson(e as Map<String, dynamic>))
           .toList();
       toolboxInstructionsList =
           (await data['toolbox_instructions_list'] as List<dynamic>)
@@ -92,6 +99,7 @@ class ToolboxTrainingAllListdetController extends GetxController {
       log('----------=traineeLaboursList: ${(traineeLaboursList.length)}');
       log('----------=maker: ${(makerUser.length)}');
       log('----------=rev: ${(reviewerUser.length)}');
+      log("----------=rev: --2${jsonEncode(contractorList.map((e) => e.toJson()).toList())}");
       log('----------=tbtAddedPhotos: ${(tbtAddedPhotos.length)}');
       //-------------------------------------------------
     } catch (e) {
@@ -112,6 +120,7 @@ class ToolboxTrainingAllListdetController extends GetxController {
     // Clear all lists
     safetyToolboxTraining.clear();
     toolboxCategoryList.clear();
+    contractorList.clear();
     toolboxInstructionsList.clear();
     traineeLaboursList.clear();
     makerUser.clear();
