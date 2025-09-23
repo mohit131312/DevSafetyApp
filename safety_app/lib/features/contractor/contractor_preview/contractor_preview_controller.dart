@@ -154,6 +154,18 @@ class ContractorPreviewController extends GetxController {
         'document_photo',
         contractorDetailsController.docImg.first.path,
       ));
+      //
+      request.files.add(await http.MultipartFile.fromPath(
+        'wc_policy',
+        contractorDetailsController.wcPolicyFile.first.path,
+      ));
+
+
+      request.files.add(await http.MultipartFile.fromPath(
+        'work_permit',
+        contractorDetailsController.workPermitFile.first.path,
+      ));
+
 
       request.files.add(await http.MultipartFile.fromPath(
         'signature_photo',

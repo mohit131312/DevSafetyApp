@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/image_helper.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
@@ -33,6 +35,9 @@ class ContractorDetailsController extends GetxController {
 //------------------------------------------------------------
 
   var documentError = ''.obs;
+
+  var docWcPolicyError = ''.obs;
+  var docWorkPermitError = ''.obs;
 
   String validationmsg = '';
   var searchResults = <Map<String, dynamic>>[].obs;
@@ -98,10 +103,14 @@ class ContractorDetailsController extends GetxController {
 
 //--------------------------------------------------------
   var docImg = <XFile>[];
+  final RxList<File> wcPolicyFile = <File>[].obs; // For WC Policy
+  final RxList<File> workPermitFile = <File>[].obs; // For Work Permit
 
   var docImgCount = 0.obs;
+  var docFileCount = 0.obs;
 
   final maxPhotos = 1;
+  final maxFiles = 2;
 
   // Future<void> pickDocImages(ImageSource source) async {
   //   final ImagePicker picker = ImagePicker();
@@ -160,12 +169,104 @@ class ContractorDetailsController extends GetxController {
       log('Error picking or cropping image: $e');
     }
   }
+  Future<void> pickDoc(ImageSource source, {required int index, BuildContext? context}) async {
+    if (wcPolicyFile.length + workPermitFile.length >= maxFiles) {
+      log('Maximum of two files allowed.');
+      return;
+    }
+
+    try {
+      File? selectedFile;
+
+      if (source == ImageSource.camera) {
+        final XFile? croppedImage = await ImageHelper.pickAndCropImage(
+          source: source,
+          maxHeight: 1080,
+          maxWidth: 1080,
+          maxSizeInMB: 2,
+          context: context,
+        );
+
+        if (croppedImage != null) {
+          selectedFile = File(croppedImage.path);
+        }
+      } else {
+        final FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
+        );
+
+        if (result != null && result.files.isNotEmpty) {
+          final PlatformFile pickedFile = result.files.first;
+          if (pickedFile.path != null) {
+            selectedFile = File(pickedFile.path!);
+
+            if (['jpg', 'jpeg', 'png'].contains(pickedFile.extension?.toLowerCase())) {
+              final XFile? croppedImage = await ImageHelper.pickAndCropImage(
+                source: ImageSource.gallery,
+                maxHeight: 1080,
+                maxWidth: 1080,
+                maxSizeInMB: 2,
+                context: context,
+              );
+              if (croppedImage != null) {
+                selectedFile = File(croppedImage.path);
+              } else {
+                log('Image cropping cancelled');
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      if (selectedFile != null) {
+        // Add to the specified file list based on index
+        if (index == 0 && wcPolicyFile.isEmpty) {
+          wcPolicyFile.add(selectedFile);
+        } else if (index == 1 && workPermitFile.isEmpty) {
+          workPermitFile.add(selectedFile);
+        } else {
+          log('Cannot add file: Target list is already full or invalid index: $index');
+          return;
+        }
+        docFileCount.value = wcPolicyFile.length + workPermitFile.length;
+        if (docFileCount.value > 0) {
+          documentError.value = '';
+        }
+
+        log('File selected: ${selectedFile.path} for index: $index');
+        log('_______________________wcPolicyFile.length: ${wcPolicyFile.length}');
+        log('_______________________workPermitFile.length: ${workPermitFile.length}');
+        log('_______________________docFileCount: ${docFileCount.value}');
+      } else {
+        log('${source == ImageSource.camera ? "Camera" : "Gallery"} file picking/cropping cancelled or failed');
+      }
+    } catch (e) {
+      log('Error picking or cropping file: $e');
+      documentError.value = 'Error picking file: $e';
+    }
+  }
 
   void removeDocImage(int index) {
     docImg.clear();
     docImgCount.value = 0;
     log('_______________________${docImg.length}');
     log('_______________________${docImgCount}');
+  }
+
+  void removeDocFile(int index) {
+    if (index == 0 && wcPolicyFile.isNotEmpty) {
+      wcPolicyFile.clear();
+    } else if (index == 1 && workPermitFile.isNotEmpty) {
+      workPermitFile.clear();
+    } else {
+      log('Invalid index for removing file: $index');
+    }
+    docFileCount.value = wcPolicyFile.length + workPermitFile.length;
+    log('_______________________wcPolicyFile.length: ${wcPolicyFile.length}');
+    log('_______________________workPermitFile.length: ${workPermitFile.length}');
+    log('_______________________docFileCount: ${docFileCount.value}');
   }
 //------------------------------------------------
 

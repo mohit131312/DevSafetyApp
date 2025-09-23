@@ -103,10 +103,10 @@ class ContractorListingController extends GetxController {
       log('------------------contractorDetailsList');
       log('contractorDetailsList length: ${contractorDetailsList.length}');
       log('contractorCompanyDetailsList length: ${contractorCompanyDetailsList.length}');
-      log('contractorInductionTrainingsList length: ${contractorInductionTrainingsList.length}');
+      log('contractorInductionTrainingsList length: ${contractorInductionTrainingsList}');
       log('contractorReasonOfVisitList length: ${contractorReasonOfVisitList.length}');
-    } catch (e) {
-      print("Error: $e");
+    } catch (e,stackTrace) {
+      print("Error: $e------$stackTrace");
     }
   }
 

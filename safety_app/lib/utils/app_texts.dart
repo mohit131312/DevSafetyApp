@@ -139,6 +139,8 @@ class AppTexts {
   static const String otherIdproof = "Other ID Proof";
   static const String doctype = "Document Type ";
   static const String docphoto = "Document Photo";
+  static const String docWcPolicy = "Document WC Policy";
+  static const String docWorkPermit = "Document Work Permit";
   static const String idno = "ID Number";
   static const String validity = "Validity";
 

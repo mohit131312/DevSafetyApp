@@ -46,6 +46,8 @@ class ContractorDetailsScreen extends StatelessWidget {
   final GlobalKey<FormState> doctypekey = GlobalKey<FormState>();
   final GlobalKey<FormState> validitykey = GlobalKey<FormState>();
   final GlobalKey<FormState> docphotokey = GlobalKey<FormState>();
+  final GlobalKey<FormState> docFilekey = GlobalKey<FormState>();
+  final GlobalKey<FormState> docWorkpermitkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -716,28 +718,707 @@ class ContractorDetailsScreen extends StatelessWidget {
                                   ],
                                 ),
                         ),
-                        Obx(() => contractorDetailsController
-                                .documentError.isNotEmpty
-                            ? Padding(
-                                padding: EdgeInsets.only(top: 4, left: 13),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      contractorDetailsController
-                                          .documentError.value,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 174, 75, 68),
-                                          fontSize: 12),
-                                    ),
-                                  ],
+
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 2,
+                        ),
+
+                        Row(
+                          children: [
+                            AppTextWidget(
+                              text: AppTexts.docWcPolicy,
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                            AppTextWidget(
+                                text: AppTexts.star,
+                                fontSize: AppTextSize.textSizeExtraSmall,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.starcolor),
+                          ],
+                        ),
+
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 1.5,
+                        ),
+                        Obx(
+                              () => contractorDetailsController.wcPolicyFile.isEmpty
+                              ? Container(
+                            key: docFilekey,
+                            alignment: Alignment.center,
+                            width: SizeConfig.widthMultiplier * 92,
+                            padding: EdgeInsets.only(
+                                left: 16, right: 16, top: 24, bottom: 24),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.orange, width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.orange.shade50,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    await contractorDetailsController
+                                        .pickDoc(ImageSource.camera, index: 0, context: context);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.camera_alt_outlined,
+                                        color: Colors.orange,
+                                        size: 30,
+                                      ),
+                                      SizedBox(height: 8),
+                                      AppTextWidget(
+                                          text: 'Click Photo',
+                                          fontSize: AppTextSize.textSizeExtraSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.secondaryText),
+                                    ],
+                                  ),
                                 ),
-                              )
+                                GestureDetector(
+                                  onTap: () async {
+                                    await contractorDetailsController
+                                        .pickDoc(ImageSource.gallery, index: 0, context: context);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.photo_library,
+                                        color: Colors.orange,
+                                        size: 30,
+                                      ),
+                                      SizedBox(height: 8),
+                                      AppTextWidget(
+                                          text: 'Open Gallery/Documents',
+                                          fontSize: AppTextSize.textSizeExtraSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.secondaryText),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                              : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: SizeConfig.imageSizeMultiplier * 20,
+                                      child: GridView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: contractorDetailsController.wcPolicyFile.length,
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio: 1,
+                                          mainAxisSpacing: 10,
+                                          crossAxisSpacing: 10,
+                                        ),
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          final File selectedFile =
+                                          contractorDetailsController.wcPolicyFile[index];
+                                          final String filePath = selectedFile.path;
+                                          final String? extension = filePath.split('.').last.toLowerCase();
+                                          bool isImage = ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+
+                                          return Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: SizeConfig.imageSizeMultiplier * 18,
+                                                width: SizeConfig.imageSizeMultiplier * 18,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: isImage
+                                                      ? Image.file(
+                                                    selectedFile,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        color: Colors.grey.shade300,
+                                                        child: Icon(Icons.image_not_supported,
+                                                            color: Colors.grey),
+                                                      );
+                                                    },
+                                                  )
+                                                      : Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue.shade100,
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          extension == 'pdf'
+                                                              ? Icons.picture_as_pdf
+                                                              : Icons.description,
+                                                          color: extension == 'pdf' ? Colors.red : Colors.blue,
+                                                          size: 40,
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Text(
+                                                          extension!.toUpperCase(),
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.black87,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 1,
+                                                right: 1,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    contractorDetailsController.removeDocFile(0);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(4),
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.black.withOpacity(0.8),
+                                                    ),
+                                                    child: Icon(Icons.close, color: Colors.white, size: 15),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: SizeConfig.imageSizeMultiplier * 5),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Obx(() => contractorDetailsController.docWcPolicyError.isNotEmpty
+                            ? Padding(
+                          padding: EdgeInsets.only(top: 4, left: 13),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                contractorDetailsController.docWcPolicyError.value,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 174, 75, 68),
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        )
                             : SizedBox.shrink()),
                         SizedBox(
                           height: SizeConfig.heightMultiplier * 1.5,
                         ),
+
+                        // Work Permit Section
+                        Row(
+                          children: [
+                            AppTextWidget(
+                              text: AppTexts.docWorkPermit,
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryText,
+                            ),
+                            AppTextWidget(
+                                text: AppTexts.star,
+                                fontSize: AppTextSize.textSizeExtraSmall,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.starcolor),
+                          ],
+                        ),
+
+
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 1.5,
+                        ),
+                        Obx(
+                              () => contractorDetailsController.workPermitFile.isEmpty
+                              ? Container(
+                            key: docWorkpermitkey,
+                            alignment: Alignment.center,
+                            width: SizeConfig.widthMultiplier * 92,
+                            padding: EdgeInsets.only(
+                                left: 16, right: 16, top: 24, bottom: 24),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.orange, width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.orange.shade50,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    await contractorDetailsController
+                                        .pickDoc(ImageSource.camera, index: 1, context: context);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.camera_alt_outlined,
+                                        color: Colors.orange,
+                                        size: 30,
+                                      ),
+                                      SizedBox(height: 8),
+                                      AppTextWidget(
+                                          text: 'Click Photo',
+                                          fontSize: AppTextSize.textSizeExtraSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.secondaryText),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await contractorDetailsController
+                                        .pickDoc(ImageSource.gallery, index: 1, context: context);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.photo_library,
+                                        color: Colors.orange,
+                                        size: 30,
+                                      ),
+                                      SizedBox(height: 8),
+                                      AppTextWidget(
+                                          text: 'Open Gallery/Documents',
+                                          fontSize: AppTextSize.textSizeExtraSmall,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.secondaryText),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                              : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: SizeConfig.imageSizeMultiplier * 20,
+                                      child: GridView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: contractorDetailsController.workPermitFile.length,
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio: 1,
+                                          mainAxisSpacing: 10,
+                                          crossAxisSpacing: 10,
+                                        ),
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          final File selectedFile =
+                                          contractorDetailsController.workPermitFile[index];
+                                          final String filePath = selectedFile.path;
+                                          final String? extension = filePath.split('.').last.toLowerCase();
+                                          bool isImage = ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+
+                                          return Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: SizeConfig.imageSizeMultiplier * 18,
+                                                width: SizeConfig.imageSizeMultiplier * 18,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: isImage
+                                                      ? Image.file(
+                                                    selectedFile,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        color: Colors.grey.shade300,
+                                                        child: Icon(Icons.image_not_supported,
+                                                            color: Colors.grey),
+                                                      );
+                                                    },
+                                                  )
+                                                      : Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue.shade100,
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          extension == 'pdf'
+                                                              ? Icons.picture_as_pdf
+                                                              : Icons.description,
+                                                          color: extension == 'pdf' ? Colors.red : Colors.blue,
+                                                          size: 40,
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Text(
+                                                          extension!.toUpperCase(),
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.black87,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 1,
+                                                right: 1,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    contractorDetailsController.removeDocFile(1);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(4),
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.black.withOpacity(0.8),
+                                                    ),
+                                                    child: Icon(Icons.close, color: Colors.white, size: 15),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: SizeConfig.imageSizeMultiplier * 5),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Obx(() => contractorDetailsController.docWorkPermitError.isNotEmpty
+                            ? Padding(
+                          padding: EdgeInsets.only(top: 4, left: 13),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                contractorDetailsController.docWorkPermitError.value,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 174, 75, 68),
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        )
+                            : SizedBox.shrink()),
+                        SizedBox(
+                          height: SizeConfig.heightMultiplier * 1.5,
+                        ),
+// ============================================
+
+
+                        // Row(
+                        //   children: [
+                        //     AppTextWidget(
+                        //       text: AppTexts.docWorkPermit,
+                        //       fontSize: AppTextSize.textSizeSmall,
+                        //       fontWeight: FontWeight.w500,
+                        //       color: AppColors.primaryText,
+                        //     ),
+                        //     AppTextWidget(
+                        //         text: AppTexts.star,
+                        //         fontSize: AppTextSize.textSizeExtraSmall,
+                        //         fontWeight: FontWeight.w400,
+                        //         color: AppColors.starcolor),
+                        //   ],
+                        // ),
+                        // SizedBox(
+                        //   height: SizeConfig.heightMultiplier * 1,
+                        // ),
+                        //
+                        // Obx(() => contractorDetailsController
+                        //     .documentError.isNotEmpty
+                        //     ? Padding(
+                        //   padding: EdgeInsets.only(top: 4, left: 13),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: [
+                        //       Text(
+                        //         contractorDetailsController
+                        //             .documentError.value,
+                        //         style: TextStyle(
+                        //             color: const Color.fromARGB(
+                        //                 255, 174, 75, 68),
+                        //             fontSize: 12),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
+                        //     : SizedBox.shrink()),
+                        // SizedBox(
+                        //   height: SizeConfig.heightMultiplier * 1.5,
+                        // ),
+                        //
+                        // Obx(
+                        //       () => (contractorDetailsController.docFileCount.value == 0||contractorDetailsController.docFileCount.value == 1)
+                        //       ? Container(
+                        //     key: docWorkpermitkey,
+                        //     alignment: Alignment.center,
+                        //     width: SizeConfig.widthMultiplier * 92,
+                        //     padding: EdgeInsets.only(
+                        //         left: 16, right: 16, top: 24, bottom: 24),
+                        //     decoration: BoxDecoration(
+                        //       border: Border.all(
+                        //           color: Colors.orange, width: 2),
+                        //       borderRadius: BorderRadius.circular(8),
+                        //       color: Colors.orange.shade50,
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisAlignment:
+                        //       MainAxisAlignment.spaceEvenly,
+                        //       children: [
+                        //         GestureDetector(
+                        //           onTap: () async {
+                        //             await contractorDetailsController
+                        //                 .pickDoc(ImageSource.camera, context: context); // Capture from camera (image only)
+                        //           },
+                        //           child: Column(
+                        //             mainAxisAlignment:
+                        //             MainAxisAlignment.center,
+                        //             crossAxisAlignment:
+                        //             CrossAxisAlignment.center,
+                        //             children: [
+                        //               Icon(
+                        //                 Icons.camera_alt_outlined,
+                        //                 color: Colors.orange,
+                        //                 size: 30,
+                        //               ),
+                        //               SizedBox(height: 8),
+                        //               AppTextWidget(
+                        //                   text: 'Click Photo',
+                        //                   fontSize: AppTextSize
+                        //                       .textSizeExtraSmall,
+                        //                   fontWeight: FontWeight.w400,
+                        //                   color: AppColors.secondaryText),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         GestureDetector(
+                        //           onTap: () async {
+                        //             await contractorDetailsController
+                        //                 .pickDoc(ImageSource.gallery, context: context); // Gallery: images, PDF, or DOC
+                        //           },
+                        //           child: Column(
+                        //             mainAxisAlignment:
+                        //             MainAxisAlignment.center,
+                        //             crossAxisAlignment:
+                        //             CrossAxisAlignment.center,
+                        //             children: [
+                        //               Icon(
+                        //                 Icons.photo_library,
+                        //                 color: Colors.orange,
+                        //                 size: 30,
+                        //               ),
+                        //               SizedBox(height: 8),
+                        //               AppTextWidget(
+                        //                   text: 'Open Gallery/Documents',
+                        //                   fontSize: AppTextSize
+                        //                       .textSizeExtraSmall,
+                        //                   fontWeight: FontWeight.w400,
+                        //                   color: AppColors.secondaryText),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   )
+                        //       : Column(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     crossAxisAlignment: CrossAxisAlignment.center,
+                        //     children: [
+                        //       Row(
+                        //         crossAxisAlignment: CrossAxisAlignment
+                        //             .start, // Ensure items align properly
+                        //
+                        //         children: [
+                        //           Expanded(
+                        //             child: SizedBox(
+                        //               height: SizeConfig
+                        //                   .imageSizeMultiplier *
+                        //                   20, // Adjust based on UI needs
+                        //
+                        //               child: GridView.builder(
+                        //                   physics:
+                        //                   NeverScrollableScrollPhysics(),
+                        //                   itemCount:
+                        //                   contractorDetailsController
+                        //                       .docFile.length,
+                        //                   gridDelegate:
+                        //                   SliverGridDelegateWithFixedCrossAxisCount(
+                        //                     crossAxisCount:
+                        //                     3, // Ensures one row (horizontal scroll)
+                        //
+                        //                     childAspectRatio:
+                        //                     1, // Keeps items square
+                        //                     mainAxisSpacing: 10,
+                        //                     crossAxisSpacing:
+                        //                     10, // Spacing between images
+                        //                   ),
+                        //                   shrinkWrap: true,
+                        //                   itemBuilder: (context, index) {
+                        //                     final File selectedFile = contractorDetailsController.docFile[1];
+                        //                     final String filePath = selectedFile.path;
+                        //                     final String? extension = filePath.split('.').last.toLowerCase();
+                        //
+                        //                     bool isImage = ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+                        //
+                        //                     return Stack(
+                        //                       children: [
+                        //                         SizedBox(
+                        //                           height: SizeConfig
+                        //                               .imageSizeMultiplier *
+                        //                               18,
+                        //                           width: SizeConfig
+                        //                               .imageSizeMultiplier *
+                        //                               18,
+                        //                           child: ClipRRect(
+                        //                             borderRadius:
+                        //                             BorderRadius.circular(
+                        //                                 12), // Clip to match container
+                        //
+                        //                             child: isImage
+                        //                                 ? Image.file(
+                        //                               selectedFile,
+                        //                               fit: BoxFit.cover,
+                        //                               errorBuilder: (context, error, stackTrace) {
+                        //                                 // Fallback if image fails to load
+                        //                                 return Container(
+                        //                                   color: Colors.grey.shade300,
+                        //                                   child: Icon(Icons.image_not_supported, color: Colors.grey),
+                        //                                 );
+                        //                               },
+                        //                             )
+                        //                                 : Container(
+                        //                               // Placeholder for PDF/DOC files
+                        //                               decoration: BoxDecoration(
+                        //                                 color: Colors.blue.shade100,
+                        //                                 borderRadius: BorderRadius.circular(12),
+                        //                               ),
+                        //                               child: Column(
+                        //                                 mainAxisAlignment: MainAxisAlignment.center,
+                        //                                 children: [
+                        //                                   Icon(
+                        //                                     extension == 'pdf' ? Icons.picture_as_pdf : Icons.description,
+                        //                                     color: extension == 'pdf' ? Colors.red : Colors.blue,
+                        //                                     size: 40,
+                        //                                   ),
+                        //                                   SizedBox(height: 4),
+                        //                                   Text(
+                        //                                     extension!.toUpperCase(),
+                        //                                     style: TextStyle(
+                        //                                       fontSize: 10,
+                        //                                       fontWeight: FontWeight.bold,
+                        //                                       color: Colors.black87,
+                        //                                     ),
+                        //                                   ),
+                        //                                 ],
+                        //                               ),
+                        //                             ),
+                        //                           ),
+                        //                         ),
+                        //                         Positioned(
+                        //                           top: 1,
+                        //                           right: 1,
+                        //                           child: GestureDetector(
+                        //                             onTap: () {
+                        //                               contractorDetailsController
+                        //                                   .removeDocFile(
+                        //                                   index); // Remove file
+                        //                             },
+                        //                             child: Container(
+                        //                               padding:
+                        //                               EdgeInsets.all(
+                        //                                   4),
+                        //                               decoration:
+                        //                               BoxDecoration(
+                        //                                 shape: BoxShape
+                        //                                     .circle,
+                        //                                 color: Colors
+                        //                                     .black
+                        //                                     .withOpacity(
+                        //                                     0.8),
+                        //                               ),
+                        //                               child: Icon(
+                        //                                   Icons.close,
+                        //                                   color: Colors
+                        //                                       .white,
+                        //                                   size: 15),
+                        //                             ),
+                        //                           ),
+                        //                         )
+                        //                       ],
+                        //                     );
+                        //                   }),
+                        //             ),
+                        //           ),
+                        //           SizedBox(
+                        //             width:
+                        //             SizeConfig.imageSizeMultiplier *
+                        //                 5,
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // Obx(() => contractorDetailsController
+                        //     .documentError.isNotEmpty
+                        //     ? Padding(
+                        //   padding: EdgeInsets.only(top: 4, left: 13),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: [
+                        //       Text(
+                        //         contractorDetailsController
+                        //             .documentError.value,
+                        //         style: TextStyle(
+                        //             color: const Color.fromARGB(
+                        //                 255, 174, 75, 68),
+                        //             fontSize: 12),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
+                        //     : SizedBox.shrink()),
+                        // SizedBox(
+                        //   height: SizeConfig.heightMultiplier * 1.5,
+                        // ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -898,14 +1579,31 @@ class ContractorDetailsScreen extends StatelessWidget {
                   validateAndFocusFirstInvalidField();
                   if (contractorDetailsController.docImgCount == 0) {
                     contractorDetailsController.documentError.value =
-                        "Please select a document photo";
+                        "Please select a document";
                   } else {
                     contractorDetailsController.documentError.value = "";
                   }
 
+                  if(contractorDetailsController.wcPolicyFile.isEmpty){
+                    contractorDetailsController.docWcPolicyError.value =
+                    "Please select a wc policy document";
+
+                  }else {
+                    contractorDetailsController.docWcPolicyError.value = "";
+                  }
+
+                  if(contractorDetailsController.workPermitFile.isEmpty){
+                    contractorDetailsController.docWorkPermitError.value =
+                    "Please select a Work Permit document";
+
+                  }else {
+                    contractorDetailsController.docWorkPermitError.value = "";
+                  }
+
+
                   if (!formKey.currentState!.validate()) {}
                   if (formKey.currentState!.validate() &&
-                      contractorDetailsController.docImgCount != 0) {
+                      contractorDetailsController.docImgCount != 0&&contractorDetailsController.docFileCount==2) {
                     // ID Proof Validation
 
                     Get.to(ServiceDetailsScreen(

@@ -214,6 +214,8 @@ class InductionTraining {
   // dynamic contractorCompanyId;
   // dynamic tradeId;
   dynamic userPhoto;
+  String? docWcPolicy;
+  String? docWorkPermit;
   // dynamic experienceInYears;
   // int signatureFlag;
   // int signatureBehalfOf;
@@ -239,6 +241,8 @@ class InductionTraining {
     // required this.contractorCompanyId,
     // required this.tradeId,
     required this.userPhoto,
+    this.docWcPolicy,
+    this.docWorkPermit,
     // required this.experienceInYears,
     // required this.signatureFlag,
     // required this.signatureBehalfOf,
@@ -260,12 +264,15 @@ class InductionTraining {
       InductionTraining(
         id: json["id"],
         inductionId: json["induction_id"],
+
         // userId: json["user_id"],
         // userType: json["user_type"],
         // inducteeName: json["inductee_name"],
         // contractorCompanyId: json["contractor_company_id"],
         // tradeId: json["trade_id"],
         userPhoto: json["user_photo"],
+        docWcPolicy: json["doc_wc_policy"],
+        docWorkPermit: json["doc_work_permit"],
         // experienceInYears: json["experience_in_years"],
         // signatureFlag: json["signature_flag"],
         // signatureBehalfOf: json["signature_behalf_of"],

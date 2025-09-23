@@ -444,470 +444,430 @@ class ContractorPreview extends StatelessWidget {
               //---------------------------------------------------------------------
 
               //-----------------------------------------------------------------
-              Obx(() => contractorPreviewController
-                      .isidproofDetailsExpanded.value
+              Obx(() => contractorPreviewController.isidproofDetailsExpanded.value
                   ? Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.widthMultiplier * 4,
+                  vertical: SizeConfig.heightMultiplier * 2,
+                ),
+                width: SizeConfig.widthMultiplier * 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xFFFEFEFE),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x10000000),
+                      blurRadius: 20,
+                      spreadRadius: 0,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: Image.asset('assets/icons/phone_small_phone.png'),
+                        ),
+                        SizedBox(width: 5),
+                        AppTextWidget(
+                          text: 'Contact Details',
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.buttoncolor,
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            contractorPreviewController.toggleExpansionidProof();
+                          },
+                          child: Icon(Icons.keyboard_arrow_up),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 3),
+                    // Primary Contact Details
+                    AppTextWidget(
+                      text: 'Primary Contact Details',
+                      fontSize: AppTextSize.textSizeSmall,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.searchfeild,
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 2),
+                    Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.widthMultiplier * 4,
-                        vertical: SizeConfig.heightMultiplier * 2,
+                        vertical: SizeConfig.heightMultiplier * 3,
                       ),
                       width: SizeConfig.widthMultiplier * 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Color(0xFFFEFEFE),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 20,
-                            spreadRadius: 0,
-                            offset: Offset(0, -4),
-                          ),
-                        ],
+                        color: AppColors.appgreycolor,
                       ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: SizeConfig.widthMultiplier * 43,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: Image.asset(
-                                        'assets/icons/phone_small_phone.png')),
-                                SizedBox(
-                                  width: 5,
-                                ),
                                 AppTextWidget(
-                                  text: 'Contact Details',
+                                  text: AppTexts.name,
                                   fontSize: AppTextSize.textSizeSmall,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.buttoncolor,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
                                 ),
-                                Spacer(),
-                                GestureDetector(
-                                    onTap: () {
-                                      contractorPreviewController
-                                          .toggleExpansionidProof();
-                                    },
-                                    child: Icon(Icons.keyboard_arrow_up)),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController.nameController.text.isNotEmpty
+                                      ? contractorDetailsController.nameController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                                AppTextWidget(
+                                  text: AppTexts.emailid,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController.emailidController.text.isNotEmpty
+                                      ? contractorDetailsController.emailidController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                                AppTextWidget(
+                                  text: AppTexts.idproofno,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController.idproofController.text.isNotEmpty
+                                      ? contractorDetailsController.idproofController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
                               ],
                             ),
-                            SizedBox(
-                              height: SizeConfig.heightMultiplier * 3,
-                            ),
-                            AppTextWidget(
-                              text: 'Primary Contact Details',
-                              fontSize: AppTextSize.textSizeSmall,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.searchfeild,
-                            ),
-                            SizedBox(height: SizeConfig.heightMultiplier * 2),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.widthMultiplier * 4,
-                                vertical: SizeConfig.heightMultiplier * 3,
-                              ),
-                              width: SizeConfig.widthMultiplier * 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: AppColors.appgreycolor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: SizeConfig.widthMultiplier * 43,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                          ),
+                          SizedBox(width: SizeConfig.widthMultiplier * 4),
+                          SizedBox(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AppTextWidget(
+                                  text: AppTexts.contactno,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController.contactnoController.text.isNotEmpty
+                                      ? contractorDetailsController.contactnoController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                                AppTextWidget(
+                                  text: AppTexts.idprooftype,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                Obx(() => AppTextWidget(
+                                  text: contractorDetailsController.selectedDoctType.value.isNotEmpty
+                                      ? contractorDetailsController.selectedDoctType.value
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                )),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                                AppTextWidget(
+                                  text: AppTexts.photos,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                Obx(
+                                      () => contractorDetailsController.docImgCount.value == 0
+                                      ? SizedBox()
+                                      : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          AppTextWidget(
-                                              text: AppTexts.name,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
                                           SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
+                                            height: SizeConfig.imageSizeMultiplier * 18,
+                                            width: SizeConfig.imageSizeMultiplier * 18,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Image.file(
+                                                File(contractorDetailsController.docImg[0].path),
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) {
+                                                  return Container(
+                                                    color: Colors.grey.shade300,
+                                                    child: Icon(
+                                                      Icons.image_not_supported,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
                                           ),
-                                          AppTextWidget(
-                                              text: contractorDetailsController
-                                                      .nameController
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? contractorDetailsController
-                                                      .nameController.text
-                                                  : '',
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                          AppTextWidget(
-                                              text: AppTexts.emailid,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          AppTextWidget(
-                                            text: contractorDetailsController
-                                                    .emailidController
-                                                    .text
-                                                    .isNotEmpty
-                                                ? contractorDetailsController
-                                                    .emailidController.text
-                                                : '',
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.primaryText,
-                                          ),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                          AppTextWidget(
-                                              text: AppTexts.idproofno,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          AppTextWidget(
-                                            text: contractorDetailsController
-                                                    .idproofController
-                                                    .text
-                                                    .isNotEmpty
-                                                ? contractorDetailsController
-                                                    .idproofController.text
-                                                : '',
-                                            fontSize: AppTextSize.textSizeSmall,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.primaryText,
-                                          ),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                        ]),
+                                          SizedBox(width: SizeConfig.imageSizeMultiplier * 5),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: SizeConfig.widthMultiplier * 4,
-                                  ),
-                                  SizedBox(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          AppTextWidget(
-                                              text: AppTexts.contactno,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          AppTextWidget(
-                                              text: contractorDetailsController
-                                                      .contactnoController
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? contractorDetailsController
-                                                      .contactnoController.text
-                                                  : '',
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                          AppTextWidget(
-                                              text: AppTexts.idprooftype,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          Obx(() => AppTextWidget(
-                                                text: contractorDetailsController
-                                                        .selectedDoctType
-                                                        .value
-                                                        .isNotEmpty
-                                                    ? contractorDetailsController
-                                                        .selectedDoctType.value
-                                                        .toString()
-                                                    : '',
-                                                fontSize:
-                                                    AppTextSize.textSizeSmall,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.primaryText,
-                                              )),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                          AppTextWidget(
-                                              text: AppTexts.photos,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          Obx(
-                                            () => contractorDetailsController
-                                                        .docImgCount.value ==
-                                                    0
-                                                ? SizedBox()
-                                                : Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start, // Ensure items align properly
-
-                                                        children: [
-                                                          SizedBox(
-                                                            height: SizeConfig
-                                                                    .imageSizeMultiplier *
-                                                                20, // Adjust based on UI needs
-
-                                                            child: SizedBox(
-                                                              height: SizeConfig
-                                                                      .imageSizeMultiplier *
-                                                                  18,
-                                                              width: SizeConfig
-                                                                      .imageSizeMultiplier *
-                                                                  18,
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            12), // Clip image to match container
-
-                                                                child:
-                                                                    Image.file(
-                                                                  File(contractorDetailsController
-                                                                      .docImg[0]
-                                                                      .path),
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: SizeConfig
-                                                                    .imageSizeMultiplier *
-                                                                5,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                          ),
-                                        ]),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-
-                            //----------------------------
-
-                            SizedBox(
-                              height: SizeConfig.heightMultiplier * 3,
-                            ),
-                            AppTextWidget(
-                              text: 'Secondary Contact Details',
-                              fontSize: AppTextSize.textSizeSmall,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.searchfeild,
-                            ),
-                            SizedBox(height: SizeConfig.heightMultiplier * 2),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.widthMultiplier * 4,
-                                vertical: SizeConfig.heightMultiplier * 3,
-                              ),
-                              width: SizeConfig.widthMultiplier * 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: AppColors.appgreycolor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: SizeConfig.widthMultiplier * 40,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          AppTextWidget(
-                                              text: AppTexts.name,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          AppTextWidget(
-                                              text: contractorDetailsController
-                                                      .secondarynameController
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? contractorDetailsController
-                                                      .secondarynameController
-                                                      .text
-                                                  : '',
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                        ]),
-                                  ),
-                                  SizedBox(
-                                    width: SizeConfig.widthMultiplier * 40,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          AppTextWidget(
-                                              text: AppTexts.contactno,
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.searchfeild),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier * 1,
-                                          ),
-                                          AppTextWidget(
-                                              text: contractorDetailsController
-                                                      .secondarycontactController
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? contractorDetailsController
-                                                      .secondarycontactController
-                                                      .text
-                                                  : '',
-                                              fontSize:
-                                                  AppTextSize.textSizeSmall,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primaryText),
-                                          SizedBox(
-                                            height:
-                                                SizeConfig.heightMultiplier *
-                                                    2.5,
-                                          ),
-                                        ]),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]),
-                    )
-                  : Container(
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Documents Section (WC Policy and Work Permit)
+                    SizedBox(height: SizeConfig.heightMultiplier * 3),
+                    AppTextWidget(
+                      text: 'Documents',
+                      fontSize: AppTextSize.textSizeSmall,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.searchfeild,
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 2),
+                    Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.widthMultiplier * 4,
-                        vertical: SizeConfig.heightMultiplier * 2,
+                        vertical: SizeConfig.heightMultiplier * 3,
                       ),
                       width: SizeConfig.widthMultiplier * 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Color(0xFFFEFEFE),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 20,
-                            spreadRadius: 0,
-                            offset: Offset(0, -4),
-                          ),
-                        ],
+                        color: AppColors.appgreycolor,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: Image.asset(
-                                      'assets/icons/phone_small_phone.png')),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              AppTextWidget(
-                                text: 'Contact Details',
-                                fontSize: AppTextSize.textSizeSmall,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.buttoncolor,
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                  onTap: () {
-                                    contractorPreviewController
-                                        .toggleExpansionidProof();
-                                  },
-                                  child: Icon(Icons.keyboard_arrow_up)),
-                            ],
+                          // WC Policy Document
+                          AppTextWidget(
+                            text: AppTexts.docWcPolicy,
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.searchfeild,
                           ),
-                          SizedBox(
-                            height: SizeConfig.heightMultiplier * 3,
+                          SizedBox(height: SizeConfig.heightMultiplier * 1),
+                          Obx(
+                                () => contractorDetailsController.wcPolicyFile.isEmpty
+                                ? AppTextWidget(
+                              text: 'No WC Policy document uploaded',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.primaryText,
+                            )
+                                : SizedBox(
+                              height: SizeConfig.imageSizeMultiplier * 18,
+                              width: SizeConfig.imageSizeMultiplier * 18,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: _buildDocumentPreview(
+                                    contractorDetailsController.wcPolicyFile[0]),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                          // Work Permit Document
+                          AppTextWidget(
+                            text: AppTexts.docWorkPermit,
+                            fontSize: AppTextSize.textSizeSmall,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.searchfeild,
+                          ),
+                          SizedBox(height: SizeConfig.heightMultiplier * 1),
+                          Obx(
+                                () => contractorDetailsController.workPermitFile.isEmpty
+                                ? AppTextWidget(
+                              text: 'No Work Permit document uploaded',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.primaryText,
+                            )
+                                : SizedBox(
+                              height: SizeConfig.imageSizeMultiplier * 18,
+                              width: SizeConfig.imageSizeMultiplier * 18,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: _buildDocumentPreview(
+                                    contractorDetailsController.workPermitFile[0]),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    )),
+                    ),
+                    // Secondary Contact Details
+                    SizedBox(height: SizeConfig.heightMultiplier * 3),
+                    AppTextWidget(
+                      text: 'Secondary Contact Details',
+                      fontSize: AppTextSize.textSizeSmall,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.searchfeild,
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 2),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: SizeConfig.widthMultiplier * 4,
+                        vertical: SizeConfig.heightMultiplier * 3,
+                      ),
+                      width: SizeConfig.widthMultiplier * 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.appgreycolor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: SizeConfig.widthMultiplier * 40,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AppTextWidget(
+                                  text: AppTexts.name,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController
+                                      .secondarynameController.text.isNotEmpty
+                                      ? contractorDetailsController
+                                      .secondarynameController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: SizeConfig.widthMultiplier * 4),
+                          SizedBox(
+                            width: SizeConfig.widthMultiplier * 40,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AppTextWidget(
+                                  text: AppTexts.contactno,
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.searchfeild,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 1),
+                                AppTextWidget(
+                                  text: contractorDetailsController
+                                      .secondarycontactController.text.isNotEmpty
+                                      ? contractorDetailsController
+                                      .secondarycontactController.text
+                                      : '',
+                                  fontSize: AppTextSize.textSizeSmall,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.primaryText,
+                                ),
+                                SizedBox(height: SizeConfig.heightMultiplier * 2.5),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  : Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.widthMultiplier * 4,
+                  vertical: SizeConfig.heightMultiplier * 2,
+                ),
+                width: SizeConfig.widthMultiplier * 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xFFFEFEFE),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x10000000),
+                      blurRadius: 20,
+                      spreadRadius: 0,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: Image.asset('assets/icons/phone_small_phone.png'),
+                        ),
+                        SizedBox(width: 5),
+                        AppTextWidget(
+                          text: 'Contact Details',
+                          fontSize: AppTextSize.textSizeSmall,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.buttoncolor,
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            contractorPreviewController.toggleExpansionidProof();
+                          },
+                          child: Icon(Icons.keyboard_arrow_down),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 3),
+                  ],
+                ),
+              )),
               //------------------------------------------------------------------
               Obx(
                 () => contractorPreviewController
@@ -1470,4 +1430,49 @@ class ContractorPreview extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDocumentPreview(File file) {
+    final String filePath = file.path;
+    final String? extension = filePath.split('.').last.toLowerCase();
+    final bool isImage = ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+
+    return isImage
+        ? Image.file(
+      file,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: Colors.grey.shade300,
+          child: Icon(
+            Icons.image_not_supported,
+            color: Colors.grey,
+          ),
+        );
+      },
+    )
+        : Container(
+      decoration: BoxDecoration(
+        color: Colors.blue.shade100,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            extension == 'pdf' ? Icons.picture_as_pdf : Icons.description,
+            color: extension == 'pdf' ? Colors.red : Colors.blue,
+            size: 40,
+          ),
+          SizedBox(height: 4),
+          Text(
+            extension!.toUpperCase(),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );}
 }
