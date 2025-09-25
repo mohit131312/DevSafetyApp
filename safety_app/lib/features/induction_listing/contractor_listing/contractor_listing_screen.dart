@@ -1,3 +1,8 @@
+import 'dart:io';
+
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/app_elevated_button.dart';
 import 'package:flutter_app/components/app_text_widget.dart';
@@ -8,8 +13,16 @@ import 'package:flutter_app/utils/app_texts.dart';
 import 'package:flutter_app/utils/app_textsize.dart';
 import 'package:flutter_app/utils/logout_user.dart';
 import 'package:flutter_app/utils/size_config.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../../components/app_elevated_button_icon.dart';
 
 class ContractorListingScreen extends StatelessWidget {
   final int userId;
@@ -30,6 +43,255 @@ class ContractorListingScreen extends StatelessWidget {
   final ContractorListingController contractorListingController =
       Get.put(ContractorListingController());
   final LocationController locationController = Get.find();
+
+
+
+//   Future<void> downloadFile(String filePath, String label) async {
+//     final fullUrl = "$baseUrl$filePath";
+//     final fileName = filePath.split('/').last;
+//
+//     // Request storage permission
+//     bool hasPermission = await _requestPermissions();
+//     if (!hasPermission) {
+//       Get.snackbar('Permission Denied', 'Storage permission is required to download files');
+//       return;
+//     }
+//
+//     try {
+//       // Get the Downloads directory
+//       Directory? downloadsDir;
+//       if (Platform.isAndroid) {
+//         downloadsDir = Directory('/storage/emulated/0/Download');
+//       } else if (Platform.isIOS) {
+//         downloadsDir = await getApplicationDocumentsDirectory();
+//       }
+//
+//       // Ensure the Downloads directory exists
+//       if (downloadsDir != null && !await downloadsDir.exists()) {
+//         await downloadsDir.create(recursive: true);
+//       }
+//
+//       final savePath = '${downloadsDir?.path}/$fileName';
+//
+//       // Start the download using flutter_downloader
+//       final taskId = await FlutterDownloader.enqueue(
+//         url: fullUrl,
+//         savedDir: downloadsDir!.path,
+//         fileName: fileName,
+//         showNotification: true, // Show download progress in notification
+//         openFileFromNotification: true, // Allow opening file from notification
+//         saveInPublicStorage: true, // Save in public Downloads folder
+//       );
+//
+//       // Optional: Listen for download progress
+//       FlutterDownloader.registerCallback((id, status, progress) {
+//         if (taskId == id) {
+//           if (status == DownloadTaskStatus.complete) {
+//             Get.snackbar('Success', '$label downloaded successfully to Downloads folder');
+//           } else if (status == DownloadTaskStatus.failed) {
+//             Get.snackbar('Error', 'Failed to download $label');
+//           } else if (status == DownloadTaskStatus.running) {
+//             print('Download progress: $progress%');
+//             // Optionally update UI with progress
+//           }
+//         }
+//       });
+//     } catch (e) {
+//       Get.snackbar('Error', 'Error downloading $label: $e');
+//     }
+//   }
+//
+// // Helper function to request permissions
+//   Future<bool> _requestPermissions() async {
+//     if (Platform.isAndroid) {
+//       // For Android 11+ (API 30+), use MANAGE_EXTERNAL_STORAGE for Downloads folder
+//       var imageStatus = await Permission.photos.request();
+//       if (imageStatus.isGranted) {
+//         return true;
+//       }
+//       if (await Permission.manageExternalStorage.request().isGranted) {
+//         return true;
+//       }
+//       return false;
+//     } else if (Platform.isIOS) {
+//       // iOS typically doesn't require storage permissions for app directories
+//       return true;
+//     }
+//     return false;
+//   }
+
+  // Future<void> downloadFile(String filePath, String label) async {
+  //   final fullUrl = "$baseUrl$filePath";
+  //   final fileName = filePath.split('/').last;
+  //
+  //   if (await Permission.storage.request().isGranted) {
+  //     try {
+  //       final dir = await getExternalStorageDirectory();
+  //       final savePath = '${dir?.path}/$fileName';
+  //
+  //       final dio = Dio();
+  //       await dio.download(
+  //         fullUrl,
+  //         savePath,
+  //         onReceiveProgress: (received, total) {
+  //           if (total != -1) {
+  //             final progress = (received / total * 100).toStringAsFixed(0);
+  //             print('Download progress: $progress%');
+  //             // Optionally update UI with progress
+  //           }
+  //         },
+  //       );
+  //       Get.snackbar('Success', '$label downloaded successfully');
+  //     } catch (e) {
+  //       Get.snackbar('Error', 'Error downloading $label: $e');
+  //     }
+  //   } else {
+  //     Get.snackbar('Permission Denied', 'Storage permission is required to download files');
+  //   }
+  // }
+
+
+
+  Future<void> viewFile(BuildContext context, String filePath, String label) async {
+    final fullUrl = "$baseUrl$filePath";
+    final fileName = filePath.split('/').last;
+    final fileExtension = fileName.split('.').last.toLowerCase();
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+
+    if (imageExtensions.contains(fileExtension)) {
+      // Show image in a dialog (unchanged)
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: InteractiveViewer(
+              panEnabled: true,
+              minScale: 0.5,
+              maxScale: 3.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  imageUrl: fullUrl,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } else if (fileExtension == 'pdf') {
+      // Download PDF and view it
+      // if (await Permission.storage.request().isGranted) {
+        try {
+          final dir = await getApplicationDocumentsDirectory();
+          final savePath = '${dir.path}/$fileName';
+          final file = File(savePath);
+
+          // Download if file doesn't exist
+          if (!await file.exists()) {
+            final response = await http.get(Uri.parse(fullUrl));
+            if (response.statusCode == 200) {
+              await file.writeAsBytes(response.bodyBytes);
+            } else {
+              Get.snackbar('Error', 'Failed to download $label');
+              return;
+            }
+          }
+
+          // Navigate to PDF viewer
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Scaffold(
+                    appBar: AppBar(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(20),
+                        ),
+                      ),
+                      scrolledUnderElevation: 0.0,
+                      elevation: 0,
+                      backgroundColor: AppColors.buttoncolor,
+                      foregroundColor: AppColors.buttoncolor,
+                      centerTitle: true,
+                      toolbarHeight: SizeConfig.heightMultiplier * 10,
+                      title: Padding(
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.heightMultiplier * 2),
+                        child: AppTextWidget(
+                          text: "$label",
+                          fontSize: AppTextSize.textSizeMedium,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      leading: Padding(
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.heightMultiplier * 2),
+                        child: IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            size: SizeConfig.heightMultiplier * 2.5,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    body: PDFView(
+                      filePath: savePath,
+                      enableSwipe: true,
+                      swipeHorizontal: true,
+                      autoSpacing: false,
+                      pageFling: false,
+                      onError: (error) {
+                        Get.snackbar('Error', 'Failed to load PDF: $error');
+                      },
+                    ),
+                  ),
+            ),
+          );
+        } catch (e) {
+          Get.snackbar('Error', 'Error opening $label: $e');
+        }
+      // }
+      // } else {
+      //   Get.snackbar('Permission Denied', 'Storage permission is required to view files');
+      // }
+    } else {
+      // Fallback to OpenFilex for other file types
+      try {
+        final dir = await getApplicationDocumentsDirectory();
+        final savePath = '${dir.path}/$fileName';
+        final file = File(savePath);
+
+        if (!await file.exists()) {
+          final response = await http.get(Uri.parse(fullUrl));
+          if (response.statusCode == 200) {
+            await file.writeAsBytes(response.bodyBytes);
+          } else {
+            Get.snackbar('Error', 'Failed to download $label');
+            return;
+          }
+        }
+
+        final result = await OpenFilex.open(savePath);
+        if (result.type != ResultType.done) {
+          Get.snackbar('Error', 'Could not open $label: ${result.message}');
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Error opening $label: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -817,6 +1079,133 @@ class ContractorListingScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              height: SizeConfig.heightMultiplier * 3,
+                            ),
+                            AppTextWidget(
+                              text: 'Documents',
+                              fontSize: AppTextSize.textSizeSmall,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.searchfeild,
+                            ),
+                            SizedBox(height: SizeConfig.heightMultiplier * 2),
+                            if (contractorListingController.contractorInductionTrainingsList.isNotEmpty &&
+                                (contractorListingController.contractorInductionTrainingsList.first.docWcPolicy?.isNotEmpty == true ||
+                                    contractorListingController.contractorInductionTrainingsList.first.docWorkPermit?.isNotEmpty == true))
+                              Padding(
+                                padding: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 1),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (contractorListingController.contractorInductionTrainingsList.first.docWcPolicy?.isNotEmpty == true)
+                                      Expanded(
+                                        child: AppElevatedButtonIcon(
+                                          text: 'WC Policy',
+                                          icon: Icon(
+                                            Icons.visibility, // Icon for View Work Permit
+                                            size: SizeConfig.imageSizeMultiplier * 5,
+                                            color: AppColors.primary, // Adjust color to match your theme
+                                          ),
+                                          onPressed: () {
+                                            viewFile(
+                                              context,
+                                              contractorListingController.contractorInductionTrainingsList[0].docWcPolicy!,
+                                              'WC Policy',
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    if (contractorListingController.contractorInductionTrainingsList.first.docWcPolicy?.isNotEmpty == true &&
+                                        contractorListingController.contractorInductionTrainingsList.first.docWorkPermit?.isNotEmpty == true)
+                                      SizedBox(width: SizeConfig.widthMultiplier * 2),
+                                    if (contractorListingController.contractorInductionTrainingsList.first.docWorkPermit?.isNotEmpty == true)
+                                      Expanded(
+                                        child: AppElevatedButtonIcon(
+                                          text: 'Work Permit',
+                                          icon: Icon(
+                                            Icons.visibility, // Icon for View Work Permit
+                                            size: SizeConfig.imageSizeMultiplier * 5,
+                                            color: AppColors.primary, // Adjust color to match your theme
+                                          ),
+                                          onPressed: () {
+                                            viewFile(
+                                              context,
+                                              contractorListingController.contractorInductionTrainingsList[0].docWorkPermit!,
+                                              'Work Permit',
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            // SizedBox(height: SizeConfig.heightMultiplier * 2),
+                            // if (contractorListingController.contractorInductionTrainingsList.isNotEmpty &&
+                            //     contractorListingController.contractorInductionTrainingsList.first.docWcPolicy?.isNotEmpty == true)
+                            //   Padding(
+                            //     padding: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 1),
+                            //     child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //       children: [
+                            //         // Expanded(
+                            //         //   child: AppElevatedButton(
+                            //         //     text: 'Download WC Policy',
+                            //         //     onPressed: () {
+                            //         //       downloadFile(
+                            //         //         contractorListingController.contractorInductionTrainingsList[0].docWcPolicy!,
+                            //         //         'WC Policy',
+                            //         //       );
+                            //         //     },
+                            //         //   ),
+                            //         // ),
+                            //         SizedBox(width: SizeConfig.widthMultiplier * 2),
+                            //         Expanded(
+                            //           child: AppElevatedButton(
+                            //             text: 'View WC Policy',
+                            //             onPressed: () {
+                            //               viewFile(
+                            //                 context,
+                            //                 contractorListingController.contractorInductionTrainingsList[0].docWcPolicy!,
+                            //                 'WC Policy',
+                            //               );
+                            //             },
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // if (contractorListingController.contractorInductionTrainingsList.isNotEmpty &&
+                            //     contractorListingController.contractorInductionTrainingsList.first.docWorkPermit?.isNotEmpty == true)
+                            //   Row(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       // Expanded(
+                            //       //   child: AppElevatedButton(
+                            //       //     text: 'Download Work Permit',
+                            //       //     onPressed: () {
+                            //       //       downloadFile(
+                            //       //         contractorListingController.contractorInductionTrainingsList[0].docWorkPermit!,
+                            //       //         'Work Permit',
+                            //       //       );
+                            //       //     },
+                            //       //   ),
+                            //       // ),
+                            //       SizedBox(width: SizeConfig.widthMultiplier * 2),
+                            //       Expanded(
+                            //         child: AppElevatedButton(
+                            //           text: 'View Work Permit',
+                            //           onPressed: () {
+                            //             viewFile(
+                            //               context,
+                            //               contractorListingController.contractorInductionTrainingsList[0].docWorkPermit!,
+                            //               'Work Permit',
+                            //             );
+                            //           },
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+
                           ]),
                     )
                   : Container(

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_app/features/induction_listing/contractor_listing/contractor_listing_model.dart';
 import 'package:flutter_app/utils/global_api_call.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 
 class ContractorListingController extends GetxController {
@@ -61,6 +63,7 @@ class ContractorListingController extends GetxController {
 
       print("Request body: $map");
 
+
       var responseData =
           await globApiCall('get_selected_induction_training_details', map);
       var data = await responseData['data'];
@@ -90,6 +93,11 @@ class ContractorListingController extends GetxController {
                   (e) => InductionTraining.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
+
+      print("json data is ${jsonEncode(
+        contractorInductionTrainingsList.map((e) => e.toJson()).toList(),
+      )}");
+
 
       contractorReasonOfVisitList = (data['reason_of_visit'] as List<dynamic>?)
               ?.map((e) => ReasonOfVisit.fromJson(e as Map<String, dynamic>))

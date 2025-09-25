@@ -301,6 +301,8 @@ class InductionTraining {
         // "contractor_company_id": contractorCompanyId,
         // "trade_id": tradeId,
         "user_photo": userPhoto,
+        "doc_wc_policy":docWcPolicy,
+        "doc_work_permit":docWorkPermit,
         // "experience_in_years": experienceInYears,
         // "signature_flag": signatureFlag,
         // "signature_behalf_of": signatureBehalfOf,
