@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 
 import '../features/login/login_controller.dart';
 
-String baseUrl = "http://192.168.1.81/Kumar/KumarProperties/storage/app/";
-String baseUrl2 = "http://192.168.1.81/Kumar/KumarProperties/";
+// String baseUrl = "http://192.168.1.81/Kumar/KumarProperties/storage/app/";
+// String baseUrl2 = "http://192.168.1.81/Kumar/KumarProperties/";
 
-// String baseUrl = "http://34.133.129.206/stagging/storage/app/";
-// String baseUrl2 = "http://34.133.129.206/stagging/";
+String baseUrl = "http://34.133.129.206/stagging/storage/app/";
+String baseUrl2 = "http://34.133.129.206/stagging/";
 
 bool logStatus = true;
 void logout() {

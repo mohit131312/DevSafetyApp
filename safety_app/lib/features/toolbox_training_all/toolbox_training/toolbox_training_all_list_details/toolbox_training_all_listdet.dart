@@ -168,7 +168,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                   width: 5,
                                 ),
                                 AppTextWidget(
-                                  text: 'Toolbox Training Detai',
+                                  text: 'Toolbox Training Details',
                                   fontSize: AppTextSize.textSizeSmall,
                                   fontWeight: FontWeight.w500,
                                   color: AppColors.buttoncolor,
@@ -260,7 +260,7 @@ class ToolboxTrainingAllListdet extends StatelessWidget {
                                             SizeConfig.heightMultiplier * 1.5,
                                       ),
                                       AppTextWidget(
-                                          text: 'Contractor',
+                                          text: 'Contractor Company',
                                           fontSize: AppTextSize.textSizeSmall,
                                           fontWeight: FontWeight.w400,
                                           color: AppColors.searchfeild),

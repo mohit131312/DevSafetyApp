@@ -306,7 +306,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         AppTextWidget(
-                            text: 'Select Contractor',
+                            text: 'Select Contractor Company Name',
                             fontSize: AppTextSize.textSizeSmall,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primaryText),
@@ -333,7 +333,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                             ? toolboxTDetailsController.selectContractor.value
                             : null,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        hintText: 'Select Contractor',
+                        hintText: 'Select Contractor Company Name',
                         onChanged: (value) async {
                           toolboxTDetailsController.selectContractor.value =
                               value ?? '';
@@ -377,7 +377,7 @@ class ToolboxTDetailsScreen extends StatelessWidget {
                         validator: (value) {
                           if (value == null ||
                               value.toString().trim().isEmpty) {
-                            return 'Please select a contractor';
+                            return 'Please select a contractor Company Name';
                           }
                           return null;
                         },

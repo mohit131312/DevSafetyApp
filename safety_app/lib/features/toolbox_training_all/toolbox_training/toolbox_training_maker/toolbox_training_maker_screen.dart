@@ -274,7 +274,7 @@ class ToolboxTrainingMakerScreen extends StatelessWidget {
                                               SizeConfig.heightMultiplier * 1.5,
                                         ),
                                         AppTextWidget(
-                                            text: 'Contractor',
+                                            text: 'Contractor Company',
                                             fontSize: AppTextSize.textSizeSmall,
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.searchfeild),
